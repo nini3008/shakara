@@ -1,0 +1,447 @@
+// AboutSection.module.scss - Balanced Visual Design
+.aboutSection {
+  position: relative;
+  background: #000000;
+  contain: layout style paint;
+  isolation: isolate;
+  z-index: 30;
+  padding: 5rem 0 6rem;
+  overflow: hidden;
+  
+  // Subtle gradient background
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg, 
+      rgba(0, 0, 0, 1) 0%, 
+      rgba(10, 10, 10, 1) 50%,
+      rgba(0, 0, 0, 1) 100%
+    );
+    z-index: -3;
+  }
+  
+  // Single decorative orb - more subtle
+  &::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    right: 10%;
+    width: 15rem;
+    height: 15rem;
+    background: radial-gradient(
+      circle at center,
+      rgba(217, 119, 6, 0.06) 0%,
+      transparent 60%
+    );
+    border-radius: 50%;
+    filter: blur(30px);
+    z-index: -2;
+    pointer-events: none;
+  }
+  
+  @media (min-width: 768px) {
+    padding: 6rem 0 8rem;
+  }
+}
+
+.container {
+  position: relative;
+  z-index: 10;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  
+  @media (min-width: 1024px) {
+    padding: 0 2rem;
+  }
+}
+
+// More reasonable title size
+.title {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 3rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  
+  // Subtle gold gradient
+  background: linear-gradient(
+    135deg, 
+    rgb(217, 119, 6) 0%, 
+    rgb(255, 215, 0) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  @media (min-width: 768px) {
+    margin-bottom: 4rem;
+  }
+}
+
+// Visual-first layout
+.contentLayout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  
+  @media (min-width: 1024px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+}
+
+// Left side - Stats and visuals
+.visualSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+// Hero stats - more prominent
+.heroStats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.statCard {
+  background: rgba(217, 119, 6, 0.08);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  border-radius: 1rem;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:hover {
+    background: rgba(217, 119, 6, 0.12);
+    border-color: rgba(217, 119, 6, 0.4);
+    transform: translateY(-2px);
+  }
+}
+
+.statNumber {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 800;
+  color: rgb(217, 119, 6);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+// Festival highlights - visual cards
+.highlights {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.highlightCard {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: rgba(217, 119, 6, 0.3);
+    background: rgba(217, 119, 6, 0.05);
+  }
+}
+
+.highlightIcon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.highlightTitle {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgb(217, 119, 6);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.highlightText {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.4;
+}
+
+// Right side - Essential info only
+.infoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+// Concise description
+.description {
+  font-size: clamp(1.1rem, 2vw, 1.25rem);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+// Essential info - more compact
+.essentialInfo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.infoItem {
+  background: rgba(0, 0, 0, 0.3);
+  border-left: 3px solid rgb(217, 119, 6);
+  border-radius: 0 0.75rem 0.75rem 0;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-left-width: 4px;
+    background: rgba(217, 119, 6, 0.05);
+    transform: translateX(2px);
+  }
+}
+
+.infoTitle {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgb(217, 119, 6);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.infoText {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+}
+
+// Compact social section
+.socialSection {
+  background: rgba(217, 119, 6, 0.06);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.socialTitle {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: rgb(217, 119, 6);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.socialLinks {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.socialLink {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1.5px solid rgb(217, 119, 6);
+  color: rgb(217, 119, 6);
+  padding: 0.5rem 1rem;
+  border-radius: 1.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgb(217, 119, 6);
+    color: #000000;
+    transform: translateY(-1px);
+  }
+}
+
+// Remove excessive decorations
+.decorativeOrb1,
+.decorativeOrb2 {
+  display: none;
+}
+
+// Responsive improvements
+@media (max-width: 1023px) {
+  .contentLayout {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  
+  .visualSection {
+    order: 1;
+  }
+  
+  .infoSection {
+    order: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroStats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .highlights {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  .statCard:hover,
+  .infoItem:hover,
+  .socialLink:hover {
+    transform: none;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .statCard,
+  .highlightCard,
+  .infoItem,
+  .socialSection {
+    border-width: 2px;
+  }
+}
+
+.socialLink {
+  padding: 0.5rem 1rem;
+  border-radius: 1.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  transition: all 0.3s ease;
+  border: 1.5px solid transparent;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Platform-specific branding
+.socialInstagram {
+  background: linear-gradient(135deg, #E4405F, #C13584, #833AB4);
+  color: white;
+  
+  &:hover {
+    background: linear-gradient(135deg, #E4405F, #C13584);
+    box-shadow: 0 4px 12px rgba(228, 64, 95, 0.4);
+  }
+}
+
+.socialTwitter {
+  background: #1DA1F2;
+  color: white;
+  
+  &:hover {
+    background: #0d8bd9;
+    box-shadow: 0 4px 12px rgba(29, 161, 242, 0.4);
+  }
+}
+
+.socialFacebook {
+  background: #1877F2;
+  color: white;
+  
+  &:hover {
+    background: #166fe5;
+    box-shadow: 0 4px 12px rgba(24, 119, 242, 0.4);
+  }
+}
+
+.socialYoutube {
+  background: #FF0000;
+  color: white;
+  
+  &:hover {
+    background: #e60000;
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.4);
+  }
+}
+
+.socialSpotify {
+  background: #1DB954;
+  color: white;
+  
+  &:hover {
+    background: #1aa34a;
+    box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
+  }
+}
+
+.socialTiktok {
+  background: linear-gradient(135deg, #FF0050, #00F2EA);
+  color: white;
+  
+  &:hover {
+    background: linear-gradient(135deg, #e6004a, #00d9d1);
+    box-shadow: 0 4px 12px rgba(255, 0, 80, 0.4);
+  }
+}
+
+.socialLinkedin {
+  background: #0A66C2;
+  color: white;
+  
+  &:hover {
+    background: #0956a5;
+    box-shadow: 0 4px 12px rgba(10, 102, 194, 0.4);
+  }
+}
+
+.socialDefault {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1.5px solid rgb(217, 119, 6);
+  color: rgb(217, 119, 6);
+  
+  &:hover {
+    background: rgb(217, 119, 6);
+    color: #000000;
+  }
+}

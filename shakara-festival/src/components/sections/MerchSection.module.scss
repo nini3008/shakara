@@ -1,0 +1,363 @@
+// MerchSection.module.scss
+.merchSection {
+    position: relative;
+    background: #000000;
+    contain: layout style paint;
+    isolation: isolate;
+    z-index: 50;
+    padding: 5rem 0;
+    
+    // Ensure solid background
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #000000;
+      z-index: -2;
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #000000 0%, rgba(31, 41, 55, 0.3) 50%, #000000 100%);
+      z-index: -1;
+    }
+  }
+  
+  .container {
+    position: relative;
+    z-index: 10;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  @media (min-width: 640px) {
+    .container {
+      padding: 0 1.5rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .container {
+      padding: 0 2rem;
+    }
+  }
+  
+  .title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 4rem;
+    background: linear-gradient(135deg, rgb(251, 146, 60), rgb(244, 114, 182), rgb(168, 85, 247));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  @media (min-width: 768px) {
+    .title {
+      font-size: 3.75rem;
+    }
+  }
+  
+  .merchGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  @media (min-width: 768px) {
+    .merchGrid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .merchGrid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .merchGrid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  .merchGroup {
+    background: transparent;
+  }
+  
+  .merchCard {
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: rgb(31, 41, 55);
+    border: 1px solid rgb(55, 65, 81);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 25px 50px rgba(234, 179, 8, 0.2);
+      border-color: rgb(234, 179, 8);
+    }
+  }
+  
+  .imageContainer {
+    position: relative;
+    aspect-ratio: 1;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: #000000;
+  }
+  
+  .merchImage {
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    
+    .merchGroup:hover & {
+      transform: scale(1.1);
+    }
+  }
+  
+  .badgeContainer {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .newBadge {
+    background: rgb(34, 197, 94);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 0.25rem;
+    text-transform: uppercase;
+  }
+  
+  .limitedBadge {
+    background: rgb(239, 68, 68);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 0.25rem;
+    text-transform: uppercase;
+  }
+  
+  .placeholderImage {
+    aspect-ratio: 1;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, rgb(234, 179, 8), rgb(249, 115, 22));
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .placeholderIcon {
+    font-size: 3.75rem;
+  }
+  
+  .cardContent {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .itemName {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: white;
+    transition: color 0.3s ease;
+    
+    .merchGroup:hover & {
+      color: rgb(234, 179, 8);
+    }
+  }
+  
+  .itemCategory {
+    color: rgb(156, 163, 175);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .priceContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .currentPrice {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: rgb(234, 179, 8);
+  }
+  
+  .comparePrice {
+    color: rgb(156, 163, 175);
+    text-decoration: line-through;
+    font-size: 0.875rem;
+  }
+  
+  .optionsContainer {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+  }
+  
+  .optionTag {
+    font-size: 0.75rem;
+    background: rgb(55, 65, 81);
+    color: rgb(209, 213, 219);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+  
+  .moreOptions {
+    font-size: 0.75rem;
+    color: rgb(156, 163, 175);
+  }
+  
+  .availabilityContainer {
+    padding-top: 0.5rem;
+  }
+  
+  .outOfStock {
+    color: rgb(248, 113, 113);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .preOrder {
+    color: rgb(96, 165, 250);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .available {
+    color: rgb(74, 222, 128);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .buttonContainer {
+    text-align: center;
+  }
+  
+  .shopAllButton {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, rgb(249, 115, 22), rgb(236, 72, 153), rgb(147, 51, 234));
+    color: white;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4);
+    }
+  }
+  
+  .buttonIcon {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-left: 0.5rem;
+  }
+  
+  .emptyState {
+    max-width: 32rem;
+    margin: 0 auto;
+    text-align: center;
+    background: rgb(31, 41, 55);
+    border: 1px solid rgb(55, 65, 81);
+    border-radius: 0.75rem;
+    padding: 2rem;
+  }
+  
+  .emptyIcon {
+    font-size: 3.75rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .emptyTitle {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: rgb(234, 179, 8);
+    margin-bottom: 1rem;
+  }
+  
+  .emptyDescription {
+    color: rgb(209, 213, 219);
+    font-size: 1.125rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .previewGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    max-width: 20rem;
+    margin: 0 auto 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .previewGrid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  .previewItem {
+    background: rgb(31, 41, 55);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: rgb(55, 65, 81);
+      transform: scale(1.05);
+    }
+  }
+  
+  .previewIcon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .previewLabel {
+    font-size: 0.875rem;
+    color: rgb(156, 163, 175);
+  }
+  
+  .notifyButton {
+    background: linear-gradient(135deg, rgb(249, 115, 22), rgb(236, 72, 153), rgb(147, 51, 234));
+    color: white;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4);
+    }
+  }

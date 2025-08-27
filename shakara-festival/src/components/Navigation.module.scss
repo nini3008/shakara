@@ -1,0 +1,674 @@
+// Navigation.module.scss - Professional & Mature Design matching Hero Section
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  contain: layout style paint;
+  isolation: isolate;
+
+  // Default state (not scrolled) - elegant gradient matching hero
+  &:not(.scrolled) {
+    padding: 1.25rem 0;
+    background: linear-gradient(
+      to bottom, 
+      rgba(0, 0, 0, 0.8), 
+      rgba(15, 5, 25, 0.6), 
+      rgba(0, 0, 0, 0.3),
+      transparent
+    );
+  }
+
+  // Scrolled state with refined glassmorphism matching hero aesthetics
+  &.scrolled {
+    padding: 0.75rem 0;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    border-bottom: 1px solid rgba(217, 119, 6, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  }
+}
+
+.container {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// Refined Logo matching hero title style
+.logo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 900;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+
+  // Sophisticated gradient matching hero - gold tones only
+  background: linear-gradient(
+    135deg, 
+    rgb(251, 191, 36) 0%, 
+    rgb(217, 119, 6) 50%,
+    rgb(180, 83, 9) 100%
+  );
+  background-size: 150% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: subtleShift 8s ease-in-out infinite alternate;
+
+  &:hover {
+    transform: scale(1.05);
+    animation-duration: 4s;
+  }
+
+  // Subtle glow effect matching hero
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: inherit;
+    background-clip: text;
+    -webkit-background-clip: text;
+    filter: blur(1px);
+    opacity: 0.2;
+    z-index: -1;
+  }
+}
+
+// Desktop Menu
+.menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
+
+  &.desktop {
+    @media (min-width: 1024px) {
+      display: flex;
+    }
+  }
+
+  li {
+    position: relative;
+  }
+}
+
+// Professional Nav Links matching hero button styles
+.navLink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  letter-spacing: 0.015em;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+
+  // Subtle hover background matching hero glassmorphism
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(217, 119, 6, 0.08);
+    backdrop-filter: blur(16px);
+    border-radius: 0.75rem;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &:hover::before,
+  &.active::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  // Icon styling - refined and consistent
+  svg {
+    width: 1rem;
+    height: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 300ms ease;
+  }
+
+  &:hover,
+  &.active {
+    color: white;
+    
+    svg {
+      color: rgb(217, 119, 6);
+      transform: scale(1.1);
+    }
+  }
+
+  &.active {
+    color: rgb(217, 119, 6);
+  }
+
+  // Refined dot indicator matching hero scroll indicator
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    width: 4px;
+    height: 4px;
+    background: rgb(217, 119, 6);
+    border-radius: 50%;
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &:hover::after,
+  &.active::after {
+    transform: translateX(-50%) scale(1);
+  }
+
+  // Text spans need relative positioning
+  span {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+// Professional CTA Button matching hero primary button
+.cta {
+  display: none;
+
+  @media (min-width: 1024px) {
+    display: block;
+  }
+}
+
+.ctaButton {
+  position: relative;
+  padding: 0.75rem 2rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: white;
+  background: linear-gradient(135deg, rgb(217, 119, 6), rgb(180, 83, 9));
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.3);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.025em;
+
+  // Subtle shimmer effect matching hero
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: left 0.6s ease;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(217, 119, 6, 0.4);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active {
+    transform: translateY(0px);
+  }
+}
+
+// Refined Mobile Hamburger
+.hamburger {
+  position: relative;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  @media (min-width: 1024px) {
+    display: none !important;
+  }
+
+  &:hover {
+    background: rgba(217, 119, 6, 0.08);
+    border-color: rgba(217, 119, 6, 0.2);
+    transform: scale(1.02);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: white;
+    transition: transform 200ms ease;
+  }
+
+  &.open svg {
+    transform: rotate(90deg);
+  }
+}
+
+// Mobile Drawer Backdrop - ONLY for mobile menu
+.mobileBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 1200;
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
+}
+
+.drawer {
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  max-width: 24rem;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 5, 25, 0.98) 0%,
+    rgba(10, 10, 10, 0.98) 50%,
+    rgba(0, 0, 0, 0.98) 100%
+  );
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  z-index: 1201;
+  overflow-y: auto;
+  border-left: 1px solid rgba(217, 119, 6, 0.15);
+  
+  @media (min-width: 1024px) {
+    display: none;
+  }
+
+  // Refined decorative element matching hero orbs
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20rem;
+    height: 20rem;
+    background: radial-gradient(
+      circle at center,
+      rgba(217, 119, 6, 0.08) 0%,
+      rgba(88, 28, 135, 0.04) 40%,
+      transparent 70%
+    );
+    border-radius: 50%;
+    filter: blur(60px);
+    pointer-events: none;
+  }
+}
+
+.drawerContent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.closeButton {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background: rgba(217, 119, 6, 0.08);
+    border-color: rgba(217, 119, 6, 0.2);
+    transform: rotate(90deg);
+  }
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: white;
+  }
+}
+
+.mobileHeader {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  margin-top: 3rem;
+  position: relative;
+  z-index: 1;
+
+  h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 900;
+    font-size: 2rem;
+    background: linear-gradient(
+      135deg, 
+      rgb(251, 191, 36) 0%, 
+      rgb(217, 119, 6) 50%,
+      rgb(180, 83, 9) 100%
+    );
+    background-size: 150% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: subtleShift 6s ease-in-out infinite alternate;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+  }
+}
+
+.mobileNav {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0;
+  flex: 1;
+}
+
+.mobileNavLink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  text-decoration: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(217, 119, 6, 0.06);
+    backdrop-filter: blur(16px);
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+
+  &:hover,
+  &.active {
+    transform: translateY(-1px);
+    border-color: rgba(217, 119, 6, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &.active {
+    background: rgba(217, 119, 6, 0.06);
+    border-color: rgba(217, 119, 6, 0.2);
+  }
+
+  &:active {
+    transform: translateY(0px);
+  }
+}
+
+.mobileNavIcon {
+  position: relative;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 300ms ease;
+  z-index: 1;
+  flex-shrink: 0;
+
+  .mobileNavLink:hover &,
+  .mobileNavLink.active & {
+    color: rgb(217, 119, 6);
+    transform: scale(1.1);
+  }
+}
+
+.mobileNavLabel {
+  flex: 1;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  transition: color 300ms ease;
+  position: relative;
+  z-index: 1;
+
+  .mobileNavLink:hover &,
+  .mobileNavLink.active & {
+    color: white;
+  }
+
+  .mobileNavLink.active & {
+    color: rgb(217, 119, 6);
+  }
+}
+
+.mobileCta {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(217, 119, 6, 0.15);
+  position: relative;
+  z-index: 1;
+}
+
+.mobilePrimaryButton {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, rgb(217, 119, 6), rgb(180, 83, 9));
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.025em;
+  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.3);
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(217, 119, 6, 0.4);
+  }
+}
+
+.mobileSecondaryButton {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: white;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.025em;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(217, 119, 6, 0.2);
+    transform: translateY(-1px);
+  }
+}
+
+.socialLinks {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.5rem 0 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.socialLink {
+  position: relative;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  font-size: 0.8rem;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  text-decoration: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgb(217, 119, 6), rgb(180, 83, 9));
+    opacity: 0;
+    border-radius: 50%;
+    transition: opacity 300ms ease;
+  }
+
+  &:hover {
+    transform: translateY(-1px) scale(1.05);
+    color: white;
+    border-color: rgba(217, 119, 6, 0.2);
+
+    &::before {
+      opacity: 0.1;
+    }
+  }
+
+  span {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+// Refined animations matching hero section
+@keyframes subtleShift {
+  0% { 
+    background-position: 0% 50%; 
+  }
+  50% { 
+    background-position: 100% 50%; 
+  }
+  100% { 
+    background-position: 0% 50%; 
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  .logo {
+    animation: none;
+  }
+  
+  .mobileHeader h2 {
+    animation: none;
+  }
+  
+  .ctaButton::before,
+  .mobilePrimaryButton::before {
+    display: none;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .navbar.scrolled {
+    background: rgba(0, 0, 0, 0.95);
+    border-bottom-color: rgb(217, 119, 6);
+  }
+  
+  .navLink {
+    color: white;
+    
+    &:hover, &.active {
+      color: rgb(251, 191, 36);
+    }
+  }
+  
+  .ctaButton, .mobilePrimaryButton {
+    border: 2px solid rgb(217, 119, 6);
+  }
+}

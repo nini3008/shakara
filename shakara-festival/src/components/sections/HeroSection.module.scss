@@ -1,0 +1,573 @@
+// HeroSection.module.scss - Professional & Mature Version
+.heroSection {
+  position: relative;
+  height: 100vh;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #000000;
+  contain: layout style paint;
+  isolation: isolate;
+  z-index: 1;
+}
+
+.backgroundContainer {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+  overflow: hidden;
+  z-index: 1;
+}
+
+// Professional gradient with deep blacks and subtle warmth
+.baseGradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(20, 20, 20, 1) 0%, 
+    rgba(0, 0, 0, 1) 40%, 
+    rgba(15, 10, 5, 1) 100%
+  );
+}
+
+// Refined orbs with professional color palette
+.orb1 {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 25rem;
+  height: 25rem;
+  background: radial-gradient(circle, 
+    rgba(218, 165, 32, 0.12) 0%, 
+    rgba(184, 134, 11, 0.08) 50%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  filter: blur(4rem);
+  animation: subtlePulse 8s ease-in-out infinite;
+}
+
+.orb2 {
+  position: absolute;
+  bottom: 15%;
+  right: 15%;
+  width: 30rem;
+  height: 30rem;
+  background: radial-gradient(circle, 
+    rgba(255, 255, 255, 0.06) 0%, 
+    rgba(156, 163, 175, 0.04) 50%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  filter: blur(5rem);
+  animation: subtlePulse 10s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.centralOrb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 35rem;
+  height: 35rem;
+  background: radial-gradient(circle, 
+    rgba(218, 165, 32, 0.08) 0%, 
+    rgba(255, 255, 255, 0.03) 50%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  filter: blur(6rem);
+  animation: slowSpin 30s linear infinite;
+}
+
+// Smaller, more subtle accent orbs
+.orb3 {
+  position: absolute;
+  top: 20%;
+  right: 25%;
+  width: 18rem;
+  height: 18rem;
+  background: radial-gradient(circle, 
+    rgba(156, 163, 175, 0.05) 0%, 
+    transparent 60%
+  );
+  border-radius: 50%;
+  filter: blur(3rem);
+  animation: subtlePulse 12s ease-in-out infinite;
+  animation-delay: 4s;
+}
+
+.orb4 {
+  position: absolute;
+  bottom: 25%;
+  left: 20%;
+  width: 20rem;
+  height: 20rem;
+  background: radial-gradient(circle, 
+    rgba(218, 165, 32, 0.06) 0%, 
+    transparent 60%
+  );
+  border-radius: 50%;
+  filter: blur(3rem);
+  animation: subtlePulse 9s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.bottomFade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 8rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 1), transparent);
+}
+
+.content {
+  position: relative;
+  z-index: 5;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 5rem 1.5rem 2rem;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  @media (min-width: 768px) {
+    padding: 6rem 1.5rem 2rem;
+  }
+  
+  @media (min-width: 1024px) {
+    padding: 7rem 1.5rem 2rem;
+  }
+}
+
+// Professional badge design
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  border-radius: 50px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(218, 165, 32, 0.3);
+  color: rgba(218, 165, 32, 1);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba(218, 165, 32, 0.1);
+    border-color: rgba(218, 165, 32, 0.5);
+    transform: scale(1.02);
+  }
+}
+
+.titleContainer {
+  margin: 3rem 0 2rem;
+  perspective: 1000px;
+}
+
+.titleSplit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: -0.5rem;
+  
+  @media (max-width: 768px) {
+    gap: 0.25rem;
+  }
+}
+
+.titleWord {
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 0.8;
+  position: relative;
+  
+  // Add subtle text shadow for depth
+  text-shadow: 
+    0 0 40px rgba(255, 255, 255, 0.1),
+    0 0 80px rgba(218, 165, 32, 0.15);
+}
+
+.titleFirst {
+  font-size: clamp(3.5rem, 7vw, 7rem);
+  background: linear-gradient(
+    135deg, 
+    rgb(255, 255, 255) 0%,
+    rgba(218, 165, 32, 1) 50%,
+    rgba(255, 255, 255, 0.9) 100%
+  );
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerMove 3s ease-in-out infinite alternate;
+  transform: translateX(-5px);
+  
+  @media (max-width: 768px) {
+    transform: translateX(0);
+  }
+}
+
+.logo {
+  max-width: 300px;
+  height: auto;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+.titleSecond {
+  font-size: clamp(4.5rem, 9vw, 9rem);
+  background: linear-gradient(
+    135deg, 
+    rgba(218, 165, 32, 1) 0%,
+    rgb(255, 255, 255) 40%,
+    rgba(218, 165, 32, 0.8) 100%
+  );
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerMove 3s ease-in-out infinite alternate-reverse;
+  transform: translateX(5px);
+  position: relative;
+  
+  // Add decorative underline
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 10%;
+    right: 10%;
+    height: 4px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(218, 165, 32, 0.8),
+      rgba(255, 255, 255, 0.6),
+      rgba(218, 165, 32, 0.8),
+      transparent
+    );
+    border-radius: 2px;
+    animation: lineGlow 2s ease-in-out infinite alternate;
+  }
+  
+  @media (max-width: 768px) {
+    transform: translateX(0);
+    
+    &::after {
+      bottom: -10px;
+      height: 2px;
+    }
+  }
+}
+// Elegant main title
+.mainTitle {
+  font-size: clamp(4rem, 8vw, 8rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  text-shadow: 
+    0 0 40px rgba(255, 255, 255, 0.1),
+    0 0 80px rgba(218, 165, 32, 0.15);
+  margin-bottom: 0;
+  
+  // Subtle gradient overlay for depth
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 1) 0%, 
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(218, 165, 32, 0.9) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 0;
+}
+
+.locationContainer {
+  margin: 3rem 0;
+  max-width: 64rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// Professional date styling
+.date {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 700;
+  color: rgba(218, 165, 32, 1);
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
+}
+
+// Clean location text
+.location {
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1rem;
+  letter-spacing: 0.025em;
+}
+
+.description {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+  max-width: 48rem;
+  margin: 2rem auto 0;
+  line-height: 1.6;
+}
+
+// Professional stats grid
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 60rem;
+  margin: 3rem auto;
+}
+
+@media (min-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+}
+
+.statCard {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(218, 165, 32, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.statIcon {
+  width: 2rem;
+  height: 2rem;
+  margin: 0 auto 1rem;
+  color: rgba(218, 165, 32, 0.8);
+  transition: all 0.3s ease;
+  
+  .statCard:hover & {
+    color: rgba(218, 165, 32, 1);
+    transform: scale(1.1);
+  }
+}
+
+.statLabel {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+  
+  .statCard:hover & {
+    color: rgba(218, 165, 32, 1);
+  }
+}
+
+.statSublabel {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color 0.3s ease;
+  
+  .statCard:hover & {
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+// Professional button styling
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+@media (min-width: 640px) {
+  .buttonContainer {
+    flex-direction: row;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+}
+
+.primaryButton {
+  position: relative;
+  background: rgba(218, 165, 32, 1);
+  color: #000000;
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  
+  &:hover {
+    background: rgba(218, 165, 32, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(218, 165, 32, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.secondaryButton {
+  position: relative;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  backdrop-filter: blur(20px);
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+  }
+}
+
+.buttonText {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.buttonIcon {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.3s ease;
+  
+  .primaryButton:hover &,
+  .secondaryButton:hover & {
+    transform: translateX(2px);
+  }
+}
+
+// Refined scroll indicator
+.scrollIndicator {
+  position: absolute;
+  bottom: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.scrollDot {
+  width: 1.5rem;
+  height: 2.5rem;
+  border: 1px solid rgba(218, 165, 32, 0.6);
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.scrollInner {
+  width: 3px;
+  height: 8px;
+  background: rgba(218, 165, 32, 0.8);
+  border-radius: 2px;
+  margin-top: 6px;
+  animation: subtleScroll 2s ease-in-out infinite;
+}
+
+// Professional animations - more subtle and elegant
+@keyframes subtlePulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes slowSpin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes subtleScroll {
+  0%, 100% {
+    opacity: 0.5;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(4px);
+  }
+}
+
+// Hero image overlay for better text readability
+.heroImage {
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg, 
+      rgba(0, 0, 0, 0.7) 0%, 
+      rgba(0, 0, 0, 0.4) 50%, 
+      rgba(0, 0, 0, 0.8) 100%
+    );
+    z-index: 2;
+  }
+}

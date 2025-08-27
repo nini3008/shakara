@@ -1,0 +1,528 @@
+// ScheduleSection.module.scss - Following AboutSection Pattern
+.scheduleSection {
+  position: relative;
+  background: #000000;
+  contain: layout style paint;
+  isolation: isolate;
+  z-index: 40;
+  padding: 5rem 0 6rem;
+  overflow: hidden;
+  
+  // Subtle gradient background - matching pattern
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg, 
+      rgba(0, 0, 0, 1) 0%, 
+      rgba(10, 10, 10, 1) 50%,
+      rgba(0, 0, 0, 1) 100%
+    );
+    z-index: -3;
+  }
+  
+  // Decorative orb - positioned differently from other sections
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 20%;
+    right: 12%;
+    width: 20rem;
+    height: 20rem;
+    background: radial-gradient(
+      circle at center,
+      rgba(217, 119, 6, 0.07) 0%,
+      transparent 65%
+    );
+    border-radius: 50%;
+    filter: blur(40px);
+    z-index: -2;
+    pointer-events: none;
+  }
+  
+  @media (min-width: 768px) {
+    padding: 6rem 0 8rem;
+  }
+}
+
+.container {
+  position: relative;
+  z-index: 10;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  
+  @media (min-width: 1024px) {
+    padding: 0 2rem;
+  }
+}
+
+// Matching title design
+.title {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 3rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  
+  // Same gold gradient
+  background: linear-gradient(
+    135deg, 
+    rgb(217, 119, 6) 0%, 
+    rgb(255, 215, 0) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  @media (min-width: 768px) {
+    margin-bottom: 4rem;
+  }
+}
+
+// Improved overview grid
+.overviewGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+  
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+.dayCard {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  border-radius: 1rem;
+  padding: 2rem 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  
+  // Subtle hover glow
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(217, 119, 6, 0.03);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 1rem;
+  }
+  
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(217, 119, 6, 0.4);
+    background: rgba(217, 119, 6, 0.06);
+    box-shadow: 0 12px 24px rgba(217, 119, 6, 0.15);
+    
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+
+.dayNumber {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(1.5rem, 3vw, 1.875rem);
+  font-weight: 800;
+  color: rgb(217, 119, 6);
+  margin-bottom: 0.75rem;
+  position: relative;
+  z-index: 2;
+  letter-spacing: -0.01em;
+}
+
+.eventCount {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.timeRange {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  position: relative;
+  z-index: 2;
+  font-weight: 500;
+}
+
+// Better section heading
+.featuredTitle {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: rgb(217, 119, 6);
+  letter-spacing: -0.01em;
+  position: relative;
+  
+  // Subtle underline accent
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3rem;
+    height: 2px;
+    background: rgba(217, 119, 6, 0.4);
+    border-radius: 1px;
+  }
+}
+
+.featuredGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+// Enhanced event cards
+.eventCard {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(217, 119, 6, 0.15);
+  border-radius: 1rem;
+  padding: 2rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(217, 119, 6, 0.02);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 1rem;
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(217, 119, 6, 0.3);
+    background: rgba(217, 119, 6, 0.04);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+    
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+
+.eventContent {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.eventImage {
+  position: relative;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+}
+
+.eventImageElement {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  
+  .eventCard:hover & {
+    transform: scale(1.05);
+  }
+}
+
+.placeholderImage {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, rgb(217, 119, 6), rgb(255, 215, 0));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(217, 119, 6, 0.3);
+}
+
+.placeholderText {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #000000;
+}
+
+.eventDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.eventHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  gap: 1rem;
+}
+
+.eventTitle {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(1.1rem, 2vw, 1.25rem);
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.dayBadge {
+  background: rgb(217, 119, 6);
+  color: #000000;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  border-radius: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.artistName {
+  color: rgb(217, 119, 6);
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+
+.eventMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  font-weight: 500;
+}
+
+.metaSeparator {
+  color: rgba(217, 119, 6, 0.5);
+  font-weight: 600;
+}
+
+.eventDescription {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+// Button styling matching other sections
+.buttonContainer {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.viewScheduleButton {
+  display: inline-flex;
+  align-items: center;
+  background: rgb(217, 119, 6);
+  color: #000000;
+  padding: 0.875rem 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  
+  &:hover {
+    background: rgb(255, 215, 0);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(217, 119, 6, 0.4);
+  }
+}
+
+.buttonIcon {
+  width: 1rem;
+  height: 1rem;
+  margin-left: 0.5rem;
+  transition: transform 0.3s ease;
+  
+  .viewScheduleButton:hover & {
+    transform: translateX(2px);
+  }
+}
+
+// Enhanced empty state
+.emptyState {
+  max-width: 42rem;
+  margin: 0 auto;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  border-radius: 1.5rem;
+  padding: 4rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(217, 119, 6, 0.03);
+    border-radius: 1.5rem;
+  }
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+  opacity: 0.8;
+}
+
+.emptyTitle {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 700;
+  color: rgb(217, 119, 6);
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 2;
+  letter-spacing: -0.01em;
+}
+
+.emptyDescription {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 2;
+  line-height: 1.5;
+}
+
+// Improved days preview
+.daysPreview {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  max-width: 24rem;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 32rem;
+  }
+}
+
+.dayPreview {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  border-radius: 0.75rem;
+  padding: 1.25rem 0.75rem;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:hover {
+    background: rgba(217, 119, 6, 0.05);
+    border-color: rgba(217, 119, 6, 0.4);
+    transform: translateY(-2px);
+  }
+}
+
+.dayPreviewNumber {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: rgb(217, 119, 6);
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.01em;
+}
+
+.dayPreviewLabel {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+// Responsive improvements
+@media (max-width: 767px) {
+  .eventContent {
+    gap: 1rem;
+  }
+  
+  .eventImage,
+  .placeholderImage {
+    width: 4rem;
+    height: 4rem;
+  }
+  
+  .eventCard {
+    padding: 1.5rem;
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  .dayCard:hover,
+  .eventCard:hover,
+  .dayPreview:hover,
+  .viewScheduleButton:hover {
+    transform: none;
+  }
+  
+  .eventImageElement {
+    transform: none !important;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .dayCard,
+  .eventCard,
+  .dayPreview,
+  .emptyState {
+    border-width: 2px;
+  }
+  
+  .dayBadge {
+    box-shadow: 0 0 0 1px #000000;
+  }
+}

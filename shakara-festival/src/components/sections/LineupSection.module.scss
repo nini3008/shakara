@@ -1,0 +1,456 @@
+// LineupSection.module.scss - Balanced Visual Design
+.lineupSection {
+  position: relative;
+  background: #000000;
+  contain: layout style paint;
+  isolation: isolate;
+  z-index: 100;
+  padding: 5rem 0 6rem;
+  overflow: hidden;
+  
+  // Clean gradient background
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg, 
+      rgba(0, 0, 0, 1) 0%, 
+      rgba(10, 10, 10, 1) 50%,
+      rgba(0, 0, 0, 1) 100%
+    );
+    z-index: -3;
+  }
+  
+  // Single subtle decorative orb
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 20%;
+    left: 5%;
+    width: 20rem;
+    height: 20rem;
+    background: radial-gradient(
+      circle at center,
+      rgba(217, 119, 6, 0.06) 0%,
+      transparent 60%
+    );
+    border-radius: 50%;
+    filter: blur(40px);
+    z-index: -2;
+    pointer-events: none;
+  }
+  
+  @media (min-width: 768px) {
+    padding: 6rem 0 8rem;
+  }
+}
+
+// Remove excessive background layers
+.backgroundLayer1,
+.backgroundLayer2,
+.backgroundLayer3 {
+  display: none;
+}
+
+.container {
+  position: relative;
+  z-index: 10;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  
+  @media (min-width: 1024px) {
+    padding: 0 2rem;
+  }
+}
+
+// Reasonable title size matching About section
+.title {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 3rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  
+  // Consistent gold gradient
+  background: linear-gradient(
+    135deg, 
+    rgb(217, 119, 6) 0%, 
+    rgb(255, 215, 0) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  @media (min-width: 768px) {
+    margin-bottom: 4rem;
+  }
+}
+
+// Festival lineup intro
+.lineupIntro {
+  text-align: center;
+  margin-bottom: 3rem;
+  
+  .introText {
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 2rem;
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .lineupStats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    
+    .statItem {
+      text-align: center;
+      
+      .statNumber {
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: rgb(217, 119, 6);
+        display: block;
+        line-height: 1;
+      }
+      
+      .statLabel {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.6);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+        margin-top: 0.25rem;
+      }
+    }
+  }
+}
+
+// Improved artist grid
+.artistsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  @media (min-width: 1280px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// Clean artist card design
+.artistGroup {
+  background: transparent;
+  
+  a {
+    text-decoration: none;
+  }
+}
+
+.artistCard {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(217, 119, 6, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.imageContainer {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: rgba(217, 119, 6, 0.1);
+  
+  &:hover .artistImage {
+    transform: scale(1.05);
+  }
+}
+
+.artistImage {
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.imageOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top, 
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.2) 50%,
+    transparent 100%
+  );
+}
+
+// Refined featured badge
+.featuredBadge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  
+  .badge {
+    background: rgba(217, 119, 6, 0.95);
+    color: #000000;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    backdrop-filter: blur(10px);
+  }
+}
+
+// Improved placeholder
+.placeholderImage {
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.3), rgba(255, 215, 0, 0.2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  
+  &::before {
+    content: '🎤';
+    font-size: 3rem;
+    opacity: 0.8;
+  }
+}
+
+.placeholderText {
+  position: absolute;
+  font-size: 2rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+// Refined card content
+.cardContent {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.artistName {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+  margin: 0;
+  
+  // Add gradient on hover
+  transition: all 0.3s ease;
+  
+  .artistCard:hover & {
+    background: linear-gradient(135deg, rgb(217, 119, 6), rgb(255, 215, 0));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+.artistGenre {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+.artistMeta {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  
+  span {
+    display: inline-block;
+  }
+}
+
+// Improved CTA section
+.ctaSection {
+  text-align: center;
+  background: rgba(217, 119, 6, 0.05);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.ctaText {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1.5rem;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.viewAllButton {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, rgb(217, 119, 6), rgb(180, 83, 9));
+  color: white;
+  padding: 0.75rem 2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.02em;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(217, 119, 6, 0.4);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.75rem 2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  letter-spacing: 0.02em;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(217, 119, 6, 0.3);
+    transform: translateY(-2px);
+  }
+}
+
+.buttonIcon {
+  width: 1rem;
+  height: 1rem;
+  margin-left: 0.5rem;
+  transition: transform 0.3s ease;
+  
+  .viewAllButton:hover &,
+  .secondaryButton:hover & {
+    transform: translateX(2px);
+  }
+}
+
+// Improved empty state
+.emptyState {
+  max-width: 28rem;
+  margin: 0 auto;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  padding: 3rem 2rem;
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.emptyTitle {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: rgb(217, 119, 6);
+  margin-bottom: 0.75rem;
+}
+
+.emptyDescription {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+// Responsive improvements
+@media (max-width: 640px) {
+  .lineupStats {
+    gap: 1.5rem;
+  }
+  
+  .buttonContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .viewAllButton,
+  .secondaryButton {
+    width: 100%;
+    max-width: 16rem;
+    justify-content: center;
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  .artistCard:hover {
+    transform: none;
+  }
+  
+  .artistImage {
+    transition: none;
+  }
+  
+  .viewAllButton:hover,
+  .secondaryButton:hover {
+    transform: none;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .artistCard {
+    border-width: 2px;
+  }
+  
+  .featuredBadge .badge {
+    border: 2px solid #000000;
+  }
+}

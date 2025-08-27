@@ -1,0 +1,247 @@
+// globals.scss
+@use 'sass:map';
+@use '../styles/variables' as *;
+@use '../styles/components' as *;
+
+// Google Fonts (external URLs still use @import)
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
+
+// Import Tailwind
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Base Styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: map.get($font-families, 'primary');
+  background: color('black');
+  color: color('white');
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Enhanced scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, rgb(217, 119, 6), rgb(255, 215, 0));
+  border-radius: 9999px;
+  
+  &:hover {
+    background: linear-gradient(135deg, rgb(255, 215, 0), rgb(217, 119, 6));
+  }
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(217, 119, 6) #000000;
+}
+// Selection styles
+::selection {
+  background: color('festival-pink');
+  color: color('white');
+}
+
+::-moz-selection {
+  background: color('festival-pink');
+  color: color('white');
+}
+
+// Focus styles
+:focus-visible {
+  outline: 2px solid color('festival-yellow');
+  outline-offset: 2px;
+}
+
+// Disable focus outline for mouse users
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+// Loading animation for images
+img {
+  &[data-loading="true"] {
+    filter: blur(5px);
+    transition: filter 0.3s;
+  }
+  
+  &[data-loading="false"] {
+    filter: blur(0);
+  }
+}
+
+// Reduced motion preferences
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .text-gradient {
+    background: none !important;
+    -webkit-text-fill-color: unset !important;
+    color: color('white') !important;
+  }
+}
+
+// Dark mode optimizations (even though we're already dark)
+@media (prefers-color-scheme: dark) {
+  .glass-base {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+// Print styles
+@media print {
+  * {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  .floating-shape,
+  .btn::before {
+    display: none !important;
+  }
+}
+
+// Custom CSS properties for dynamic theming
+:root {
+  --festival-orange: #{color('festival-orange')};
+  --festival-pink: #{color('festival-pink')};
+  --festival-purple: #{color('festival-purple')};
+  --festival-yellow: #{color('festival-yellow')};
+  --festival-blue: #{color('festival-blue')};
+  --festival-cyan: #{color('festival-cyan')};
+  --festival-magenta: #{color('festival-magenta')};
+  --festival-red: #{color('festival-red')};
+  
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  
+  --shadow-glow: #{shadow('glow')};
+  --shadow-glow-lg: #{shadow('glow-lg')};
+}
+
+// Utility classes for Tailwind extensions
+@layer utilities {
+  .text-gradient {
+    background: gradient('primary');
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .text-gradient-rainbow {
+    background: gradient('rainbow');
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .bg-glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .bg-glass-dark {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .glow {
+    box-shadow: shadow('glow');
+  }
+  
+  .glow-lg {
+    box-shadow: shadow('glow-lg');
+  }
+}
+
+/* Add to globals.scss or globals.css */
+
+
+/* Radix UI Sheet styles */
+[data-state="open"][data-side="right"] {
+  animation: slide-in-from-right 0.3s ease-out !important;
+}
+
+[data-state="closed"][data-side="right"] {
+  animation: slide-out-to-right 0.3s ease-out !important;
+}
+
+@keyframes slide-in-from-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-out-to-right {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Ensure overlay is visible */
+[data-radix-portal] {
+  position: fixed;
+  z-index: 1200 !important;
+}
+
+[role="dialog"] {
+  position: fixed !important;
+  z-index: 1201 !important;
+}
+
+// Add this to your navigation component styles or globals.scss
+
+.navbar {
+  z-index: 1000 !important; // Ensure navigation is above everything
+}
+
+// If you need to target the mobile menu specifically
+.mobile-drawer__panel {
+  z-index: 1201 !important; // Mobile drawer above navigation
+}
+
+.mobile-drawer__backdrop {
+  z-index: 1200 !important; // Backdrop below drawer but above nav
+}

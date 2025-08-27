@@ -1,0 +1,444 @@
+// TicketsSection.module.scss - Following AboutSection Pattern
+.ticketsSection {
+  position: relative;
+  background: #000000;
+  contain: layout style paint;
+  isolation: isolate;
+  z-index: 60;
+  padding: 5rem 0 6rem;
+  overflow: hidden;
+  
+  // Subtle gradient background - matching AboutSection
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg, 
+      rgba(0, 0, 0, 1) 0%, 
+      rgba(10, 10, 10, 1) 50%,
+      rgba(0, 0, 0, 1) 100%
+    );
+    z-index: -3;
+  }
+  
+  // Single decorative orb - matching AboutSection
+  &::after {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 8%;
+    width: 18rem;
+    height: 18rem;
+    background: radial-gradient(
+      circle at center,
+      rgba(217, 119, 6, 0.08) 0%,
+      transparent 65%
+    );
+    border-radius: 50%;
+    filter: blur(35px);
+    z-index: -2;
+    pointer-events: none;
+  }
+  
+  @media (min-width: 768px) {
+    padding: 6rem 0 8rem;
+  }
+}
+
+.container {
+  position: relative;
+  z-index: 10;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  
+  @media (min-width: 1024px) {
+    padding: 0 2rem;
+  }
+}
+
+// Matching title design from AboutSection
+.title {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 3rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  
+  // Same gold gradient as AboutSection
+  background: linear-gradient(
+    135deg, 
+    rgb(217, 119, 6) 0%, 
+    rgb(255, 215, 0) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  @media (min-width: 768px) {
+    margin-bottom: 4rem;
+  }
+}
+
+.ticketsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+  
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+.ticketCardWrapper {
+  position: relative;
+  height: 100%;
+}
+
+.ticketCard {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  border-radius: 1rem;
+  padding: 2rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  
+  // Subtle hover glow
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(217, 119, 6, 0.03);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 1rem;
+  }
+  
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(217, 119, 6, 0.4);
+    background: rgba(217, 119, 6, 0.05);
+    box-shadow: 0 16px 32px rgba(217, 119, 6, 0.15);
+    
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+
+.badge {
+  position: absolute;
+  top: -0.5rem;
+  right: 1rem;
+  z-index: 10;
+  background: rgb(217, 119, 6);
+  color: #000000;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  border-radius: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 8px rgba(217, 119, 6, 0.3);
+}
+
+.cardContent {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ticketName {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 700;
+  color: rgb(217, 119, 6);
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.priceContainer {
+  margin-bottom: 1.5rem;
+}
+
+.priceGroup {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.currentPrice {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  line-height: 1;
+}
+
+.originalPrice {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: line-through;
+  font-weight: 500;
+}
+
+.discount {
+  display: inline-block;
+  background: rgba(34, 197, 94, 0.2);
+  color: rgb(74, 222, 128);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.description {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+.featuresList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 2rem;
+  flex: 1;
+}
+
+.featureItem {
+  display: flex;
+  align-items: flex-start;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.featureIcon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.75rem;
+  margin-top: 0.1rem;
+  color: rgb(217, 119, 6);
+  flex-shrink: 0;
+}
+
+.cardFooter {
+  position: relative;
+  z-index: 2;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.buyButton {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: rgb(217, 119, 6);
+  color: #000000;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  
+  &:hover {
+    background: rgb(255, 215, 0);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(217, 119, 6, 0.4);
+  }
+}
+
+.soldOutButton,
+.unavailableButton {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: not-allowed;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.buttonContainer {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.viewAllButton {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1.5px solid rgb(217, 119, 6);
+  color: rgb(217, 119, 6);
+  padding: 0.75rem 2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  border-radius: 1.5rem;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  
+  &:hover {
+    background: rgb(217, 119, 6);
+    color: #000000;
+    transform: translateY(-1px);
+  }
+}
+
+.buttonIcon {
+  width: 1rem;
+  height: 1rem;
+  margin-left: 0.5rem;
+  transition: transform 0.3s ease;
+  
+  .viewAllButton:hover & {
+    transform: translateX(2px);
+  }
+}
+
+// Empty state matching AboutSection style
+.emptyState {
+  max-width: 36rem;
+  margin: 0 auto;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  border-radius: 1.5rem;
+  padding: 4rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(217, 119, 6, 0.03);
+    border-radius: 1.5rem;
+  }
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+  opacity: 0.8;
+}
+
+.emptyTitle {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: rgb(217, 119, 6);
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 2;
+  letter-spacing: -0.01em;
+}
+
+.emptyDescription {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 2;
+  line-height: 1.5;
+}
+
+.notifyButton {
+  background: rgb(217, 119, 6);
+  color: #000000;
+  padding: 0.875rem 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 2;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  
+  &:hover {
+    background: rgb(255, 215, 0);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(217, 119, 6, 0.4);
+  }
+}
+
+// Responsive improvements
+@media (max-width: 767px) {
+  .ticketsGrid {
+    gap: 1.5rem;
+  }
+  
+  .ticketCard {
+    padding: 1.5rem;
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  .ticketCard:hover,
+  .buyButton:hover,
+  .viewAllButton:hover,
+  .notifyButton:hover {
+    transform: none;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .ticketCard,
+  .emptyState {
+    border-width: 2px;
+  }
+  
+  .badge {
+    box-shadow: 0 0 0 2px #000000;
+  }
+}

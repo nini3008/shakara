@@ -1,0 +1,499 @@
+// app/artists/[slug]/ArtistDetail.module.scss - Following Site Pattern
+.artistPage {
+    min-height: 100vh;
+    background: #000000;
+    position: relative;
+  }
+  
+  .navigationWrapper {
+    position: relative;
+    z-index: 50;
+  }
+  
+  .mainContent {
+    position: relative;
+    background: #000000;
+    padding-top: 8rem; // Account for navigation
+    padding-bottom: 4rem;
+    
+    // Subtle background pattern matching other sections
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg, 
+        rgba(0, 0, 0, 1) 0%, 
+        rgba(10, 10, 10, 1) 50%,
+        rgba(0, 0, 0, 1) 100%
+      );
+      z-index: -3;
+    }
+    
+    // Decorative orb
+    &::after {
+      content: '';
+      position: absolute;
+      top: 25%;
+      right: 5%;
+      width: 24rem;
+      height: 24rem;
+      background: radial-gradient(
+        circle at center,
+        rgba(217, 119, 6, 0.06) 0%,
+        transparent 70%
+      );
+      border-radius: 50%;
+      filter: blur(45px);
+      z-index: -2;
+      pointer-events: none;
+    }
+  }
+  
+  // Container matching site sections
+  .container {
+    position: relative;
+    z-index: 10;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    
+    @media (min-width: 1024px) {
+      padding: 0 2rem;
+    }
+  }
+  
+  // Breadcrumb navigation
+  .breadcrumb {
+    margin-bottom: 3rem;
+  }
+  
+  .backLink {
+    display: inline-flex;
+    align-items: center;
+    color: rgb(217, 119, 6);
+    text-decoration: none;
+    font-weight: 600;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.95rem;
+    
+    &:hover {
+      color: rgb(255, 215, 0);
+      transform: translateX(-2px);
+    }
+  }
+  
+  .backIcon {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.5rem;
+    transition: transform 0.3s ease;
+    
+    .backLink:hover & {
+      transform: translateX(-2px);
+    }
+  }
+  
+  // Main content grid
+  .artistGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: start;
+    
+    @media (min-width: 1024px) {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+  }
+  
+  // Image section
+  .imageSection {
+    position: relative;
+  }
+  
+  .imageContainer {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 1rem;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(217, 119, 6, 0.2);
+    
+    @media (min-width: 1024px) {
+      aspect-ratio: 4/5;
+    }
+  }
+  
+  .artistImage {
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+  
+  .placeholderImage {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgb(217, 119, 6), rgb(255, 215, 0));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .placeholderText {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 800;
+    color: #000000;
+  }
+  
+  .featuredBadge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgb(217, 119, 6);
+    color: #000000;
+    padding: 0.5rem 1rem;
+    border-radius: 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    box-shadow: 0 4px 8px rgba(217, 119, 6, 0.3);
+  }
+  
+  // Genre badges - responsive positioning
+  .genreBadgeMobile {
+    display: block;
+    margin-top: 1.5rem;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(217, 119, 6, 0.3);
+    color: rgb(217, 119, 6);
+    padding: 0.75rem 1.5rem;
+    border-radius: 1.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    text-align: center;
+    
+    @media (min-width: 1024px) {
+      display: none;
+    }
+  }
+  
+  .genreBadgeDesktop {
+    display: none;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(217, 119, 6, 0.3);
+    color: rgb(217, 119, 6);
+    padding: 0.5rem 1rem;
+    border-radius: 1.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    
+    @media (min-width: 1024px) {
+      display: inline-block;
+    }
+  }
+  
+  // Details section
+  .detailsSection {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .artistHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    
+    @media (min-width: 1024px) {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+  }
+  
+  .artistName {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0;
+    
+    // Gold gradient text
+    background: linear-gradient(
+      135deg, 
+      rgb(217, 119, 6) 0%, 
+      rgb(255, 215, 0) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  // Performance details card
+  .performanceCard {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(217, 119, 6, 0.2);
+    border-radius: 1rem;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(217, 119, 6, 0.03);
+      border-radius: 1rem;
+    }
+  }
+  
+  .cardTitle {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: rgb(217, 119, 6);
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+    letter-spacing: -0.01em;
+  }
+  
+  .performanceGrid {
+    display: grid;
+    gap: 1rem;
+    position: relative;
+    z-index: 2;
+    
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  .performanceItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .performanceLabel {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .performanceValue {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+  }
+  
+  // Section styling
+  .sectionTitle {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: rgb(217, 119, 6);
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+  
+  .bioSection {
+    .bioText {
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
+      font-size: 1rem;
+      
+      p {
+        margin-bottom: 1rem;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  
+  // Social links
+  .socialSection {
+    .socialLinks {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+  }
+  
+  .socialLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+    
+    &.instagram {
+      background: linear-gradient(135deg, #E4405F, #C13584);
+      color: white;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(228, 64, 95, 0.4);
+      }
+    }
+    
+    &.twitter {
+      background: #1DA1F2;
+      color: white;
+      
+      &:hover {
+        background: #0d8bd9;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(29, 161, 242, 0.4);
+      }
+    }
+    
+    &.spotify {
+      background: #1DB954;
+      color: white;
+      
+      &:hover {
+        background: #1aa34a;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(29, 185, 84, 0.4);
+      }
+    }
+  }
+  
+  .socialIcon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  // Action buttons
+  .actionButtons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  
+  .scheduleButton,
+  .ticketButton {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.875rem 2rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    font-weight: 700;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1.5px solid;
+  }
+  
+  .scheduleButton {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgb(217, 119, 6);
+    color: rgb(217, 119, 6);
+    
+    &:hover {
+      background: rgb(217, 119, 6);
+      color: #000000;
+      transform: translateY(-1px);
+    }
+  }
+  
+  .ticketButton {
+    background: rgb(217, 119, 6);
+    border-color: rgb(217, 119, 6);
+    color: #000000;
+    
+    &:hover {
+      background: rgb(255, 215, 0);
+      border-color: rgb(255, 215, 0);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(217, 119, 6, 0.4);
+    }
+  }
+  
+  // Responsive improvements
+  @media (max-width: 1023px) {
+    .artistGrid {
+      gap: 2rem;
+    }
+    
+    .mainContent {
+      padding-top: 6rem;
+    }
+    
+    .artistName {
+      text-align: center;
+    }
+    
+    .actionButtons {
+      justify-content: center;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .performanceGrid {
+      grid-template-columns: 1fr;
+    }
+    
+    .actionButtons {
+      flex-direction: column;
+    }
+    
+    .scheduleButton,
+    .ticketButton {
+      text-align: center;
+      justify-content: center;
+    }
+  }
+  
+  // Accessibility improvements
+  @media (prefers-reduced-motion: reduce) {
+    .artistImage:hover,
+    .backLink:hover,
+    .socialLink:hover,
+    .scheduleButton:hover,
+    .ticketButton:hover {
+      transform: none;
+    }
+  }
+  
+  // High contrast mode
+  @media (prefers-contrast: high) {
+    .imageContainer,
+    .performanceCard {
+      border-width: 2px;
+    }
+    
+    .featuredBadge {
+      box-shadow: 0 0 0 2px #000000;
+    }
+  }

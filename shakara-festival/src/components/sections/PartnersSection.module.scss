@@ -1,0 +1,560 @@
+// PartnersSection.module.scss - Following AboutSection Pattern
+.partnersSection {
+    position: relative;
+    background: #000000;
+    contain: layout style paint;
+    isolation: isolate;
+    z-index: 50;
+    padding: 5rem 0 6rem;
+    overflow: hidden;
+    
+    // Subtle gradient background - matching pattern
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg, 
+        rgba(0, 0, 0, 1) 0%, 
+        rgba(10, 10, 10, 1) 50%,
+        rgba(0, 0, 0, 1) 100%
+      );
+      z-index: -3;
+    }
+    
+    // Decorative orb - positioned differently from other sections
+    &::after {
+      content: '';
+      position: absolute;
+      top: 30%;
+      left: 15%;
+      width: 16rem;
+      height: 16rem;
+      background: radial-gradient(
+        circle at center,
+        rgba(217, 119, 6, 0.05) 0%,
+        transparent 65%
+      );
+      border-radius: 50%;
+      filter: blur(32px);
+      z-index: -2;
+      pointer-events: none;
+    }
+    
+    @media (min-width: 768px) {
+      padding: 6rem 0 8rem;
+    }
+  }
+  
+  .container {
+    position: relative;
+    z-index: 10;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    
+    @media (min-width: 1024px) {
+      padding: 0 2rem;
+    }
+  }
+  
+  // Matching title design
+  .title {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    
+    // Same gold gradient
+    background: linear-gradient(
+      135deg, 
+      rgb(217, 119, 6) 0%, 
+      rgb(255, 215, 0) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .subtitle {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-bottom: 4rem;
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  // Improved tier sections
+  .tierSection {
+    margin-bottom: 5rem;
+    
+    &:last-of-type {
+      margin-bottom: 3rem;
+    }
+  }
+  
+  .tierTitle {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+    font-weight: 600;
+    color: rgb(217, 119, 6);
+    text-align: center;
+    margin-bottom: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: relative;
+    
+    // Subtle underline accent
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -0.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2rem;
+      height: 1px;
+      background: rgba(217, 119, 6, 0.4);
+      border-radius: 1px;
+    }
+  }
+  
+  .partnersGrid {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+    justify-items: center;
+  }
+  
+  // Title Sponsor - Largest, premium treatment
+  .titleSponsor {
+    grid-template-columns: 1fr;
+    max-width: 36rem;
+    margin: 0 auto;
+    gap: 3rem;
+  }
+  
+  // Presenting Sponsors - Large treatment
+  .presentingSponsor {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  // Official Partners - Balanced grid
+  .officialPartner {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  // Media Partners - Compact grid
+  .mediaPartner {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    
+    @media (min-width: 1280px) {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+  
+  // Supporting Partners - Dense grid
+  .supportingPartner {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(5, 1fr);
+    }
+    
+    @media (min-width: 1280px) {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+  
+  .partnerItem {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .partnerLink,
+  .partnerWrapper {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+  }
+  
+  // Enhanced partner cards
+  .partnerCard {
+    position: relative;
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(217, 119, 6, 0.1);
+    border-radius: 0.75rem;
+    padding: 2rem 1.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    // Subtle gradient overlay
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg, 
+        rgba(217, 119, 6, 0.02) 0%, 
+        transparent 100%
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      border-radius: 0.75rem;
+    }
+    
+    &:hover {
+      transform: translateY(-3px);
+      border-color: rgba(217, 119, 6, 0.3);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(217, 119, 6, 0.1);
+      
+      &::before {
+        opacity: 1;
+      }
+      
+      .logoContainer {
+        filter: grayscale(0%) brightness(1) contrast(1);
+        opacity: 1;
+        transform: scale(1.02);
+      }
+    }
+  }
+  
+  .logoContainer {
+    position: relative;
+    width: 100%;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    overflow: hidden;
+    
+    // Background image properties for the logo
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: grayscale(30%) brightness(0.95) contrast(1.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.9;
+  }
+  
+  // Tier-specific sizing
+  .titleSponsor .logoContainer {
+    height: 8rem;
+  }
+  
+  .titleSponsor .partnerCard {
+    padding: 3rem 2rem;
+  }
+  
+  .presentingSponsor .logoContainer {
+    height: 6.5rem;
+  }
+  
+  .presentingSponsor .partnerCard {
+    padding: 2.5rem 2rem;
+  }
+  
+  .mediaPartner .logoContainer,
+  .supportingPartner .logoContainer {
+    height: 4rem;
+  }
+  
+  .mediaPartner .partnerCard,
+  .supportingPartner .partnerCard {
+    padding: 1.5rem;
+  }
+  
+  // Enhanced CTA section
+  .partnerCta {
+    margin-top: 5rem;
+    padding-top: 4rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 1.5rem;
+    padding: 4rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(217, 119, 6, 0.02);
+      border-radius: 1.5rem;
+    }
+  }
+  
+  .ctaContent {
+    text-align: center;
+    max-width: 48rem;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .ctaTitle {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: rgb(217, 119, 6);
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+  
+  .ctaDescription {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+  }
+  
+  .ctaButtons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .primaryCtaButton,
+  .secondaryCtaButton {
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    border-radius: 0.75rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  
+  .primaryCtaButton {
+    background: rgb(217, 119, 6);
+    color: #000000;
+    
+    &:hover {
+      background: rgb(255, 215, 0);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(217, 119, 6, 0.4);
+    }
+  }
+  
+  .secondaryCtaButton {
+    background: rgba(0, 0, 0, 0.5);
+    color: rgb(217, 119, 6);
+    border: 1.5px solid rgb(217, 119, 6);
+    
+    &:hover {
+      background: rgb(217, 119, 6);
+      color: #000000;
+      transform: translateY(-1px);
+    }
+  }
+  
+  // Enhanced empty state
+  .emptyState {
+    max-width: 42rem;
+    margin: 0 auto;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(217, 119, 6, 0.2);
+    border-radius: 1.5rem;
+    padding: 4rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(217, 119, 6, 0.03);
+      border-radius: 1.5rem;
+    }
+  }
+  
+  .emptyIcon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+    opacity: 0.8;
+  }
+  
+  .emptyTitle {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 700;
+    color: rgb(217, 119, 6);
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+    letter-spacing: -0.01em;
+  }
+  
+  .emptyDescription {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .partnershipTypes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 2;
+    
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+  }
+  
+  .partnershipType {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(217, 119, 6, 0.2);
+    border-radius: 0.75rem;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:hover {
+      background: rgba(217, 119, 6, 0.05);
+      border-color: rgba(217, 119, 6, 0.4);
+      transform: translateY(-2px);
+    }
+  }
+  
+  .typeIcon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+  
+  .typeLabel {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  
+  .partnerButton {
+    background: rgb(217, 119, 6);
+    color: #000000;
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    border-radius: 0.75rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 2;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    
+    &:hover {
+      background: rgb(255, 215, 0);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(217, 119, 6, 0.4);
+    }
+  }
+  
+  // Responsive improvements
+  @media (max-width: 640px) {
+    .partnerCard {
+      padding: 1.5rem 1rem;
+    }
+    
+    .titleSponsor .partnerCard {
+      padding: 2rem 1.5rem;
+    }
+    
+    .logoContainer {
+      height: 4rem;
+    }
+    
+    .titleSponsor .logoContainer {
+      height: 6rem;
+    }
+    
+    .presentingSponsor .logoContainer {
+      height: 5rem;
+    }
+  }
+  
+  // Accessibility improvements
+  @media (prefers-reduced-motion: reduce) {
+    .partnerCard:hover,
+    .partnershipType:hover,
+    .primaryCtaButton:hover,
+    .secondaryCtaButton:hover,
+    .partnerButton:hover {
+      transform: none;
+    }
+    
+    .logoContainer {
+      transform: none !important;
+    }
+  }
+  
+  // High contrast mode
+  @media (prefers-contrast: high) {
+    .partnerCard,
+    .emptyState,
+    .partnerCta,
+    .partnershipType {
+      border-width: 2px;
+    }
+  }

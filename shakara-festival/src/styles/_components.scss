@@ -1,0 +1,604 @@
+// Enhanced Navigation Component Styles
+// This should replace or update the navigation section in your components.scss file
+
+@use 'sass:map';
+@use 'variables' as *;
+
+// Enhanced Navigation Component
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: map.get($z-index, 'fixed');
+  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  // Default state (not scrolled)
+  &:not(&--scrolled) {
+    padding: spacing('6') 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2), transparent);
+  }
+
+  // Scrolled state with enhanced glassmorphism
+  &--scrolled {
+    padding: spacing('3') 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+  }
+
+  &__container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 spacing('6');
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  // Enhanced Logo with glow effect
+  &__logo {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: spacing('2');
+    font-family: map.get($font-families, 'display');
+    font-weight: map.get($font-weights, 'black');
+    font-size: font-size('2xl');
+    cursor: pointer;
+    transition: transform 300ms ease;
+
+    // Gradient text effect
+    background: gradient('primary');
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow-shift 8s linear infinite;
+
+    &:hover {
+      transform: scale(1.05);
+      animation-duration: 3s;
+    }
+
+    // Sparkle icon
+    &::before {
+      content: '✨';
+      position: absolute;
+      left: -30px;
+      font-size: 1.2rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    // Animated underline
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: gradient('primary');
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 300ms ease;
+    }
+
+    &:hover::after {
+      transform: scaleX(1);
+    }
+  }
+
+  // Desktop Menu
+  &__menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: none;
+    align-items: center;
+    gap: spacing('2');
+
+    &--desktop {
+      @media (min-width: map.get($breakpoints, 'lg')) {
+        display: flex;
+      }
+    }
+
+    li {
+      position: relative;
+    }
+  }
+
+  // Enhanced Nav Links
+  &__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: spacing('2');
+    padding: spacing('2') spacing('5');
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-weight: map.get($font-weights, 'medium');
+    font-size: font-size('base');
+    letter-spacing: 0.02em;
+    transition: all 300ms ease;
+    border-radius: radius('full');
+    overflow: hidden;
+
+    // Hover background gradient
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, 
+        rgba(255, 154, 86, 0.2), 
+        rgba(255, 107, 157, 0.2), 
+        rgba(196, 69, 105, 0.2)
+      );
+      border-radius: radius('full');
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 300ms ease;
+    }
+
+    &:hover::before {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    // Icon styling
+    svg {
+      width: 16px;
+      height: 16px;
+      color: rgba(255, 255, 255, 0.6);
+      transition: all 300ms ease;
+    }
+
+    &:hover {
+      color: color('white');
+      
+      svg {
+        color: color('festival-yellow');
+        transform: rotate(12deg) scale(1.1);
+      }
+    }
+
+    // Dot indicator
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      width: 4px;
+      height: 4px;
+      background: color('festival-yellow');
+      border-radius: radius('full');
+      transition: transform 300ms ease;
+    }
+
+    &:hover::after {
+      transform: translateX(-50%) scale(1);
+    }
+
+    // Text spans need relative positioning to be above pseudo-elements
+    span {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  // Enhanced CTA Button
+  &__cta {
+    display: none;
+
+    @media (min-width: map.get($breakpoints, 'lg')) {
+      display: block;
+    }
+
+    .btn {
+      position: relative;
+      padding: spacing('3') spacing('8');
+      font-family: map.get($font-families, 'display');
+      font-weight: map.get($font-weights, 'bold');
+      font-size: font-size('base');
+      color: color('white');
+      background: gradient('primary');
+      border: none;
+      border-radius: radius('full');
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 20px rgba(255, 107, 107, 0.4);
+
+      // Shimmer effect
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        transition: left 1s ease;
+      }
+
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 40px rgba(255, 107, 107, 0.6);
+
+        &::before {
+          left: 100%;
+        }
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+
+      // Icon and text
+      display: flex;
+      align-items: center;
+      gap: spacing('2');
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  // Enhanced Mobile Hamburger
+  &__hamburger {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: radius('md');
+    cursor: pointer;
+    transition: all 300ms ease;
+
+    @media (min-width: map.get($breakpoints, 'lg')) {
+      display: none !important;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+      color: color('white');
+      transition: transform 200ms ease;
+    }
+
+    &--open svg {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+// Mobile Drawer Styles
+.mobile-drawer {
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 1200;
+
+    @media (min-width: map.get($breakpoints, 'lg')) {
+      display: none;
+    }
+  }
+
+  &__panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    max-width: 420px;
+    background: linear-gradient(
+      135deg,
+      rgba(15, 15, 15, 0.98) 0%,
+      rgba(30, 10, 30, 0.98) 100%
+    );
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    z-index: 1201;
+    overflow-y: auto;
+    
+    @media (min-width: map.get($breakpoints, 'lg')) {
+      display: none;
+    }
+
+    // Decorative gradient orb
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 24rem;
+      height: 24rem;
+      background: radial-gradient(
+        circle,
+        rgba(196, 69, 105, 0.2),
+        rgba(255, 107, 157, 0.2),
+        transparent
+      );
+      border-radius: 50%;
+      filter: blur(60px);
+      pointer-events: none;
+    }
+  }
+
+  &__close {
+    position: absolute;
+    right: spacing('4');
+    top: spacing('4');
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: radius('full');
+    cursor: pointer;
+    transition: all 300ms ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: rotate(90deg);
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+      color: color('white');
+    }
+  }
+
+  &__header {
+    text-align: center;
+    margin-bottom: spacing('10');
+    margin-top: spacing('12');
+    position: relative;
+    z-index: 1;
+
+    .sparkle-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto spacing('3');
+      color: color('festival-yellow');
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    h2 {
+      font-family: map.get($font-families, 'display');
+      font-weight: map.get($font-weights, 'black');
+      font-size: font-size('4xl');
+      background: gradient('primary');
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: rainbow-shift 5s linear infinite;
+    }
+
+    p {
+      color: color('gray-400');
+      margin-top: spacing('2');
+      font-size: font-size('sm');
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+  }
+
+  &__nav {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: spacing('3');
+    padding: 0 spacing('6');
+  }
+
+  &__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: spacing('4');
+    padding: spacing('4');
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: radius('2xl');
+    cursor: pointer;
+    transition: all 300ms ease;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 154, 86, 0.1),
+        rgba(255, 107, 157, 0.1),
+        rgba(196, 69, 105, 0.1)
+      );
+      opacity: 0;
+      transition: opacity 300ms ease;
+    }
+
+    &:hover {
+      transform: scale(1.02);
+      border-color: rgba(255, 255, 255, 0.2);
+
+      &::before {
+        opacity: 1;
+      }
+
+      .mobile-drawer__icon {
+        color: color('festival-yellow');
+        transform: rotate(12deg);
+      }
+
+      .mobile-drawer__label {
+        color: color('white');
+      }
+
+      .mobile-drawer__arrow {
+        transform: translateX(4px);
+      }
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  &__icon {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 300ms ease;
+    z-index: 1;
+  }
+
+  &__label {
+    flex: 1;
+    font-size: font-size('xl');
+    font-weight: map.get($font-weights, 'semibold');
+    color: rgba(255, 255, 255, 0.9);
+    transition: color 300ms ease;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__arrow {
+    width: 20px;
+    height: 20px;
+    color: rgba(255, 255, 255, 0.4);
+    transition: all 300ms ease;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__cta {
+    padding: spacing('6');
+    padding-top: spacing('6');
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 1;
+
+    .btn--primary {
+      width: 100%;
+      padding: spacing('4');
+      font-size: font-size('lg');
+      margin-bottom: spacing('4');
+    }
+
+    .btn--glass {
+      width: 100%;
+      padding: spacing('4');
+      font-size: font-size('lg');
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
+
+  &__social {
+    display: flex;
+    justify-content: center;
+    gap: spacing('3');
+    padding: spacing('6');
+    position: relative;
+    z-index: 1;
+
+    a {
+      position: relative;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: radius('full');
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: map.get($font-weights, 'bold');
+      font-size: font-size('sm');
+      transition: all 300ms ease;
+      overflow: hidden;
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: gradient('primary');
+        opacity: 0;
+        border-radius: radius('full');
+        transition: opacity 300ms ease;
+      }
+
+      &:hover {
+        transform: scale(1.1) rotate(5deg);
+        color: color('white');
+        border-color: rgba(255, 255, 255, 0.3);
+
+        &::before {
+          opacity: 0.2;
+        }
+      }
+
+      span {
+        position: relative;
+        z-index: 1;
+      }
+    }
+  }
+}
+
+// Animation for pulse effect
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
