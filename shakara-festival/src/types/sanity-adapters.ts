@@ -209,7 +209,13 @@ export function adaptSanityMerchItem(sanityMerch: SanityMerchItem): MerchItem {
 }
 
 export interface SanityHeroSection {
-  logo: any;
+  logo?: {
+    asset: {
+      _ref: string;
+      _type: 'reference';
+    };
+    alt?: string;
+  };
   _id: string;
   name: string;
   slug: {
@@ -362,7 +368,7 @@ export function adaptSanityHeroSection(sanityHero: SanityHeroSection): HeroSecti
     logo: sanityHero.logo
       ? {
           url: urlFor(sanityHero.logo).url(),
-          alt: sanityHero.logo.alt,
+          alt: sanityHero.logo.alt || "",
         }
       : undefined,
     socialLinks: sanityHero.socialLinks || {},
