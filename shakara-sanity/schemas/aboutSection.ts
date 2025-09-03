@@ -79,9 +79,26 @@ export default defineType({
           fields: [
             defineField({
               name: 'icon',
-              title: 'Icon (Emoji)',
+              title: 'Icon',
               type: 'string',
-              validation: (Rule) => Rule.required()
+              description: 'Icon name from react-icons (e.g., FaMusic, FaUtensils, FaPalette, FaUsers)',
+              validation: (Rule) => Rule.required(),
+              options: {
+                list: [
+                  {title: '🎵 Music (FaMusic)', value: 'FaMusic'},
+                  {title: '🍽️ Food (FaUtensils)', value: 'FaUtensils'},
+                  {title: '🎨 Art (FaPalette)', value: 'FaPalette'},
+                  {title: '👥 Community (FaUsers)', value: 'FaUsers'},
+                  {title: '🎤 Microphone (FaMicrophone)', value: 'FaMicrophone'},
+                  {title: '🎸 Guitar (FaGuitar)', value: 'FaGuitar'},
+                  {title: '🎪 Tent (FaCampground)', value: 'FaCampground'},
+                  {title: '🎯 Target (FaBullseye)', value: 'FaBullseye'},
+                  {title: '🎊 Party (FaCocktail)', value: 'FaCocktail'},
+                  {title: '🌟 Star (FaStar)', value: 'FaStar'},
+                  {title: '⚡ Lightning (FaBolt)', value: 'FaBolt'},
+                  {title: '🔥 Fire (FaFire)', value: 'FaFire'}
+                ]
+              }
             }),
             defineField({
               name: 'title',
@@ -104,8 +121,8 @@ export default defineType({
             },
             prepare({title, subtitle, icon}) {
               return {
-                title: `${icon} ${title}`,
-                subtitle: subtitle
+                title: title,
+                subtitle: `${icon} - ${subtitle}`
               }
             }
           }

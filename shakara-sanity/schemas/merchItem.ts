@@ -200,7 +200,7 @@ export default defineType({
       return {
         title: title,
         subtitle: `₦${price?.toLocaleString()} • ${category} ${!available ? '(Unavailable)' : ''}`,
-        media: media || '🛍️'
+        media: media
       }
     }
   }

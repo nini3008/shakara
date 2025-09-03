@@ -1,8 +1,9 @@
 // components/sections/AboutSection.tsx - Following the same pattern as other CMS sections
 
 import { client, ABOUT_SECTION_QUERY } from '@/lib/sanity';
-import { adaptSanityAboutSection } from '@/types/sanity-adapters';
-import { festivalInfo } from '@/data/mockData'; // Keep as fallback
+import { AboutSectionData } from '@/types';
+import { SanityAboutSection, adaptSanityAboutSection } from '@/types/sanity-adapters';
+import DynamicIcon from '@/components/DynamicIcon';
 import styles from './AboutSection.module.scss';
 
 // Helper function to get platform-specific styling
@@ -35,12 +36,28 @@ const getPlatformDisplayName = (platform: string) => {
   return displayNames[platform.toLowerCase()] || platform;
 };
 
+async function getAboutSectionData(): Promise<{ aboutData: AboutSectionData | null, sanityData: SanityAboutSection | null }> {
+  try {
+    const sanityData: SanityAboutSection = await client.fetch(ABOUT_SECTION_QUERY);
+    if (!sanityData) {
+      console.log('No about section found in Sanity. Using fallback data.');
+      return { aboutData: null, sanityData: null };
+    }
+    const aboutData = adaptSanityAboutSection(sanityData);
+    return { aboutData, sanityData };
+  } catch (error) {
+    console.error('Error fetching about section:', error);
+    return { aboutData: null, sanityData: null };
+  }
+}
+
 export default async function AboutSection() {
-  // Fetch about section data directly, same pattern as other sections
-  const aboutSectionData = await client.fetch(ABOUT_SECTION_QUERY);
+  const { aboutData } = await getAboutSectionData();
   
-  // Use CMS data if available, otherwise fall back to mock data
-  const sectionData = aboutSectionData ? adaptSanityAboutSection(aboutSectionData) : {
+  // Default/fallback data if no CMS data is provided
+  const defaultData: AboutSectionData = {
+    id: 'default',
+    name: 'Default About Section',
     title: 'About Shakara Festival',
     description: "Africa's premier music festival celebrating the vibrant sounds of the continent. Four days of incredible performances, cultural experiences, and community connection under the Lagos skyline.",
     stats: {
@@ -51,22 +68,22 @@ export default async function AboutSection() {
     },
     highlights: [
       {
-        icon: '🎵',
+        icon: 'FaMusic',
         title: 'Music',
         description: 'Afrobeats, Amapiano, Highlife & more'
       },
       {
-        icon: '🍽️',
+        icon: 'FaUtensils',
         title: 'Food',
         description: 'Authentic African cuisine'
       },
       {
-        icon: '🎨',
+        icon: 'FaPalette',
         title: 'Art',
         description: 'Cultural installations & workshops'
       },
       {
-        icon: '👥',
+        icon: 'FaUsers',
         title: 'Community',
         description: 'Connect with music lovers'
       }
@@ -74,14 +91,7 @@ export default async function AboutSection() {
     essentialInfo: [
       {
         title: 'When & Where',
-        content: `${new Date(festivalInfo.dates.start).toLocaleDateString('en-US', { 
-          month: 'long', 
-          day: 'numeric' 
-        })} – ${new Date(festivalInfo.dates.end).toLocaleDateString('en-US', { 
-          month: 'long', 
-          day: 'numeric', 
-          year: 'numeric' 
-        })}\n${festivalInfo.location.venue}, ${festivalInfo.location.city}`
+        content: 'December 18-21, 2025\nVictoria Island, Lagos'
       },
       {
         title: 'Experience',
@@ -95,9 +105,19 @@ export default async function AboutSection() {
     socialSection: {
       title: 'Follow Us',
       showSocialLinks: true,
-      socialLinks: festivalInfo.socialLinks
-    }
+      socialLinks: {
+        instagram: 'https://instagram.com/shakarafestival',
+        twitter: 'https://twitter.com/shakarafestival',
+        facebook: 'https://facebook.com/shakarafestival',
+        youtube: 'https://youtube.com/@shakarafestival'
+      }
+    },
+    active: true,
+    order: 1
   };
+
+  // Use CMS data if available, otherwise use defaults
+  const sectionData = aboutData || defaultData;
   return (
     <section id="about" className={styles.aboutSection}>
       <div className={styles.container}>
@@ -135,7 +155,9 @@ export default async function AboutSection() {
             <div className={styles.highlights}>
               {sectionData.highlights.map((highlight, index) => (
                 <div key={index} className={styles.highlightCard}>
-                  <span className={styles.highlightIcon}>{highlight.icon}</span>
+                  <div className={styles.highlightIcon}>
+                    <DynamicIcon iconName={highlight.icon} size={32} />
+                  </div>
                   <h4 className={styles.highlightTitle}>{highlight.title}</h4>
                   <p className={styles.highlightText}>{highlight.description}</p>
                 </div>
@@ -195,35 +217,3 @@ export default async function AboutSection() {
     </section>
   );
 }
-
-// Example usage in your page component:
-/*
-import { client } from '@/sanity/client';
-import { ABOUT_SECTION_QUERY } from '@/sanity/client';
-import { adaptSanityAboutSection } from '@/types/sanity-adapters';
-import AboutSection from '@/components/sections/AboutSection';
-
-export async function getStaticProps() {
-  const aboutSectionData = await client.fetch(ABOUT_SECTION_QUERY);
-  
-  return {
-    props: {
-      aboutData: aboutSectionData ? adaptSanityAboutSection(aboutSectionData) : null,
-    },
-    revalidate: 60, // Revalidate every minute
-  };
-}
-
-// In your page component:
-export default function HomePage({ aboutData }: { aboutData: AboutSectionData | null }) {
-  if (!aboutData) {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <main>
-      <AboutSection aboutData={aboutData} />
-    </main>
-  );
-}
-*/

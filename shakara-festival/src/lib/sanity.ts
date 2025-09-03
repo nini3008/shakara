@@ -258,7 +258,19 @@ export const ABOUT_SECTION_QUERY = `
     stats,
     highlights,
     essentialInfo,
-    socialSection,
+    socialSection {
+      title,
+      showSocialLinks,
+      socialLinks {
+        instagram,
+        twitter,
+        facebook,
+        youtube,
+        spotify,
+        tiktok,
+        linkedin
+      }
+    },
     active,
     order
   }
@@ -274,7 +286,19 @@ export const ALL_ABOUT_SECTIONS_QUERY = `
     stats,
     highlights,
     essentialInfo,
-    socialSection,
+    socialSection {
+      title,
+      showSocialLinks,
+      socialLinks {
+        instagram,
+        twitter,
+        facebook,
+        youtube,
+        spotify,
+        tiktok,
+        linkedin
+      }
+    },
     active,
     order
   }
@@ -291,6 +315,72 @@ export const LINEUP_SECTION_QUERY = `
     ctaSection,
     emptyState,
     featuredArtistCount,
+    active,
+    order
+  }
+`;
+
+export const FOOTER_SECTION_QUERY = `
+  *[_type == "footerSection" && active == true][0] {
+    _id,
+    name,
+    slug,
+    brandSection {
+      festivalName,
+      tagline,
+      location
+    },
+    quickLinks[] {
+      label,
+      href
+    },
+    socialLinks {
+      instagram,
+      twitter,
+      facebook,
+      youtube,
+      spotify,
+      tiktok,
+      linkedin
+    },
+    legalLinks[] {
+      label,
+      href
+    },
+    copyright,
+    active,
+    order
+  }
+`;
+
+export const ALL_FOOTER_SECTIONS_QUERY = `
+  *[_type == "footerSection"] | order(active desc, order asc, name asc) {
+    _id,
+    name,
+    slug,
+    brandSection {
+      festivalName,
+      tagline,
+      location
+    },
+    quickLinks[] {
+      label,
+      href
+    },
+    socialLinks {
+      instagram,
+      twitter,
+      facebook,
+      youtube,
+      spotify,
+      tiktok,
+      linkedin
+    },
+    legalLinks[] {
+      label,
+      href
+    },
+    copyright,
     active,
     order
   }

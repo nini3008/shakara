@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     // Send welcome email
     const { data, error } = await resend.emails.send({
-      from: 'Shakara Festival <onboarding@resend.dev>', // Use this for testing
+      from: 'Shakara Festival <contact@shakarafestival.com>',
       to: [email],
       subject: 'Welcome to Shakara Festival! 🎵',
       html: `

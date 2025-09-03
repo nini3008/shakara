@@ -186,7 +186,6 @@ export default defineType({
       return {
         title: title,
         subtitle: `${subtitle} - ${currency} ${price?.toLocaleString()} ${!available ? '(Unavailable)' : ''}`,
-        media: available ? '🎫' : '❌'
       }
     }
   }

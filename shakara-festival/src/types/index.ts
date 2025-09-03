@@ -252,3 +252,38 @@ export interface LineupSectionData {
   active: boolean;
   order: number;
 }
+
+// Footer Types
+export interface FooterLink {
+  label: string;
+  href: string;
+}
+
+export interface FooterBrandSection {
+  festivalName: string;
+  tagline: string;
+  location: string;
+}
+
+export interface FooterSocialLinks {
+  instagram?: string;
+  twitter?: string;
+  facebook?: string;
+  youtube?: string;
+  spotify?: string;
+  tiktok?: string;
+  linkedin?: string;
+}
+
+export interface FooterSectionData {
+  id: string;
+  name: string;
+  slug: string;
+  brandSection: FooterBrandSection;
+  quickLinks: FooterLink[];
+  socialLinks: FooterSocialLinks;
+  legalLinks: FooterLink[];
+  copyright: string;
+  active: boolean;
+  order: number;
+}

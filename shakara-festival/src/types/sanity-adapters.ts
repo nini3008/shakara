@@ -1,7 +1,7 @@
 // types/sanity-adapters.ts
 
 import { urlFor } from '@/lib/sanity';
-import { Artist, TicketType, ScheduleEvent, MerchItem, Partner, AboutEssentialInfo, AboutHighlight, AboutSectionData, LineupSectionData } from './index';
+import { Artist, TicketType, ScheduleEvent, MerchItem, Partner, AboutEssentialInfo, AboutHighlight, AboutSectionData, LineupSectionData, FooterSectionData, FooterLink, FooterBrandSection, FooterSocialLinks } from './index';
 
 // Sanity raw data interfaces
 export interface SanityArtist {
@@ -489,22 +489,22 @@ export function adaptSanityAboutSection(sanityAbout: SanityAboutSection): AboutS
 
   const defaultHighlights: AboutHighlight[] = [
     {
-      icon: '🎵',
+      icon: 'FaMusic',
       title: 'Music',
       description: 'Afrobeats, Amapiano, Highlife & more'
     },
     {
-      icon: '🍽️',
+      icon: 'FaUtensils',
       title: 'Food',
       description: 'Authentic African cuisine'
     },
     {
-      icon: '🎨',
+      icon: 'FaPalette',
       title: 'Art',
       description: 'Cultural installations & workshops'
     },
     {
-      icon: '👥',
+      icon: 'FaUsers',
       title: 'Community',
       description: 'Connect with music lovers'
     }
@@ -646,5 +646,98 @@ export function adaptSanityLineupSection(sanityLineup: SanityLineupSection): Lin
     featuredArtistCount: sanityLineup.featuredArtistCount || 8,
     active: sanityLineup.active ?? true,
     order: sanityLineup.order || 100
+  };
+}
+
+// Footer Sanity Types
+export interface SanityFooterSection {
+  _id: string;
+  name: string;
+  slug: {
+    current: string;
+  };
+  brandSection: {
+    festivalName: string;
+    tagline: string;
+    location: string;
+  };
+  quickLinks: Array<{
+    label: string;
+    href: string;
+  }>;
+  socialLinks: {
+    instagram?: string;
+    twitter?: string;
+    facebook?: string;
+    youtube?: string;
+    spotify?: string;
+    tiktok?: string;
+    linkedin?: string;
+  };
+  legalLinks: Array<{
+    label: string;
+    href: string;
+  }>;
+  copyright: string;
+  active: boolean;
+  order: number;
+}
+
+// Footer adapter function
+export function adaptSanityFooterSection(sanityFooter: SanityFooterSection): FooterSectionData {
+  // Default fallback data
+  const defaultBrandSection: FooterBrandSection = {
+    festivalName: 'SHAKARA FESTIVAL',
+    tagline: "Africa's premier music festival",
+    location: 'Victoria Island, Lagos • December 2025'
+  };
+
+  const defaultQuickLinks: FooterLink[] = [
+    { label: 'About', href: '#about' },
+    { label: 'Lineup', href: '#lineup' },
+    { label: 'Tickets', href: '#tickets' },
+    { label: 'Schedule', href: '#schedule' },
+    { label: 'Partners', href: '#partners' }
+  ];
+
+  const defaultSocialLinks: FooterSocialLinks = {
+    instagram: 'https://instagram.com/shakarafestival',
+    twitter: 'https://twitter.com/shakarafestival',
+    facebook: 'https://facebook.com/shakarafestival',
+    youtube: 'https://youtube.com/@shakarafestival'
+  };
+
+  const defaultLegalLinks: FooterLink[] = [
+    { label: 'Privacy Policy', href: '/privacy' },
+    { label: 'Terms of Service', href: '/terms' }
+  ];
+
+  return {
+    id: sanityFooter._id,
+    name: sanityFooter.name || 'Footer Section',
+    slug: sanityFooter.slug?.current || 'footer-section',
+    brandSection: {
+      festivalName: sanityFooter.brandSection?.festivalName || defaultBrandSection.festivalName,
+      tagline: sanityFooter.brandSection?.tagline || defaultBrandSection.tagline,
+      location: sanityFooter.brandSection?.location || defaultBrandSection.location
+    },
+    quickLinks: sanityFooter.quickLinks && sanityFooter.quickLinks.length > 0 
+      ? sanityFooter.quickLinks 
+      : defaultQuickLinks,
+    socialLinks: {
+      instagram: sanityFooter.socialLinks?.instagram || defaultSocialLinks.instagram,
+      twitter: sanityFooter.socialLinks?.twitter || defaultSocialLinks.twitter,
+      facebook: sanityFooter.socialLinks?.facebook || defaultSocialLinks.facebook,
+      youtube: sanityFooter.socialLinks?.youtube || defaultSocialLinks.youtube,
+      spotify: sanityFooter.socialLinks?.spotify || defaultSocialLinks.spotify,
+      tiktok: sanityFooter.socialLinks?.tiktok || defaultSocialLinks.tiktok,
+      linkedin: sanityFooter.socialLinks?.linkedin || defaultSocialLinks.linkedin
+    },
+    legalLinks: sanityFooter.legalLinks && sanityFooter.legalLinks.length > 0 
+      ? sanityFooter.legalLinks 
+      : defaultLegalLinks,
+    copyright: sanityFooter.copyright || 'Shakara Festival. All rights reserved.',
+    active: sanityFooter.active ?? true,
+    order: sanityFooter.order || 100
   };
 }

@@ -8,6 +8,7 @@ import partner from './partner'
 import aboutSection from './aboutSection'
 import merchItem from './merchItem'
 import lineupsection from './lineupsection'
+import footer from './footer'
 
 export const schema: {types: SchemaTypeDefinition[]} = {
   types: [
@@ -20,6 +21,7 @@ export const schema: {types: SchemaTypeDefinition[]} = {
     partner,
     aboutSection,
     lineupsection,
+    footer,
   ],
 }
 

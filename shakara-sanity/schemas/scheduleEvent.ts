@@ -1,4 +1,3 @@
-import React from 'react'
 import {defineField, defineType} from 'sanity'
 
 export default defineType({
@@ -161,20 +160,10 @@ export default defineType({
       media: 'image'
     },
     prepare({ title, day, time, type, stage, media }) {
-      const emoji =
-        type === "music" ? "🎵" :
-        type === "panel" ? "🎤" :
-        type === "vendors" ? "🛍️" :
-        "📅"
-
       return {
         title,
         subtitle: `Day ${day} • ${time} • ${stage || type}`,
-        media: media || React.createElement(
-          'span',
-          { style: { fontSize: '1.5rem' } },
-          emoji
-        )
+        media: media
       }
     }
   }

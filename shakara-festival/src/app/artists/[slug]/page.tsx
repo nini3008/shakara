@@ -6,6 +6,7 @@ import { SanityArtist, adaptSanityArtist } from '@/types/sanity-adapters';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
 import { notFound } from 'next/navigation';
 import styles from '@/components/styles/ArtistDetail.module.scss';
 
@@ -255,6 +256,9 @@ export default async function ArtistDetailPage({
           </div>
         </div>
       </main>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
