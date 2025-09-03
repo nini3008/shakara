@@ -192,7 +192,7 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
             <div className={styles.emptyIcon} role="img" aria-label="Ticket emoji">🎫</div>
             <h3 className={styles.emptyTitle}>Tickets Coming Soon</h3>
             <p className={styles.emptyDescription}>
-              Be the first to secure your spot at Africa's premier music festival. Early bird pricing available when tickets launch.
+              Be the first to secure your spot at Africa&apos;s premier music festival. Early bird pricing available when tickets launch.
             </p>
             
             {!showSuccess ? (
@@ -232,7 +232,7 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
             ) : (
               <div className={styles.successState}>
                 <p className={styles.successMessage}>
-                  Thanks! Check your email for confirmation and you'll be the first to know when tickets are available.
+                  Thanks! Check your email for confirmation and you&apos;ll be the first to know when tickets are available.
                 </p>
                 <button 
                   onClick={() => setShowSuccess(false)}
