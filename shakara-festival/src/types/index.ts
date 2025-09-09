@@ -109,6 +109,7 @@ export interface HeroSectionData {
     expectedAttendance?: string;
     dayCount?: number;
   };
+  heroVideo?: string;
   heroImage?: string;
   socialLinks?: {
     instagram?: string;

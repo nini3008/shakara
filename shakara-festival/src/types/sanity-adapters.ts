@@ -238,6 +238,12 @@ export interface SanityHeroSection {
     expectedAttendance?: string;
     dayCount?: number;
   };
+  heroVideo?: {
+    asset: {
+      _ref: string;
+      _type: 'reference';
+    };
+  };
   heroImage?: {
     asset: {
       _ref: string;
@@ -293,6 +299,7 @@ export interface HeroSectionData {
     expectedAttendance?: string;
     dayCount?: number;
   };
+  heroVideo?: string;
   heroImage?: string;
   logo?: {
     url: string;

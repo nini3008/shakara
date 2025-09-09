@@ -556,6 +556,22 @@
   }
 }
 
+// Hero video styling
+.heroVideo {
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg, 
+      rgba(0, 0, 0, 0.6) 0%, 
+      rgba(0, 0, 0, 0.3) 50%, 
+      rgba(0, 0, 0, 0.7) 100%
+    );
+    z-index: 2;
+  }
+}
+
 // Hero image overlay for better text readability
 .heroImage {
   &::after {

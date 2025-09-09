@@ -13,6 +13,11 @@ const builder = imageUrlBuilder(client)
 
 export const urlFor = (source: SanityImageSource) => builder.image(source)
 
+// Helper function to get file URLs from Sanity
+export const getFileUrl = (fileRef: string) => {
+  return `https://cdn.sanity.io/files/${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}/${process.env.NEXT_PUBLIC_SANITY_DATASET}/${fileRef.split('-').slice(3).join('-')}`
+}
+
 // GROQ queries
 export const ARTIST_QUERY = `*[_type == "artist"] | order(featured desc, name asc) {
   _id,
@@ -170,6 +175,7 @@ export const HERO_SECTION_QUERY = `
     dates,
     location,
     stats,
+    heroVideo,
     heroImage,
     socialLinks,
     description,

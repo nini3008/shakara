@@ -3,7 +3,7 @@
 
 import { CalendarDays, MapPin, Music, Users } from 'lucide-react'
 import styles from './HeroSection.module.scss'
-import { client, urlFor, HERO_SECTION_QUERY } from '@/lib/sanity'
+import { client, urlFor, getFileUrl, HERO_SECTION_QUERY } from '@/lib/sanity'
 import { HeroSectionData } from '@/types'
 import { SanityHeroSection, adaptSanityHeroSection } from '@/types/sanity-adapters'
 import HeroContent from './HeroContent' // We'll create this client component
@@ -54,14 +54,37 @@ export default async function HeroSection() {
   // Use CMS data if available, otherwise use defaults
   const data = heroData || defaultData;
 
-  // Get hero image URL if available
+  // Get hero video URL if available (takes precedence over image)
+  const heroVideoUrl = sanityData?.heroVideo ? getFileUrl(sanityData.heroVideo.asset._ref) : null;
+  
+  // Get hero image URL if available (fallback when no video)
   const heroImageUrl = sanityData?.heroImage ? urlFor(sanityData.heroImage).width(1920).height(1080).url() : null;
 
   return (
     <section className={styles.heroSection}>
-      {/* Background Effects - With Optional Hero Image */}
+      {/* Background Effects - With Optional Hero Video or Image */}
       <div className={styles.backgroundContainer}>
-        {heroImageUrl && (
+        {heroVideoUrl ? (
+          <video
+            className={styles.heroVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              opacity: 0.4,
+              zIndex: 1
+            }}
+          >
+            <source src={heroVideoUrl} type="video/mp4" />
+          </video>
+        ) : heroImageUrl ? (
           <div 
             className={styles.heroImage}
             style={{
@@ -77,7 +100,7 @@ export default async function HeroSection() {
               zIndex: 1
             }}
           />
-        )}
+        ) : null}
         <div className={styles.baseGradient} />
         <div className={styles.orb1} />
         <div className={styles.orb2} />

@@ -138,10 +138,19 @@ export default defineType({
       ]
     }),
     defineField({
+      name: 'heroVideo',
+      title: 'Hero Background Video',
+      type: 'file',
+      description: 'Optional background video for the hero section (takes precedence over image)',
+      options: {
+        accept: 'video/mp4,video/webm,video/ogg'
+      }
+    }),
+    defineField({
       name: 'heroImage',
       title: 'Hero Background Image',
       type: 'image',
-      description: 'Optional background image for the hero section',
+      description: 'Background image for the hero section (used when no video is provided)',
       options: {
         hotspot: true,
       }
