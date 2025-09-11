@@ -1,9 +1,18 @@
 // components/Footer.module.scss - Minimal footer styles
 
 .footer {
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent; // Let ThemedContent handle background
+    border-top: 1px solid var(--border);
     padding: 3rem 0 1.5rem;
+    
+    // Theme-aware border
+    .themed-content[data-theme="light"] & {
+      border-top-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    .themed-content[data-theme="dark"] & {
+      border-top-color: rgba(255, 255, 255, 0.1);
+    }
   }
   
   .container {
@@ -132,6 +141,20 @@
   
       &:hover:before {
         width: 0.75rem;
+      }
+      
+      // Light theme overrides
+      :global(.themed-content[data-theme="light"]) & {
+        color: rgba(17, 24, 39, 0.7) !important;
+        
+        &:hover {
+          color: rgb(217, 119, 6) !important;
+          transform: translateX(4px);
+        }
+        
+        &:before {
+          background: linear-gradient(90deg, transparent, rgb(217, 119, 6)) !important;
+        }
       }
     }
   }

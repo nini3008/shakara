@@ -167,6 +167,20 @@
     border-color: rgba(218, 165, 32, 0.5);
     transform: scale(1.02);
   }
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(217, 119, 6, 0.3) !important;
+    color: rgb(217, 119, 6) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    
+    &:hover {
+      background: rgba(217, 119, 6, 0.1) !important;
+      border-color: rgba(217, 119, 6, 0.5) !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    }
+  }
 }
 
 .titleContainer {
@@ -326,6 +340,11 @@
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 1rem;
   letter-spacing: 0.025em;
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(17, 24, 39, 0.8) !important;
+  }
 }
 
 .description {
@@ -335,6 +354,11 @@
   max-width: 48rem;
   margin: 2rem auto 0;
   line-height: 1.6;
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(17, 24, 39, 0.7) !important;
+  }
 }
 
 // Professional stats grid
@@ -395,6 +419,15 @@
   .statCard:hover & {
     color: rgba(218, 165, 32, 1);
   }
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgb(17, 24, 39) !important;
+    
+    .statCard:hover & {
+      color: rgb(217, 119, 6) !important;
+    }
+  }
 }
 
 .statSublabel {
@@ -407,6 +440,15 @@
   
   .statCard:hover & {
     color: rgba(255, 255, 255, 0.8);
+  }
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(17, 24, 39, 0.6) !important;
+    
+    .statCard:hover & {
+      color: rgba(17, 24, 39, 0.8) !important;
+    }
   }
 }
 
@@ -585,5 +627,10 @@
       rgba(0, 0, 0, 0.8) 100%
     );
     z-index: 2;
+  }
+  
+  // Remove background overlay in light mode - targeting document root
+  :global(html[data-theme="light"]) &::after {
+    display: none !important;
   }
 }

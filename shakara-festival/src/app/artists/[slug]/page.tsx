@@ -3,6 +3,7 @@
 import { client, urlFor } from '@/lib/sanity';
 import { Artist } from '@/types';
 import { SanityArtist, adaptSanityArtist } from '@/types/sanity-adapters';
+import ThemedContent from '@/components/ThemedContent';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from '@/components/Navigation';
@@ -70,8 +71,9 @@ export default async function ArtistDetailPage({
         <Navigation />
       </div>
 
-      {/* Main Content */}
-      <main className={styles.mainContent}>
+      <ThemedContent>
+        {/* Main Content */}
+        <main className={styles.mainContent}>
         <div className={styles.container}>
           {/* Back Navigation */}
           <nav className={styles.breadcrumb}>
@@ -245,7 +247,7 @@ export default async function ArtistDetailPage({
 
               {/* Action Buttons */}
               <div className={styles.actionButtons}>
-                <Link href="/schedule" className={styles.scheduleButton}>
+                <Link href="/schedule" className={styles.ticketButton}>
                   View Full Schedule
                 </Link>
                 <Link href="/tickets" className={styles.ticketButton}>
@@ -256,9 +258,12 @@ export default async function ArtistDetailPage({
           </div>
         </div>
       </main>
+
+          {/* Footer */}
+          <Footer />
+      </ThemedContent>
       
-      {/* Footer */}
-      <Footer />
+      
     </div>
   );
 }

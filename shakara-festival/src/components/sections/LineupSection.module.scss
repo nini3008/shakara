@@ -1,26 +1,14 @@
 // LineupSection.module.scss - Balanced Visual Design
 .lineupSection {
   position: relative;
-  background: #000000;
+  background: transparent; // Let ThemedContent handle background
   contain: layout style paint;
   isolation: isolate;
   z-index: 100;
   padding: 5rem 0 6rem;
   overflow: hidden;
   
-  // Clean gradient background
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      135deg, 
-      rgba(0, 0, 0, 1) 0%, 
-      rgba(10, 10, 10, 1) 50%,
-      rgba(0, 0, 0, 1) 100%
-    );
-    z-index: -3;
-  }
+  // Theme-aware background handled by ThemedContent wrapper
   
   // Single subtle decorative orb
   &::after {
@@ -161,6 +149,11 @@
   a {
     text-decoration: none;
   }
+  
+  // Light theme overrides
+  :global(.themed-content[data-theme="light"]) & {
+    background: transparent;
+  }
 }
 
 .artistCard {
@@ -177,6 +170,19 @@
     transform: translateY(-4px);
     border-color: rgba(217, 119, 6, 0.3);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  }
+  
+  // Light theme overrides
+  :global(.themed-content[data-theme="light"]) & {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(217, 119, 6, 0.2) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(217, 119, 6, 0.1) !important;
+    
+    &:hover {
+      border-color: rgba(217, 119, 6, 0.5) !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(217, 119, 6, 0.2) !important;
+      transform: translateY(-4px);
+    }
   }
 }
 
@@ -326,7 +332,7 @@
   display: inline-flex;
   align-items: center;
   background: linear-gradient(135deg, rgb(217, 119, 6), rgb(180, 83, 9));
-  color: white;
+  color: white !important;
   padding: 0.75rem 2rem;
   font-size: 0.95rem;
   font-weight: 600;
@@ -335,13 +341,50 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   letter-spacing: 0.02em;
   
+  // Force white text in all themes and states
+  &,
+  &:link,
+  &:visited,
+  &:hover,
+  &:active,
+  &:focus {
+    color: white !important;
+  }
+  
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(217, 119, 6, 0.4);
+    color: white !important;
   }
   
   &:active {
     transform: translateY(0);
+    color: white !important;
+  }
+  
+  // Light theme override with highest specificity
+  :global(.themed-content[data-theme="light"]) &,
+  :global(.themed-content.theme-light) & {
+    color: white !important;
+    box-shadow: 0 4px 16px rgba(217, 119, 6, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1);
+    
+    &:hover,
+    &:hover:not([class*="secondary"]) {
+      color: white !important;
+      box-shadow: 0 8px 24px rgba(217, 119, 6, 0.3), 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    &:visited,
+    &:focus,
+    &:active {
+      color: white !important;
+    }
+  }
+  
+  // Extra specificity for hover state
+  :global(.themed-content[data-theme="light"] a:hover) &,
+  :global(.themed-content.theme-light a:hover) & {
+    color: white !important;
   }
 }
 
@@ -363,6 +406,34 @@
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(217, 119, 6, 0.3);
     transform: translateY(-2px);
+  }
+  
+  // Light theme override with highest specificity
+  :global(.themed-content[data-theme="light"]) &,
+  :global(.themed-content.theme-light) & {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(217, 119, 6, 0.3) !important;
+    color: rgb(217, 119, 6) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    
+    &:hover {
+      background: rgba(217, 119, 6, 0.1) !important;
+      border-color: rgba(217, 119, 6, 0.5) !important;
+      color: rgb(217, 119, 6) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+    
+    &:visited,
+    &:focus,
+    &:active {
+      color: rgb(217, 119, 6) !important;
+    }
+  }
+  
+  // Extra specificity for hover state
+  :global(.themed-content[data-theme="light"] a:hover) &,
+  :global(.themed-content.theme-light a:hover) & {
+    color: rgb(217, 119, 6) !important;
   }
 }
 

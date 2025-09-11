@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/Button'
 import { Menu, X, Ticket, Calendar, Music, ShoppingBag, Users, Handshake, LucideIcon } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useTheme } from '@/contexts/ThemeContext'
+import ThemeToggle from './ThemeToggle'
 import styles from './Navigation.module.scss'
 
 interface NavLink {
@@ -19,6 +21,7 @@ const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
+  const { theme } = useTheme()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -114,7 +117,7 @@ const Navigation = () => {
           <Link
             href={link.href}
             onClick={() => setIsOpen(false)}
-            className={`${styles.mobileNavLink} ${isActive ? styles.active : ''}`}
+            className={`${styles.mobileNavLink} ${isActive ? styles.active : ''} ${theme === 'light' ? styles.light : ''}`}
           >
             <IconComponent className={styles.mobileNavIcon} />
             <span className={styles.mobileNavLabel}>
@@ -129,7 +132,7 @@ const Navigation = () => {
       <motion.button
         key={link.href}
         onClick={() => handleLinkClick(link.href, link.type)}
-        className={styles.mobileNavLink}
+        className={`${styles.mobileNavLink} ${theme === 'light' ? styles.light : ''}`}
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.1 + index * 0.05 }}
@@ -147,7 +150,8 @@ const Navigation = () => {
   return (
     <>
       <motion.nav
-        className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}
+        className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''} ${theme === 'light' ? styles.light : ''} theme-${theme}`}
+        data-theme={theme}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
@@ -174,8 +178,9 @@ const Navigation = () => {
             ))}
           </ul>
 
-          {/* Desktop CTA Button */}
+          {/* Desktop Theme Toggle and CTA Button */}
           <div className={styles.cta}>
+            <ThemeToggle />
             {isHomePage ? (
               <button 
                 className={styles.ctaButton}
@@ -225,20 +230,20 @@ const Navigation = () => {
                 damping: 30, 
                 stiffness: 300 
               }}
-              className={styles.drawer}
+              className={`${styles.drawer} ${theme === 'light' ? styles.light : ''}`}
             >
               <div className={styles.drawerContent}>
                 {/* Close Button */}
                 <button
                   onClick={() => setIsOpen(false)}
-                  className={styles.closeButton}
+                  className={`${styles.closeButton} ${theme === 'light' ? styles.light : ''}`}
                   aria-label="Close menu"
                 >
                   <X />
                 </button>
 
                 {/* Mobile Logo */}
-                <div className={styles.mobileHeader}>
+                <div className={`${styles.mobileHeader} ${theme === 'light' ? styles.light : ''}`}>
                   <motion.h2 
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -260,6 +265,16 @@ const Navigation = () => {
                     Festival 2025
                   </motion.p>
                 </div>
+
+                {/* Mobile Theme Toggle */}
+                <motion.div 
+                  className={styles.mobileThemeToggle}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 }}
+                >
+                  <ThemeToggle />
+                </motion.div>
 
                 {/* Mobile Menu Links */}
                 <div className={styles.mobileNav}>
@@ -288,7 +303,7 @@ const Navigation = () => {
                     </Link>
                   )}
                   <button
-                    className={styles.mobileSecondaryButton}
+                    className={`${styles.mobileSecondaryButton} ${theme === 'light' ? styles.light : ''}`}
                     onClick={() => {
                       setIsOpen(false)
                       if (isHomePage) {
@@ -302,7 +317,7 @@ const Navigation = () => {
 
                 {/* Social Links */}
                 <motion.div 
-                  className={styles.socialLinks}
+                  className={`${styles.socialLinks} ${theme === 'light' ? styles.light : ''}`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
@@ -311,7 +326,7 @@ const Navigation = () => {
                     <motion.a
                       key={social}
                       href="#"
-                      className={styles.socialLink}
+                      className={`${styles.socialLink} ${theme === 'light' ? styles.light : ''}`}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       initial={{ opacity: 0, scale: 0 }}

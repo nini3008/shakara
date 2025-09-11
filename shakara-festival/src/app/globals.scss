@@ -18,6 +18,39 @@
   box-sizing: border-box;
 }
 
+// CSS Custom Properties for theme support
+:root {
+  // Light theme colors
+  --bg-primary-light: #ffffff;
+  --bg-secondary-light: #f8fafc;
+  --text-primary-light: #1a1a1a;
+  --text-secondary-light: #374151;
+  --border-light: #e5e7eb;
+  
+  // Dark theme colors (default)
+  --bg-primary-dark: #000000;
+  --bg-secondary-dark: #0a0a0a;
+  --text-primary-dark: #ffffff;
+  --text-secondary-dark: #d1d5db;
+  --border-dark: #1f2937;
+  
+  // Current theme (defaults to dark)
+  --bg-primary: var(--bg-primary-dark);
+  --bg-secondary: var(--bg-secondary-dark);
+  --text-primary: var(--text-primary-dark);
+  --text-secondary: var(--text-secondary-dark);
+  --border: var(--border-dark);
+}
+
+// Light theme overrides
+[data-theme="light"] {
+  --bg-primary: var(--bg-primary-light);
+  --bg-secondary: var(--bg-secondary-light);
+  --text-primary: var(--text-primary-light);
+  --text-secondary: var(--text-secondary-light);
+  --border: var(--border-light);
+}
+
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
@@ -25,7 +58,7 @@ html {
 
 body {
   font-family: map.get($font-families, 'primary');
-  background: color('black');
+  background: color('black'); // Always keep body dark for festival aesthetic
   color: color('white');
   line-height: 1.6;
   overflow-x: hidden;
@@ -33,13 +66,114 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-// Enhanced scrollbar
+// Themed content areas (only apply to specific sections)
+.themed-content {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Themed sections for content areas
+.themed-section {
+  &[data-theme="light"] {
+    background: var(--bg-primary-light);
+    color: var(--text-primary-light);
+  }
+  
+  &[data-theme="dark"] {
+    background: var(--bg-primary-dark);
+    color: var(--text-primary-dark);
+  }
+}
+
+// Keep hero and navigation always dark
+.hero-section,
+.navigation-section {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+// Theme-aware overrides for content sections
+.themed-content {
+  // Light theme text color overrides
+  &[data-theme="light"] {
+    // Override hardcoded white text colors
+    * {
+      &[style*="color: white"],
+      &[style*="color: #ffffff"],
+      &[style*="color: #fff"] {
+        color: #1a1a1a !important;
+      }
+    }
+    
+    // Section-specific overrides
+    h1, h2, h3, h4, h5, h6 {
+      color: #111827 !important;
+    }
+    
+    p, span, div:not([class*="icon"]):not([class*="button"]) {
+      color: #374151 !important;
+    }
+    
+    // Button text should remain white for contrast - cover all button variations with higher specificity
+    button, 
+    .btn, 
+    [class*="button"], 
+    [class*="Button"],
+    [class*="Btn"],
+    a[class*="button"], 
+    a[class*="Button"],
+    a[class*="Btn"] {
+      &:not([class*="secondary"]):not([class*="Secondary"]) {
+        color: #ffffff !important;
+        
+        &:hover, &:focus, &:active, &:visited {
+          color: #ffffff !important;
+        }
+      }
+    }
+    
+    // Additional specific override for orange background buttons
+    [style*="background: rgb(217, 119, 6)"],
+    [style*="background: linear-gradient"],
+    .btn-primary,
+    .primary-btn {
+      color: #ffffff !important;
+      
+      &:hover, &:focus, &:active, &:visited {
+        color: #ffffff !important;
+      }
+    }
+    
+    // Accent colors
+    [class*="accent"], 
+    [class*="highlight"],
+    [class*="primary-text"] {
+      color: rgb(184, 134, 11) !important;
+    }
+    
+    // Links (exclude buttons and social links)
+    a:not([class*="button"]):not([class*="socialLink"]):not([class*="viewAllButton"]) {
+      color: #1f2937 !important;
+      
+      &:hover {
+        color: rgb(184, 134, 11) !important;
+      }
+    }
+  }
+}
+
+// Enhanced scrollbar with theme support
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #000000;
+  background: var(--bg-primary);
+  
+  [data-theme="light"] & {
+    background: #f1f5f9;
+  }
 }
 
 ::-webkit-scrollbar-thumb {
@@ -48,6 +182,14 @@ body {
   
   &:hover {
     background: linear-gradient(135deg, rgb(255, 215, 0), rgb(217, 119, 6));
+  }
+  
+  [data-theme="light"] & {
+    background: linear-gradient(135deg, rgb(217, 119, 6), rgb(184, 134, 11));
+    
+    &:hover {
+      background: linear-gradient(135deg, rgb(184, 134, 11), rgb(217, 119, 6));
+    }
   }
 }
 

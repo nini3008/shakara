@@ -1,7 +1,7 @@
 // app/schedule/ScheduleContent.tsx
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { urlFor } from '@/lib/sanity';
 import { ScheduleEvent } from '@/types';
 import { SanityScheduleEvent } from '@/types/sanity-adapters';
@@ -20,6 +20,26 @@ export default function ScheduleContent({ initialEvents, initialSanityEvents }: 
   const [selectedType, setSelectedType] = useState<string | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'timeline'>('grid');
+  const [isLightTheme, setIsLightTheme] = useState(false);
+
+  // Detect current theme
+  useEffect(() => {
+    const checkTheme = () => {
+      const themedContent = document.querySelector('.themed-content');
+      setIsLightTheme(themedContent?.getAttribute('data-theme') === 'light');
+    };
+    
+    checkTheme();
+    
+    // Watch for theme changes
+    const observer = new MutationObserver(checkTheme);
+    const themedContent = document.querySelector('.themed-content');
+    if (themedContent) {
+      observer.observe(themedContent, { attributes: true, attributeFilter: ['data-theme'] });
+    }
+    
+    return () => observer.disconnect();
+  }, []);
 
   // Get unique values for filters
   const days = useMemo(() => {
@@ -177,13 +197,87 @@ export default function ScheduleContent({ initialEvents, initialSanityEvents }: 
                 <div className={styles.viewControls}>
                   <button
                     onClick={() => setViewMode('grid')}
-                    className={`${styles.viewButton} ${viewMode === 'grid' ? styles.active : ''}`}
+                    className={`${styles.viewControl} ${viewMode === 'grid' ? styles.active : ''}`}
+                    style={{
+                      background: viewMode === 'grid' 
+                        ? 'linear-gradient(135deg, rgb(217, 119, 6), rgb(180, 83, 9))'
+                        : isLightTheme 
+                          ? 'rgba(255, 255, 255, 0.8)' 
+                          : 'rgba(0, 0, 0, 0.5)',
+                      color: viewMode === 'grid' 
+                        ? '#ffffff'
+                        : isLightTheme 
+                          ? 'rgba(17, 24, 39, 0.7)' 
+                          : 'rgba(255, 255, 255, 0.7)',
+                      border: viewMode === 'grid'
+                        ? '1px solid rgb(217, 119, 6)'
+                        : '1px solid rgba(217, 119, 6, 0.3)',
+                      padding: '0.75rem 1.5rem',
+                      borderRadius: '0.75rem',
+                      fontSize: '0.85rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (viewMode !== 'grid') {
+                        e.currentTarget.style.background = isLightTheme 
+                          ? 'rgba(217, 119, 6, 0.1)' 
+                          : 'rgba(217, 119, 6, 0.2)';
+                        e.currentTarget.style.borderColor = 'rgba(217, 119, 6, 0.5)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (viewMode !== 'grid') {
+                        e.currentTarget.style.background = isLightTheme 
+                          ? 'rgba(255, 255, 255, 0.8)' 
+                          : 'rgba(0, 0, 0, 0.5)';
+                        e.currentTarget.style.borderColor = 'rgba(217, 119, 6, 0.3)';
+                      }
+                    }}
                   >
                     Grid View
                   </button>
                   <button
                     onClick={() => setViewMode('timeline')}
-                    className={`${styles.viewButton} ${viewMode === 'timeline' ? styles.active : ''}`}
+                    className={`${styles.viewControl} ${viewMode === 'timeline' ? styles.active : ''}`}
+                    style={{
+                      background: viewMode === 'timeline' 
+                        ? 'linear-gradient(135deg, rgb(217, 119, 6), rgb(180, 83, 9))'
+                        : isLightTheme 
+                          ? 'rgba(255, 255, 255, 0.8)' 
+                          : 'rgba(0, 0, 0, 0.5)',
+                      color: viewMode === 'timeline' 
+                        ? '#ffffff'
+                        : isLightTheme 
+                          ? 'rgba(17, 24, 39, 0.7)' 
+                          : 'rgba(255, 255, 255, 0.7)',
+                      border: viewMode === 'timeline'
+                        ? '1px solid rgb(217, 119, 6)'
+                        : '1px solid rgba(217, 119, 6, 0.3)',
+                      padding: '0.75rem 1.5rem',
+                      borderRadius: '0.75rem',
+                      fontSize: '0.85rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (viewMode !== 'timeline') {
+                        e.currentTarget.style.background = isLightTheme 
+                          ? 'rgba(217, 119, 6, 0.1)' 
+                          : 'rgba(217, 119, 6, 0.2)';
+                        e.currentTarget.style.borderColor = 'rgba(217, 119, 6, 0.5)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (viewMode !== 'timeline') {
+                        e.currentTarget.style.background = isLightTheme 
+                          ? 'rgba(255, 255, 255, 0.8)' 
+                          : 'rgba(0, 0, 0, 0.5)';
+                        e.currentTarget.style.borderColor = 'rgba(217, 119, 6, 0.3)';
+                      }
+                    }}
                   >
                     Timeline View
                   </button>

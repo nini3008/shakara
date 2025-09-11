@@ -135,7 +135,7 @@ export default async function Footer() {
             <p>&copy; {currentYear} {data.copyright}</p>
           </div>
           
-          <div className={styles.legalLinks}>
+          {/* <div className={styles.legalLinks}>
             {data.legalLinks.map((link) => (
               <Link
                 key={link.href}
@@ -145,7 +145,7 @@ export default async function Footer() {
                 {link.label}
               </Link>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>

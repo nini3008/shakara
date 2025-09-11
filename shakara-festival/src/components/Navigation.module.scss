@@ -30,6 +30,27 @@
     border-bottom: 1px solid rgba(217, 119, 6, 0.15);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
   }
+
+  // Light theme overrides using CSS modules class
+  &.light:not(.scrolled) {
+    background: linear-gradient(
+      to bottom, 
+      rgba(255, 255, 255, 0.98), 
+      rgba(248, 250, 252, 0.95), 
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 0.7)
+    ) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+  }
+
+  &.light.scrolled {
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(32px) !important;
+    -webkit-backdrop-filter: blur(32px) !important;
+    border-bottom: 1px solid rgba(217, 119, 6, 0.15) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  }
 }
 
 .container {
@@ -125,6 +146,24 @@
   background: transparent;
   cursor: pointer;
 
+  // Light theme overrides
+  .navbar.light & {
+    color: rgba(55, 65, 81, 0.8) !important;
+
+    &:hover,
+    &.active {
+      color: rgb(17, 24, 39) !important;
+      
+      svg {
+        color: rgb(217, 119, 6) !important;
+      }
+    }
+
+    svg {
+      color: rgba(55, 65, 81, 0.6) !important;
+    }
+  }
+
   // Subtle hover background matching hero glassmorphism
   &::before {
     content: '';
@@ -197,7 +236,9 @@
   display: none;
 
   @media (min-width: 1024px) {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
   }
 }
 
@@ -292,6 +333,22 @@
   &.open svg {
     transform: rotate(90deg);
   }
+
+  // Light theme overrides
+  .navbar.light & {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.12) !important;
+
+    &:hover {
+      background: rgba(217, 119, 6, 0.08) !important;
+      border-color: rgba(217, 119, 6, 0.2) !important;
+    }
+
+    svg {
+      color: rgb(17, 24, 39) !important;
+    }
+  }
+
 }
 
 // Mobile Drawer Backdrop - ONLY for mobile menu
@@ -349,6 +406,27 @@
     filter: blur(60px);
     pointer-events: none;
   }
+
+  // Light theme overrides
+  &.light {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.98) 0%,
+      rgba(248, 250, 252, 0.98) 50%,
+      rgba(255, 255, 255, 0.98) 100%
+    ) !important;
+    border-left: 1px solid rgba(0, 0, 0, 0.1) !important;
+
+    &::before {
+      background: radial-gradient(
+        circle at center,
+        rgba(217, 119, 6, 0.06) 0%,
+        rgba(217, 119, 6, 0.02) 40%,
+        transparent 70%
+      ) !important;
+    }
+  }
+
 }
 
 .drawerContent {
@@ -387,6 +465,22 @@
     height: 1.25rem;
     color: white;
   }
+
+  // Light theme overrides
+  &.light {
+    background: rgba(0, 0, 0, 0.06) !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    
+    &:hover {
+      background: rgba(217, 119, 6, 0.08) !important;
+      border-color: rgba(217, 119, 6, 0.2) !important;
+    }
+    
+    svg {
+      color: rgb(17, 24, 39) !important;
+    }
+  }
+
 }
 
 .mobileHeader {
@@ -423,6 +517,23 @@
     letter-spacing: 0.1em;
     font-weight: 500;
   }
+
+  // Light theme overrides
+  &.light {
+    p {
+      color: rgba(17, 24, 39, 0.6) !important;
+    }
+  }
+
+}
+
+// Mobile theme toggle styles
+.mobileThemeToggle {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .mobileNav {
@@ -479,6 +590,7 @@
   &:active {
     transform: translateY(0px);
   }
+
 }
 
 .mobileNavIcon {
@@ -495,6 +607,17 @@
     color: rgb(217, 119, 6);
     transform: scale(1.1);
   }
+
+  // Light theme overrides
+  .mobileNavLink.light & {
+    color: rgba(55, 65, 81, 0.6) !important;
+
+    .mobileNavLink:hover &,
+    .mobileNavLink.active & {
+      color: rgb(217, 119, 6) !important;
+    }
+  }
+
 }
 
 .mobileNavLabel {
@@ -514,6 +637,21 @@
   .mobileNavLink.active & {
     color: rgb(217, 119, 6);
   }
+
+  // Light theme overrides
+  .mobileNavLink.light & {
+    color: rgba(17, 24, 39, 0.9) !important;
+
+    .mobileNavLink:hover &,
+    .mobileNavLink.active & {
+      color: rgb(17, 24, 39) !important;
+    }
+
+    .mobileNavLink.active & {
+      color: rgb(217, 119, 6) !important;
+    }
+  }
+
 }
 
 .mobileCta {
@@ -569,6 +707,19 @@
     border-color: rgba(217, 119, 6, 0.2);
     transform: translateY(-1px);
   }
+
+  // Light theme overrides
+  &.light {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    color: rgb(17, 24, 39) !important;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.95) !important;
+      border-color: rgba(217, 119, 6, 0.2) !important;
+    }
+  }
+
 }
 
 .socialLinks {
@@ -622,6 +773,19 @@
     position: relative;
     z-index: 1;
   }
+
+  // Light theme overrides
+  &.light {
+    background: rgba(0, 0, 0, 0.06) !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    color: rgba(17, 24, 39, 0.6) !important;
+    
+    &:hover {
+      color: rgb(17, 24, 39) !important;
+      border-color: rgba(217, 119, 6, 0.2) !important;
+    }
+  }
+
 }
 
 // Refined animations matching hero section
@@ -670,5 +834,139 @@
   
   .ctaButton, .mobilePrimaryButton {
     border: 2px solid rgb(217, 119, 6);
+  }
+}
+
+// Theme-aware navigation styles
+.navbar {
+  // Light theme overrides with higher specificity
+  :global(.theme-light.theme-light) &:not(.scrolled) {
+    background: linear-gradient(
+      to bottom, 
+      rgba(255, 255, 255, 0.98), 
+      rgba(248, 250, 252, 0.95), 
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 0.7)
+    ) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+  }
+
+  :global(.theme-light.theme-light) &.scrolled {
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(32px) !important;
+    -webkit-backdrop-filter: blur(32px) !important;
+    border-bottom: 1px solid rgba(217, 119, 6, 0.15) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  // Light theme navigation link styles with higher specificity
+  :global(.theme-light.theme-light) & .navLink {
+    color: rgba(55, 65, 81, 0.8) !important;
+
+    &:hover,
+    &.active {
+      color: rgb(17, 24, 39) !important;
+      
+      svg {
+        color: rgb(217, 119, 6) !important;
+      }
+    }
+
+    svg {
+      color: rgba(55, 65, 81, 0.6) !important;
+    }
+  }
+
+  :global(.theme-light.theme-light) & .ctaButton {
+    background: linear-gradient(135deg, rgb(217, 119, 6), rgb(180, 83, 9)) !important;
+    color: white !important;
+
+    &:hover {
+      background: linear-gradient(135deg, rgb(255, 215, 0), rgb(217, 119, 6)) !important;
+    }
+  }
+
+  // Light theme mobile styles with higher specificity
+  :global(.theme-light.theme-light) & .hamburger {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.12) !important;
+
+    &:hover {
+      background: rgba(217, 119, 6, 0.08) !important;
+      border-color: rgba(217, 119, 6, 0.2) !important;
+    }
+
+    svg {
+      color: rgb(17, 24, 39) !important;
+    }
+  }
+}
+
+
+.mobileNavLink {
+  // Light theme overrides
+  &.light {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    color: rgba(17, 24, 39, 0.9) !important;
+
+    &:hover,
+    &.active {
+      background: rgba(255, 255, 255, 0.95) !important;
+      border-color: rgba(217, 119, 6, 0.15) !important;
+      color: rgb(17, 24, 39) !important;
+    }
+
+    &.active {
+      background: rgba(217, 119, 6, 0.06) !important;
+      border-color: rgba(217, 119, 6, 0.2) !important;
+    }
+  }
+}
+
+
+:global(.theme-light) .closeButton {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+
+  &:hover {
+    background: rgba(217, 119, 6, 0.08) !important;
+    border-color: rgba(217, 119, 6, 0.2) !important;
+  }
+
+  svg {
+    color: rgb(17, 24, 39) !important;
+  }
+}
+
+:global(.theme-light) .mobileHeader h2 {
+  color: rgb(17, 24, 39) !important;
+}
+
+:global(.theme-light) .mobileHeader p {
+  color: rgb(75, 85, 99) !important;
+}
+
+:global(.theme-light) .mobileSecondaryButton {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+  color: rgb(17, 24, 39) !important;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: rgba(217, 119, 6, 0.2) !important;
+  }
+}
+
+:global(.theme-light) .socialLink {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  color: rgba(55, 65, 81, 0.6) !important;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: rgb(17, 24, 39) !important;
+    border-color: rgba(217, 119, 6, 0.2) !important;
   }
 }

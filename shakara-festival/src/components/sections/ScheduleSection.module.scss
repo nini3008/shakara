@@ -1,26 +1,14 @@
 // ScheduleSection.module.scss - Following AboutSection Pattern
 .scheduleSection {
   position: relative;
-  background: #000000;
+  background: transparent; // Let ThemedContent handle background
   contain: layout style paint;
   isolation: isolate;
   z-index: 40;
   padding: 5rem 0 6rem;
   overflow: hidden;
   
-  // Subtle gradient background - matching pattern
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      135deg, 
-      rgba(0, 0, 0, 1) 0%, 
-      rgba(10, 10, 10, 1) 50%,
-      rgba(0, 0, 0, 1) 100%
-    );
-    z-index: -3;
-  }
+  // Theme-aware background handled by ThemedContent wrapper
   
   // Decorative orb - positioned differently from other sections
   &::after {
@@ -130,6 +118,22 @@
     
     &::before {
       opacity: 1;
+    }
+  }
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(217, 119, 6, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    
+    &::before {
+      background: rgba(217, 119, 6, 0.05) !important;
+    }
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.95) !important;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
     }
   }
 }
@@ -354,7 +358,7 @@
   display: inline-flex;
   align-items: center;
   background: rgb(217, 119, 6);
-  color: #000000;
+  color: white;
   padding: 0.875rem 2rem;
   font-size: 1rem;
   font-weight: 700;
@@ -368,9 +372,41 @@
   letter-spacing: 0.02em;
   
   &:hover {
-    background: rgb(255, 215, 0);
+    background: rgb(180, 83, 9);
+    color: white;
     transform: translateY(-2px);
     box-shadow: 0 8px 16px rgba(217, 119, 6, 0.4);
+  }
+  
+  // Light theme overrides - ensure white text on orange background
+  :global(.themed-content[data-theme="light"]) &,
+  :global(.themed-content.theme-light) & {
+    color: white !important;
+    box-shadow: 0 4px 16px rgba(217, 119, 6, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1);
+    
+    &:hover {
+      background: rgb(180, 83, 9) !important;
+      color: white !important;
+      box-shadow: 0 8px 20px rgba(217, 119, 6, 0.3), 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    &:visited,
+    &:focus,
+    &:active {
+      color: white !important;
+    }
+    
+    &:hover:visited,
+    &:hover:focus,
+    &:hover:active {
+      color: white !important;
+    }
+  }
+  
+  // Extra specificity for light theme
+  :global(.themed-content[data-theme="light"] a) &,
+  :global(.themed-content.theme-light a) & {
+    color: white !important;
   }
 }
 

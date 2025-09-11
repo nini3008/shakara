@@ -2,6 +2,7 @@
 
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import ThemedContent from '@/components/ThemedContent';
 import { client, SCHEDULE_QUERY } from '@/lib/sanity';
 import { ScheduleEvent } from '@/types';
 import { SanityScheduleEvent, adaptSanityScheduleEvent } from '@/types/sanity-adapters';
@@ -22,15 +23,17 @@ export default async function SchedulePage() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen">
       <Navigation />
-      <main className={`pt-16 ${styles.scheduleWrapper}`}>
-        <ScheduleContent 
-          initialEvents={initialEvents} 
-          initialSanityEvents={initialSanityEvents} 
-        />
-      </main>
-      <Footer />
+      <ThemedContent>
+        <main className={`pt-16 ${styles.scheduleWrapper}`}>
+          <ScheduleContent 
+            initialEvents={initialEvents} 
+            initialSanityEvents={initialSanityEvents} 
+          />
+        </main>
+        <Footer />
+      </ThemedContent>
     </div>
   );
 }

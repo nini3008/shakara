@@ -1,7 +1,7 @@
 // app/artists/[slug]/ArtistDetail.module.scss - Following Site Pattern
 .artistPage {
     min-height: 100vh;
-    background: #000000;
+    background: transparent; // Let ThemedContent handle background
     position: relative;
   }
   
@@ -12,21 +12,16 @@
   
   .mainContent {
     position: relative;
-    background: #000000;
+    background: transparent; // Let ThemedContent handle background
     padding-top: 8rem; // Account for navigation
     padding-bottom: 4rem;
     
-    // Subtle background pattern matching other sections
+    // Subtle background pattern matching other sections - removed hardcoded background
     &::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        135deg, 
-        rgba(0, 0, 0, 1) 0%, 
-        rgba(10, 10, 10, 1) 50%,
-        rgba(0, 0, 0, 1) 100%
-      );
+      background: transparent;
       z-index: -3;
     }
     
@@ -183,6 +178,13 @@
     letter-spacing: 0.03em;
     text-align: center;
     
+    // Light theme override
+    :global(.themed-content[data-theme="light"]) & {
+      background: rgba(255, 255, 255, 0.9) !important;
+      border: 1px solid rgba(217, 119, 6, 0.4) !important;
+      color: rgb(217, 119, 6) !important;
+    }
+    
     @media (min-width: 1024px) {
       display: none;
     }
@@ -200,6 +202,13 @@
     font-family: 'Space Grotesk', system-ui, sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.03em;
+    
+    // Light theme override
+    :global(.themed-content[data-theme="light"]) & {
+      background: rgba(255, 255, 255, 0.9) !important;
+      border: 1px solid rgba(217, 119, 6, 0.4) !important;
+      color: rgb(217, 119, 6) !important;
+    }
     
     @media (min-width: 1024px) {
       display: inline-block;
@@ -260,6 +269,16 @@
       background: rgba(217, 119, 6, 0.03);
       border-radius: 1rem;
     }
+    
+    // Light theme override
+    :global(.themed-content[data-theme="light"]) & {
+      background: rgba(255, 255, 255, 0.9) !important;
+      border: 1px solid rgba(217, 119, 6, 0.3) !important;
+      
+      &::before {
+        background: rgba(217, 119, 6, 0.05) !important;
+      }
+    }
   }
   
   .cardTitle {
@@ -303,6 +322,11 @@
     font-size: 1rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
+    
+    // Light theme override
+    :global(.themed-content[data-theme="light"]) & {
+      color: rgba(17, 24, 39, 0.9) !important;
+    }
   }
   
   // Section styling
@@ -320,6 +344,11 @@
       color: rgba(255, 255, 255, 0.8);
       line-height: 1.6;
       font-size: 1rem;
+      
+      // Light theme override
+      :global(.themed-content[data-theme="light"]) & {
+        color: rgba(17, 24, 39, 0.8) !important;
+      }
       
       p {
         margin-bottom: 1rem;
@@ -355,33 +384,84 @@
     
     &.instagram {
       background: linear-gradient(135deg, #E4405F, #C13584);
-      color: white;
+      color: white !important;
+      
+      // Override global link styles for all themes
+      :global(.themed-content) &,
+      :global(.themed-content.theme-dark) &,
+      :global(.themed-content[data-theme="light"]) &,
+      :global(.themed-content.theme-light) & {
+        color: white !important;
+      }
       
       &:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 16px rgba(228, 64, 95, 0.4);
+        color: white !important;
+        
+        // Override global hover styles for all themes
+        :global(.themed-content) &,
+        :global(.themed-content.theme-dark) &,
+        :global(.themed-content[data-theme="light"]) &,
+        :global(.themed-content.theme-light) & {
+          color: white !important;
+        }
       }
     }
     
     &.twitter {
       background: #1DA1F2;
-      color: white;
+      color: white !important;
+      
+      // Override global link styles for all themes
+      :global(.themed-content) &,
+      :global(.themed-content.theme-dark) &,
+      :global(.themed-content[data-theme="light"]) &,
+      :global(.themed-content.theme-light) & {
+        color: white !important;
+      }
       
       &:hover {
         background: #0d8bd9;
         transform: translateY(-2px);
         box-shadow: 0 8px 16px rgba(29, 161, 242, 0.4);
+        color: white !important;
+        
+        // Override global hover styles for all themes
+        :global(.themed-content) &,
+        :global(.themed-content.theme-dark) &,
+        :global(.themed-content[data-theme="light"]) &,
+        :global(.themed-content.theme-light) & {
+          color: white !important;
+        }
       }
     }
     
     &.spotify {
       background: #1DB954;
-      color: white;
+      color: white !important;
+      
+      // Override global link styles for all themes
+      :global(.themed-content) &,
+      :global(.themed-content.theme-dark) &,
+      :global(.themed-content[data-theme="light"]) &,
+      :global(.themed-content.theme-light) & {
+        color: white !important;
+      }
       
       &:hover {
         background: #1aa34a;
         transform: translateY(-2px);
         box-shadow: 0 8px 16px rgba(29, 185, 84, 0.4);
+        color: white !important;
+        
+        // Override global hover styles for all themes
+        :global(.themed-content) &,
+        :global(.themed-content.theme-dark) &,
+        :global(.themed-content[data-theme="light"]) &,
+        :global(.themed-content.theme-light) & {
+          color: white !important;
+        }
       }
     }
   }
@@ -422,21 +502,53 @@
     
     &:hover {
       background: rgb(217, 119, 6);
-      color: #000000;
+      color: white;
       transform: translateY(-1px);
+    }
+    
+    // Light theme override - Maximum specificity to override global styles
+    :global(.themed-content[data-theme="light"]) &,
+    :global(.themed-content[data-theme="light"] a) &,
+    :global(.themed-content.theme-light) &,
+    :global(.themed-content.theme-light a) & {
+      background: rgba(255, 255, 255, 0.8) !important;
+      border-color: rgb(217, 119, 6) !important;
+      color: rgb(217, 119, 6) !important;
+      
+      &:hover {
+        background: rgb(217, 119, 6) !important;
+        color: white !important;
+      }
     }
   }
   
   .ticketButton {
     background: rgb(217, 119, 6);
     border-color: rgb(217, 119, 6);
-    color: #000000;
+    color: white;
     
     &:hover {
-      background: rgb(255, 215, 0);
-      border-color: rgb(255, 215, 0);
+      background: rgb(180, 83, 9);
+      border-color: rgb(180, 83, 9);
+      color: white;
       transform: translateY(-2px);
       box-shadow: 0 8px 16px rgba(217, 119, 6, 0.4);
+    }
+    
+    // Light theme override - Maximum specificity to override global styles
+    :global(.themed-content[data-theme="light"]) &,
+    :global(.themed-content[data-theme="light"] a) &,
+    :global(.themed-content.theme-light) &,
+    :global(.themed-content.theme-light a) & {
+      background: rgb(217, 119, 6) !important;
+      border-color: rgb(217, 119, 6) !important;
+      color: white !important;
+      
+      &:hover {
+        background: rgb(180, 83, 9) !important;
+        border-color: rgb(180, 83, 9) !important;
+        color: white !important;
+      }
     }
   }
   

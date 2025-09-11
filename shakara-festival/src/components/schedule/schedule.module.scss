@@ -19,6 +19,16 @@
   padding: 8rem 0 4rem;
   overflow: hidden;
   
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(248, 250, 252, 1) 50%,
+      rgba(255, 255, 255, 1) 100%
+    ) !important;
+  }
+  
   // Decorative gradient orb
   &::before {
     content: '';
@@ -97,6 +107,11 @@
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 3rem;
   line-height: 1.6;
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(17, 24, 39, 0.8) !important;
+  }
 }
 
 .scheduleStats {
@@ -130,27 +145,19 @@
     letter-spacing: 0.05em;
     margin-top: 0.25rem;
     display: block;
+    
+    // Light theme override
+    :global(.themed-content[data-theme="light"]) & {
+      color: rgba(17, 24, 39, 0.7) !important;
+    }
   }
 }
 
 .scheduleContent {
   position: relative;
-  background: #000000;
+  background: transparent; // Let ThemedContent handle background
   padding: 4rem 0 6rem;
   min-height: 60vh;
-  
-  // Subtle gradient background
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(10, 10, 10, 1) 0%,
-      rgba(0, 0, 0, 1) 100%
-    );
-    z-index: -1;
-  }
 }
 
 // Controls Section
@@ -161,6 +168,12 @@
   padding: 2rem;
   margin-bottom: 2rem;
   backdrop-filter: blur(10px);
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(217, 119, 6, 0.3) !important;
+  }
 }
 
 .filtersRow {
@@ -200,6 +213,22 @@
     background: rgba(0, 0, 0, 0.8);
     box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.1);
   }
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(217, 119, 6, 0.3) !important;
+    color: rgba(17, 24, 39, 0.9) !important;
+    
+    &::placeholder {
+      color: rgba(17, 24, 39, 0.5) !important;
+    }
+    
+    &:focus {
+      background: rgba(255, 255, 255, 0.95) !important;
+      border-color: rgb(217, 119, 6) !important;
+    }
+  }
 }
 
 .searchIcon {
@@ -211,6 +240,11 @@
   height: 1rem;
   color: rgba(255, 255, 255, 0.5);
   pointer-events: none;
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(17, 24, 39, 0.5) !important;
+  }
 }
 
 .filterSelect {
@@ -233,6 +267,23 @@
   option {
     background: rgba(0, 0, 0, 0.9);
     color: white;
+  }
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(217, 119, 6, 0.3) !important;
+    color: rgba(17, 24, 39, 0.9) !important;
+    
+    &:focus {
+      background: rgba(255, 255, 255, 0.95) !important;
+      border-color: rgb(217, 119, 6) !important;
+    }
+    
+    option {
+      background: rgba(255, 255, 255, 0.95) !important;
+      color: rgba(17, 24, 39, 0.9) !important;
+    }
   }
 }
 
@@ -267,6 +318,65 @@
   }
 }
 
+// Unique class to avoid global button selector conflicts
+.viewControl {
+  // Light theme override - using unique class that doesn't contain "button"
+  :global(.themed-content[data-theme="light"]) &:not(.active) {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(217, 119, 6, 0.3) !important;
+    color: rgba(17, 24, 39, 0.7) !important;
+    
+    &:hover {
+      background: rgba(217, 119, 6, 0.1) !important;
+      border-color: rgba(217, 119, 6, 0.5) !important;
+      color: rgba(17, 24, 39, 0.9) !important;
+    }
+  }
+  
+  :global(.themed-content.theme-light) &:not(.active) {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(217, 119, 6, 0.3) !important;
+    color: rgba(17, 24, 39, 0.7) !important;
+  }
+  
+  // Maximum specificity override to beat all global selectors including doubled classes
+  :global(.themed-content[data-theme="light"]) &.viewControl:not(.active) {
+    color: rgba(17, 24, 39, 0.7) !important;
+    
+    &:hover, &:focus, &:active, &:visited {
+      color: rgba(17, 24, 39, 0.9) !important;
+    }
+  }
+  
+  // Match the doubled .theme-light.theme-light specificity from global CSS
+  :global(.themed-content.theme-light.theme-light) &.viewControl:not(.active) {
+    color: rgba(17, 24, 39, 0.7) !important;
+    
+    &:hover, &:focus, &:active, &:visited {
+      color: rgba(17, 24, 39, 0.9) !important;
+    }
+  }
+  
+  :global(.themed-content.theme-light) &.viewControl:not(.active) {
+    color: rgba(17, 24, 39, 0.7) !important;
+    
+    &:hover {
+      background: rgba(217, 119, 6, 0.1) !important;
+      border-color: rgba(217, 119, 6, 0.5) !important;
+      color: rgba(17, 24, 39, 0.9) !important;
+    }
+  }
+  
+  // Active state gets white text on orange background
+  :global(.themed-content[data-theme="light"]) &.active,
+  :global(.themed-content.theme-light) &.active {
+    background: rgb(217, 119, 6) !important;
+    border-color: rgb(217, 119, 6) !important;
+    color: white !important;
+    font-weight: 700 !important;
+  }
+}
+
 .resultsInfo {
   margin-bottom: 2rem;
 }
@@ -275,6 +385,11 @@
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
   text-align: center;
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(17, 24, 39, 0.7) !important;
+  }
 }
 
 // Grid View
@@ -319,6 +434,21 @@
     
     &::before {
       opacity: 1;
+    }
+  }
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(217, 119, 6, 0.2) !important;
+    
+    &::before {
+      background: rgba(217, 119, 6, 0.05) !important;
+    }
+    
+    &:hover {
+      border-color: rgba(217, 119, 6, 0.4) !important;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
     }
   }
   
@@ -386,6 +516,11 @@
   font-size: 0.9rem;
   font-family: 'Space Grotesk', system-ui, sans-serif;
   white-space: nowrap;
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(17, 24, 39, 0.9) !important;
+  }
 }
 
 .eventContent {
@@ -438,6 +573,11 @@
   color: white;
   margin-bottom: 0.5rem;
   line-height: 1.3;
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(17, 24, 39, 0.9) !important;
+  }
 }
 
 .artistName {
@@ -459,12 +599,22 @@
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.8rem;
   font-weight: 500;
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(17, 24, 39, 0.7) !important;
+  }
 }
 
 .eventDescription {
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.85rem;
   line-height: 1.4;
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(17, 24, 39, 0.8) !important;
+  }
 }
 
 // Timeline View
@@ -496,6 +646,11 @@
 .dayEventCount {
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(17, 24, 39, 0.7) !important;
+  }
 }
 
 .timelineEvents {
@@ -543,6 +698,11 @@
     background: rgb(217, 119, 6);
     border-radius: 50%;
     border: 2px solid #000000;
+    
+    // Light theme override
+    :global(.themed-content[data-theme="light"]) & {
+      border: 2px solid #ffffff !important;
+    }
   }
   
   .timelineEvent:last-child & {
@@ -576,6 +736,17 @@
     background: rgba(217, 119, 6, 0.05);
     border-color: rgba(217, 119, 6, 0.3);
     transform: translateX(4px);
+  }
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(217, 119, 6, 0.2) !important;
+    
+    &:hover {
+      background: rgba(217, 119, 6, 0.08) !important;
+      border-color: rgba(217, 119, 6, 0.4) !important;
+    }
   }
   
   // Type-specific styling
@@ -639,6 +810,11 @@
   color: white;
   line-height: 1.3;
   margin: 0;
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(17, 24, 39, 0.9) !important;
+  }
 }
 
 .timelineType {
@@ -679,12 +855,22 @@
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.8rem;
   margin-bottom: 0.5rem;
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(17, 24, 39, 0.7) !important;
+  }
 }
 
 .timelineDescription {
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.8rem;
   line-height: 1.4;
+  
+  // Light theme override
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(17, 24, 39, 0.8) !important;
+  }
 }
 
 // Empty States and Loading

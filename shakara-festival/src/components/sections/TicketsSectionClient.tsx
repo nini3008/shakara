@@ -1,7 +1,7 @@
 // components/sections/TicketsSectionClient.tsx
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { TicketType } from '@/types';
 import { SanityTicket } from '@/types/sanity-adapters';
 import Link from 'next/link';
@@ -18,6 +18,26 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [isLightTheme, setIsLightTheme] = useState(false);
+
+  // Detect current theme
+  useEffect(() => {
+    const checkTheme = () => {
+      const themedContent = document.querySelector('.themed-content');
+      setIsLightTheme(themedContent?.getAttribute('data-theme') === 'light');
+    };
+    
+    checkTheme();
+    
+    // Watch for theme changes
+    const observer = new MutationObserver(checkTheme);
+    const themedContent = document.querySelector('.themed-content');
+    if (themedContent) {
+      observer.observe(themedContent, { attributes: true, attributeFilter: ['data-theme'] });
+    }
+    
+    return () => observer.disconnect();
+  }, []);
 
   const formatPrice = (price: number, currency: string = '₦') => {
     return `${currency}${price.toLocaleString()}`;
@@ -237,6 +257,39 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                 <button 
                   onClick={() => setShowSuccess(false)}
                   className={styles.resetButton}
+                  style={{
+                    background: 'transparent',
+                    border: `1px solid rgba(34, 197, 94, ${isLightTheme ? '0.6' : '0.5'})`,
+                    color: isLightTheme ? '#059669' : '#86efac',
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '0.5rem',
+                    cursor: 'pointer',
+                    fontFamily: 'Inter, system-ui, sans-serif',
+                    fontWeight: '500',
+                    transition: 'all 0.3s ease'
+                  }}
+                  ref={(el) => {
+                    if (el) {
+                      // Force color with maximum specificity
+                      el.style.setProperty('color', isLightTheme ? '#059669' : '#86efac', 'important');
+                    }
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = isLightTheme 
+                      ? 'rgba(34, 197, 94, 0.05)' 
+                      : 'rgba(34, 197, 94, 0.1)';
+                    e.currentTarget.style.borderColor = isLightTheme 
+                      ? 'rgba(34, 197, 94, 0.8)' 
+                      : 'rgba(34, 197, 94, 0.7)';
+                    e.currentTarget.style.setProperty('color', isLightTheme ? '#059669' : '#86efac', 'important');
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.borderColor = isLightTheme 
+                      ? 'rgba(34, 197, 94, 0.6)' 
+                      : 'rgba(34, 197, 94, 0.5)';
+                    e.currentTarget.style.setProperty('color', isLightTheme ? '#059669' : '#86efac', 'important');
+                  }}
                 >
                   Subscribe Another Email
                 </button>
