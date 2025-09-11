@@ -67,11 +67,17 @@ const NewsletterSignup = ({ variant = 'hero', className }: NewsletterSignupProps
       }
     } catch (error) {
       console.error('Newsletter signup error:', error)
-      toast.error('Something went wrong. Please try again.', {
+      
+      // Check if it's an already subscribed error
+      const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+      const isAlreadySubscribed = errorMessage.includes('already subscribed');
+      
+      toast.error(errorMessage, {
+        duration: isAlreadySubscribed ? 4000 : 3000,
         style: {
           background: '#1a1a1a',
           color: '#fff',
-          border: '1px solid #ff6b6b',
+          border: `1px solid ${isAlreadySubscribed ? '#feca57' : '#ff6b6b'}`,
         },
       })
     } finally {

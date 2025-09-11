@@ -14,11 +14,37 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Send welcome email
+    // Check if already subscribed and add to Resend contacts
+    const audienceId = process.env.RESEND_AUDIENCE_ID;
+    if (audienceId) {
+      try {
+        await resend.contacts.create({
+          email: email,
+          firstName: firstName,
+          unsubscribed: false,
+          audienceId: audienceId,
+        });
+      } catch (contactError: any) {
+        // If contact already exists, return friendly error
+        if (contactError?.message?.includes('already exists') || contactError?.name === 'validation_error') {
+          return NextResponse.json({
+            success: false,
+            error: 'You are already subscribed to our newsletter!',
+          }, { status: 409 });
+        }
+        console.log('Error adding to audience:', contactError);
+        // For other errors, continue with email sending
+      }
+    } else {
+      console.log('RESEND_AUDIENCE_ID not configured - skipping contact creation');
+    }
+
+    // Send welcome email with Resend's built-in unsubscribe
     const { data, error } = await resend.emails.send({
       from: 'Shakara Festival <contact@shakarafestival.com>',
       to: [email],
       subject: 'Welcome to Shakara Festival! 🎵',
+      // Resend automatically adds unsubscribe headers when using audiences
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000; color: #fff; padding: 20px; border-radius: 12px;">
           <h1 style="color: #feca57; text-align: center;">Welcome ${firstName}! 🎉</h1>
@@ -47,6 +73,7 @@ export async function POST(request: NextRequest) {
             See you in Lagos! 🇳🇬<br>
             December 18-21, 2025 • Victoria Island
           </p>
+          
         </div>
       `,
     })
@@ -61,7 +88,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Successfully subscribed to newsletter',
+      message: 'Welcome to Shakara Festival! Check your email for confirmation.',
       emailId: data?.id,
     })
 
