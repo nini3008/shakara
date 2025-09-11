@@ -24,9 +24,11 @@ export async function POST(request: NextRequest) {
           unsubscribed: false,
           audienceId: audienceId,
         });
-      } catch (contactError: any) {
+      } catch (contactError: unknown) {
         // If contact already exists, return friendly error
-        if (contactError?.message?.includes('already exists') || contactError?.name === 'validation_error') {
+        const errorMessage = contactError instanceof Error ? contactError.message : String(contactError)
+        const errorName = contactError instanceof Error && 'name' in contactError ? contactError.name : ''
+        if (errorMessage.includes('already exists') || errorName === 'validation_error') {
           return NextResponse.json({
             success: false,
             error: 'You are already subscribed to our newsletter!',
