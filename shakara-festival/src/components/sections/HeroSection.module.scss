@@ -184,7 +184,7 @@
 }
 
 .titleContainer {
-  margin: 3rem 0 2rem;
+  margin: 1rem 0;
   perspective: 1000px;
 }
 
@@ -318,7 +318,7 @@
 }
 
 .locationContainer {
-  margin: 3rem 0;
+  margin: 0 0 1rem;
   max-width: 64rem;
   margin-left: auto;
   margin-right: auto;
@@ -632,5 +632,12 @@
   // Remove background overlay in light mode - targeting document root
   :global(html[data-theme="light"]) &::after {
     display: none !important;
+  }
+}
+
+// Responsive logo scaling
+.responsiveLogo {
+  @media (min-width: 768px) {
+    transform: scale(0.6);
   }
 }

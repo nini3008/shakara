@@ -45,7 +45,7 @@ export default function HeroContent({ data }: HeroContentProps) {
 
   return (
     <div className={styles.content}>
-      <div className="flex flex-col items-center space-y-4">
+      <div className="flex flex-col items-center space-y-3 sm:space-y-4 md:space-y-6 lg:space-y-8">
         
         {/* Badge - Now from CMS */}
         {data.badge && (
@@ -75,12 +75,24 @@ export default function HeroContent({ data }: HeroContentProps) {
                 />
             ) : data.festivalName?.split(' ').length > 1 ? (
                 <>
-                <h1 className={styles.mainTitle}>
-                    {data.festivalName.split(' ')[0]}
+                <img
+                  src="/images/SHAKARAWhite.png"
+                  alt="SHAKARA Festival"
+                  className={`w-full max-w-xs sm:max-w-sm md:max-w-lg lg:max-w-3xl xl:max-w-none h-auto ${styles.responsiveLogo}`}
+                  style={{ filter: 'brightness(1)' }}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    const fallback = target.nextElementSibling as HTMLElement;
+                    if (fallback) fallback.style.display = 'block';
+                  }}
+                />
+                <h1 
+                  className={styles.mainTitle}
+                  style={{ display: 'none' }}
+                >
+                  {data.festivalName.split(' ')[0]}
                 </h1>
-                <h2 className={styles.subtitle}>
-                    {data.festivalName.split(' ').slice(1).join(' ')}
-                </h2>
                 </>
             ) : (
                 <h1 className={styles.mainTitle}>
@@ -108,7 +120,7 @@ export default function HeroContent({ data }: HeroContentProps) {
         {/* CTA Buttons - From CMS */}
         {(data.ctaButtons?.primary?.enabled || data.ctaButtons?.secondary?.enabled) && (
           <motion.div
-            className="flex gap-4 mt-6"
+            className="flex gap-3 sm:gap-4 mt-4 sm:mt-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
@@ -140,7 +152,7 @@ export default function HeroContent({ data }: HeroContentProps) {
         {/* Social Links - From CMS */}
         {data.showSocialLinks && data.socialLinks && Object.values(data.socialLinks).some(link => link) && (
           <motion.div
-            className="flex gap-4 mt-6"
+            className="flex gap-3 sm:gap-4 mt-4 sm:mt-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.8 }}

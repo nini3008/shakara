@@ -15,7 +15,15 @@ export const urlFor = (source: SanityImageSource) => builder.image(source)
 
 // Helper function to get file URLs from Sanity
 export const getFileUrl = (fileRef: string) => {
-  return `https://cdn.sanity.io/files/${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}/${process.env.NEXT_PUBLIC_SANITY_DATASET}/${fileRef.split('-').slice(3).join('-')}`
+  // File refs are in format: file-<hash>-<extension>
+  // We need to extract the hash and extension
+  const parts = fileRef.split('-')
+  if (parts.length < 3) return null
+  
+  const hash = parts[1]
+  const extension = parts[2]
+  
+  return `https://cdn.sanity.io/files/${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}/${process.env.NEXT_PUBLIC_SANITY_DATASET}/${hash}.${extension}`
 }
 
 // GROQ queries

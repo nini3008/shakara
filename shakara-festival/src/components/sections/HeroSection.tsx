@@ -55,7 +55,7 @@ export default async function HeroSection() {
   const data = heroData || defaultData;
 
   // Get hero video URL if available (takes precedence over image)
-  const heroVideoUrl = sanityData?.heroVideo ? getFileUrl(sanityData.heroVideo.asset._ref) : null;
+  const heroVideoUrl = sanityData?.heroVideo?.asset?._ref ? getFileUrl(sanityData.heroVideo.asset._ref) : null;
   
   // Get hero image URL if available (fallback when no video)
   const heroImageUrl = sanityData?.heroImage ? urlFor(sanityData.heroImage).width(1920).height(1080).url() : null;
@@ -102,11 +102,6 @@ export default async function HeroSection() {
           />
         ) : null}
         <div className={styles.baseGradient} />
-        <div className={styles.orb1} />
-        <div className={styles.orb2} />
-        <div className={styles.centralOrb} />
-        <div className={styles.orb3} />
-        <div className={styles.orb4} />
         <div className={styles.bottomFade} />
       </div>
 
