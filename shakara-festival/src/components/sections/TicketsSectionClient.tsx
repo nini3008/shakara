@@ -75,6 +75,75 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
     }
   };
 
+  // Fallback curated tiers if no Sanity tickets available yet
+  const showCurated = !initialTickets || initialTickets.length === 0
+  const curatedTiers = [
+    {
+      id: 'general',
+      name: 'General Admission',
+      price: 75000,
+      originalPrice: 95000,
+      currency: '₦',
+      badge: 'Most Popular',
+      theme: 'general',
+      description: 'Access to festival grounds, main stages, and general amenities for all days.',
+      features: [
+        'All-day access to main festival areas',
+        'Access to food courts and merch village',
+        'Free water refill stations',
+        'Festival app and schedule access',
+      ],
+    },
+    {
+      id: 'vip',
+      name: 'VIP',
+      price: 180000,
+      originalPrice: 220000,
+      currency: '₦',
+      badge: 'Premium',
+      theme: 'vip',
+      description: 'Elevated experience with faster entry, premium viewing, and exclusive lounges.',
+      features: [
+        'Dedicated VIP fast-track entry',
+        'VIP viewing zones at main stages',
+        'Access to VIP lounges and premium bars',
+        'Private restrooms and concierge support',
+      ],
+    },
+    {
+      id: 'vvip',
+      name: 'VVIP',
+      price: 400000,
+      originalPrice: 0,
+      currency: '₦',
+      badge: 'Elite',
+      theme: 'vvip',
+      description: 'White-glove hospitality with backstage vibes, hosted lounges, and valet.',
+      features: [
+        'Backstage-inspired hosted lounge',
+        'Complimentary drinks and canapés',
+        'Valet drop-off and dedicated support',
+        'Best-in-venue stage viewing access',
+      ],
+    },
+    {
+      id: 'pit',
+      name: 'Pit Access',
+      price: 250000,
+      originalPrice: 0,
+      currency: '₦',
+      badge: 'Front Row',
+      theme: 'pit',
+      description: 'Closest to the action in the pit for the biggest headline sets.',
+      features: [
+        'Exclusive pit access at headliners',
+        'Dedicated pit entry lane',
+        'Limited capacity for optimal comfort',
+        'Souvenir lanyard and credential',
+      ],
+    },
+  ]
+
   return (
     <section id="tickets" className={styles.ticketsSection}>
       <div className={styles.container}>
@@ -82,7 +151,7 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
           Tickets
         </h2>
         
-        {initialTickets.length > 0 ? (
+        {(!showCurated && initialTickets.length > 0) ? (
           <>
             <div className={styles.ticketsGrid}>
               {initialTickets.map((ticket) => {
@@ -205,6 +274,43 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                   />
                 </svg>
               </Link>
+            </div>
+          </>
+        ) : showCurated ? (
+          <>
+            <div className={styles.ticketsGrid}>
+              {curatedTiers.map((t) => (
+                <div key={t.id} className={styles.ticketCardWrapper}>
+                  <div className={`${styles.ticketCard} ${styles[`theme_${t.theme}`]}`}>
+                    {t.badge && <div className={styles.badge}>{t.badge}</div>}
+                    <div className={styles.cardContent}>
+                      <h3 className={styles.ticketName}>{t.name}</h3>
+                      <div className={styles.priceContainer}>
+                        <div className={styles.priceGroup}>
+                          <span className={styles.currentPrice}>{`${t.currency}${t.price.toLocaleString()}`}</span>
+                          {!!t.originalPrice && t.originalPrice > t.price && (
+                            <span className={styles.originalPrice}>{`${t.currency}${t.originalPrice.toLocaleString()}`}</span>
+                          )}
+                        </div>
+                      </div>
+                      <p className={styles.description}>{t.description}</p>
+                      <ul className={styles.featuresList}>
+                        {t.features.map((f) => (
+                          <li key={f} className={styles.featureItem}>
+                            <svg className={styles.featureIcon} fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/></svg>
+                            {f}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className={styles.cardFooter}>
+                      <a href="#buy" className={styles.buyButton} aria-label={`Buy ${t.name} ticket`}>
+                        Buy Now
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </>
         ) : (

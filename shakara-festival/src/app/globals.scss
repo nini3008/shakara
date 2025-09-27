@@ -11,6 +11,9 @@
 @tailwind components;
 @tailwind utilities;
 
+// v2 base CSS variables & base layer
+@import '../styles/v2-base.css';
+
 // Base Styles
 * {
   margin: 0;
@@ -58,12 +61,62 @@ html {
 
 body {
   font-family: map.get($font-families, 'primary');
-  background: color('black'); // Always keep body dark for festival aesthetic
+  background: color('black'); // Base for dark theme
   color: color('white');
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+// Festival texture background inspired by brand gradients
+.texture-bg {
+  position: relative;
+  /* site-wide torn paper background */
+  background-color: #f7f7f5; /* subtle light paper underneath */
+  background-image: url('/images/torn-background.png');
+  background-repeat: repeat-y; /* only repeat vertically */
+  background-position: top center;
+  background-size: contain; /* keep paper scale, span width when possible */
+
+  [data-theme="dark"] & {
+    background-color: #0e0e0e;
+    background-image: url('/images/torn-background.png');
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -10%;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(24px) saturate(115%);
+    opacity: .45;
+    background-image:
+      radial-gradient(42rem 22rem at 12% 10%, rgba(var(--festival-orange-rgb, 255,154,86), 0.35) 0%, transparent 55%),
+      radial-gradient(36rem 20rem at 85% 15%, rgba(var(--festival-pink-rgb, 255,107,157), 0.35) 0%, transparent 58%),
+      radial-gradient(32rem 22rem at 15% 80%, rgba(var(--festival-blue-rgb, 72,219,251), 0.25) 0%, transparent 55%),
+      radial-gradient(30rem 20rem at 90% 82%, rgba(var(--festival-purple-rgb, 196,69,105), 0.28) 0%, transparent 58%),
+      radial-gradient(45rem 28rem at 50% 45%, rgba(var(--festival-yellow-rgb, 254,202,87), 0.18) 0%, transparent 60%);
+    background-repeat: no-repeat;
+  }
+
+  // Subtle grain without assets
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: .18;
+    background-image:
+      radial-gradient(1px 1px at 25% 35%, rgba(0,0,0,.08) 0.5px, transparent 1px),
+      radial-gradient(1px 1px at 75% 65%, rgba(0,0,0,.06) 0.5px, transparent 1px),
+      linear-gradient(0deg, rgba(255,255,255,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size: 180px 180px, 160px 160px, 3px 3px, 3px 3px;
+    mix-blend-mode: multiply;
+  }
 }
 
 // Themed content areas (only apply to specific sections)
@@ -291,6 +344,13 @@ img {
   
   --shadow-glow: #{shadow('glow')};
   --shadow-glow-lg: #{shadow('glow-lg')};
+
+  /* RGB triplets for textured background blotches */
+  --festival-orange-rgb: #{red(color('festival-orange'))}, #{green(color('festival-orange'))}, #{blue(color('festival-orange'))};
+  --festival-pink-rgb: #{red(color('festival-pink'))}, #{green(color('festival-pink'))}, #{blue(color('festival-pink'))};
+  --festival-purple-rgb: #{red(color('festival-purple'))}, #{green(color('festival-purple'))}, #{blue(color('festival-purple'))};
+  --festival-yellow-rgb: #{red(color('festival-yellow'))}, #{green(color('festival-yellow'))}, #{blue(color('festival-yellow'))};
+  --festival-blue-rgb: #{red(color('festival-blue'))}, #{green(color('festival-blue'))}, #{blue(color('festival-blue'))};
 }
 
 // Utility classes for Tailwind extensions

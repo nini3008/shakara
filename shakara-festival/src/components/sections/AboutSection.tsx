@@ -5,6 +5,7 @@ import { AboutSectionData } from '@/types';
 import { SanityAboutSection, adaptSanityAboutSection } from '@/types/sanity-adapters';
 import DynamicIcon from '@/components/DynamicIcon';
 import styles from './AboutSection.module.scss';
+import Reveal from '@/components/v2/Reveal';
 
 // Helper function to get platform-specific styling
 const getSocialPlatformClass = (platform: string) => {
@@ -121,14 +122,17 @@ export default async function AboutSection() {
   return (
     <section id="about" className={styles.aboutSection}>
       <div className={styles.container}>
-        <h2 className={styles.title}>
-          {sectionData.title}
-        </h2>
+        <Reveal>
+          <h2 className={styles.title}>
+            {sectionData.title}
+          </h2>
+        </Reveal>
         
         <div className={styles.contentLayout}>
           {/* Left side - Visual elements and stats */}
           <div className={styles.visualSection}>
             {/* Festival stats - dynamic from CMS */}
+            <Reveal>
             <div className={styles.heroStats}>
               <div className={styles.statCard}>
                 <div className={styles.statNumber}>{sectionData.stats.artistCount}</div>
@@ -150,8 +154,10 @@ export default async function AboutSection() {
                 <div className={styles.statLabel}>Expected</div>
               </div>
             </div>
+            </Reveal>
             
             {/* Festival highlights - dynamic from CMS */}
+            <Reveal delay={0.08}>
             <div className={styles.highlights}>
               {sectionData.highlights.map((highlight, index) => (
                 <div key={index} className={styles.highlightCard}>
@@ -163,9 +169,11 @@ export default async function AboutSection() {
                 </div>
               ))}
             </div>
+            </Reveal>
           </div>
           
           {/* Right side - Essential info and social */}
+          <Reveal>
           <div className={styles.infoSection}>
             {/* Dynamic description from CMS */}
             <p className={styles.description}>
@@ -212,6 +220,7 @@ export default async function AboutSection() {
               </div>
             )}
           </div>
+          </Reveal>
         </div>
       </div>
     </section>
