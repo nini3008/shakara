@@ -1,6 +1,6 @@
 // components/sections/LineupSection.tsx - Updated to use CMS data
 
-import { client, urlFor, FEATURED_ARTISTS_QUERY, LINEUP_SECTION_QUERY } from '@/lib/sanity';
+import { client, urlFor, FEATURED_ARTISTS_QUERY, ARTIST_QUERY, LINEUP_SECTION_QUERY } from '@/lib/sanity';
 import { Artist } from '@/types';
 import { SanityArtist, SanityLineupSection, adaptSanityArtist, adaptSanityLineupSection } from '@/types/sanity-adapters';
 import Image from 'next/image';
@@ -9,11 +9,21 @@ import styles from './LineupSection.module.scss';
 
 async function getFeaturedArtists(): Promise<{ artists: Artist[], sanityArtists: SanityArtist[] }> {
   try {
-    const sanityArtists: SanityArtist[] = await client.fetch(FEATURED_ARTISTS_QUERY);
-    const artists = sanityArtists.map(adaptSanityArtist);
-    return { artists, sanityArtists };
+    // First try to get featured artists
+    const featuredSanityArtists: SanityArtist[] = await client.fetch(FEATURED_ARTISTS_QUERY);
+
+    if (featuredSanityArtists.length > 0) {
+      const artists = featuredSanityArtists.map(adaptSanityArtist);
+      return { artists, sanityArtists: featuredSanityArtists };
+    }
+
+    // If no featured artists, get all artists as fallback
+    console.log('No featured artists found, falling back to all artists');
+    const allSanityArtists: SanityArtist[] = await client.fetch(ARTIST_QUERY);
+    const artists = allSanityArtists.map(adaptSanityArtist);
+    return { artists, sanityArtists: allSanityArtists };
   } catch (error) {
-    console.error('Error fetching featured artists:', error);
+    console.error('Error fetching artists:', error);
     return { artists: [], sanityArtists: [] };
   }
 }
@@ -203,19 +213,6 @@ export default async function LineupSection() {
             <p className={styles.emptyDescription}>
               {lineupData.emptyState.description}
             </p>
-            
-            {/* <div style={{ marginTop: '1.5rem' }}>
-              <Link 
-                href={lineupData.emptyState.buttonUrl}
-                className={styles.secondaryButton}
-                aria-label="Get notified when lineup is announced"
-              >
-                {lineupData.emptyState.buttonText}
-                <svg className={styles.buttonIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5z" />
-                </svg>
-              </Link>
-            </div> */}
           </div>
         )}
       </div>
