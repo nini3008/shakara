@@ -204,7 +204,7 @@ export default async function LineupSection() {
               {lineupData.emptyState.description}
             </p>
             
-            <div style={{ marginTop: '1.5rem' }}>
+            {/* <div style={{ marginTop: '1.5rem' }}>
               <Link 
                 href={lineupData.emptyState.buttonUrl}
                 className={styles.secondaryButton}
@@ -215,7 +215,7 @@ export default async function LineupSection() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5z" />
                 </svg>
               </Link>
-            </div>
+            </div> */}
           </div>
         )}
       </div>
