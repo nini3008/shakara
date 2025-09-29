@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import { useTheme } from '@/contexts/ThemeContext'
 import './ThemedContent.scss'
 
 interface ThemedContentProps {
@@ -11,7 +10,8 @@ interface ThemedContentProps {
 }
 
 const ThemedContent: React.FC<ThemedContentProps> = ({ children, className = '', transparent = false }) => {
-  const { theme } = useTheme()
+  // Always use dark theme
+  const theme = 'dark'
   
   return (
     <div 

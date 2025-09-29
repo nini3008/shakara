@@ -45,7 +45,7 @@ export default function HeroContent({ data }: HeroContentProps) {
 
   return (
     <div className={styles.content}>
-      <div className="flex flex-col items-center space-y-3 sm:space-y-4 md:space-y-6 lg:space-y-8">
+      <div className="flex flex-col items-center space-y-2 sm:space-y-3 md:space-y-4 lg:space-y-5">
         
         {/* Badge - Now from CMS */}
         {data.badge && (
@@ -120,7 +120,7 @@ export default function HeroContent({ data }: HeroContentProps) {
         {/* CTA Buttons - From CMS */}
         {(data.ctaButtons?.primary?.enabled || data.ctaButtons?.secondary?.enabled) && (
           <motion.div
-            className="flex gap-3 sm:gap-4 mt-4 sm:mt-6"
+            className="flex gap-3 sm:gap-4 mt-2 sm:mt-3"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
@@ -149,10 +149,10 @@ export default function HeroContent({ data }: HeroContentProps) {
           </motion.div>
         )}
 
-        {/* Social Links - From CMS */}
-        {data.showSocialLinks && data.socialLinks && Object.values(data.socialLinks).some(link => link) && (
+        {/* Social Links - Disabled, now in footer */}
+        {false && data.showSocialLinks && data.socialLinks && Object.values(data.socialLinks).some(link => link) && (
           <motion.div
-            className="flex gap-3 sm:gap-4 mt-4 sm:mt-6"
+            className="flex gap-3 sm:gap-4 mt-2 sm:mt-3"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.8 }}

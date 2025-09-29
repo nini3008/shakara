@@ -6,6 +6,7 @@
   background-position: top center;
   background-size: contain; /* ensure full image is visible */
   background-repeat: no-repeat;
+  background-color: transparent;
 }
 
 .flush {
@@ -23,28 +24,7 @@
   overflow: hidden;
 }
 
-/* Torn edges: top line mimics ripped seam against page bg; bottom exposes paper color again */
-.inner::before,
-.inner::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 6px;
-  z-index: 2;
-  clip-path: polygon(0% 0%, 5% 100%, 10% 0%, 15% 100%, 20% 0%, 25% 100%, 30% 0%, 35% 100%, 40% 0%, 45% 100%, 50% 0%, 55% 100%, 60% 0%, 65% 100%, 70% 0%, 75% 100%, 80% 0%, 85% 100%, 90% 0%, 95% 100%, 100% 0%);
-}
-
-.inner::before {
-  top: -1px;
-  background: #f3f4f6; /* page bg (light) */
-  mix-blend-mode: multiply;
-}
-
-.inner::after {
-  bottom: -6px;
-  background: transparent; /* no colored bottom strip in image mode */
-}
+/* Torn paper effects removed */
 
 /* Tone modifiers */
 .red {}
@@ -52,15 +32,12 @@
 
 .content {
   position: relative;
-  padding: 0 1.25rem;
+  padding: 0;
 }
 
-/* Hide pseudo-rip edges when using image background mode */
+/* Image mode styles (rip effects already removed) */
 .imageMode {
-  .inner::before,
-  .inner::after {
-    display: none;
-  }
+  /* No special styling needed */
 }
 
 /* Gradient vignettes to blend image with surrounding content */
@@ -83,7 +60,7 @@
 }
 
 @media (min-width: 768px) {
-  .content { padding: 3rem 2rem; }
+  .content { padding: 0; }
 }
 
 

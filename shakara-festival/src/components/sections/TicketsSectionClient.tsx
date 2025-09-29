@@ -5,6 +5,7 @@ import { useState, FormEvent, useEffect } from 'react';
 import { TicketType } from '@/types';
 import { SanityTicket } from '@/types/sanity-adapters';
 import Link from 'next/link';
+import { useCart } from '@/contexts/CartContext';
 import styles from './TicketsSection.module.scss';
 
 interface TicketsSectionClientProps {
@@ -19,6 +20,7 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState('');
   const [isLightTheme, setIsLightTheme] = useState(false);
+  const { addItem } = useCart();
 
   // Detect current theme
   useEffect(() => {
@@ -229,13 +231,16 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                             Sold Out
                           </button>
                         ) : ticket.available ? (
-                          <Link 
-                            href={`/tickets/${sanityTicket.slug.current}`} 
-                            className={styles.buyButton}
-                            aria-label={`Buy ${ticket.name} ticket`}
+                          <button
+                            onClick={() => {
+                              addItem({ id: `sanity-${sanityTicket.slug.current}`, name: ticket.name, price: ticket.price, quantity: 1, category: 'ticket' })
+                              window.dispatchEvent(new Event('cart:add'))
+                            }}
+                            className={styles.buyButton + ' clickable'}
+                            aria-label={`Add ${ticket.name} to basket`}
                           >
-                            Buy Now
-                          </Link>
+                            Add to Basket
+                          </button>
                         ) : (
                           <button 
                             disabled 
@@ -304,9 +309,9 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                       </ul>
                     </div>
                     <div className={styles.cardFooter}>
-                      <a href="#buy" className={styles.buyButton} aria-label={`Buy ${t.name} ticket`}>
-                        Buy Now
-                      </a>
+                      <button onClick={() => { addItem({ id: `curated-${t.id}`, name: t.name, price: t.price, quantity: 1, category: 'ticket' }); window.dispatchEvent(new Event('cart:add')) }} className={styles.buyButton + ' clickable'} aria-label={`Add ${t.name} ticket`}>
+                        Add to Basket
+                      </button>
                     </div>
                   </div>
                 </div>

@@ -1,3 +1,9 @@
 @import "tailwindcss";
 
+/* Ensure no unwanted gaps */
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
 

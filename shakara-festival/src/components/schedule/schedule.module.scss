@@ -13,19 +13,7 @@
   padding: 8rem 0 4rem;
   overflow: hidden;
 
-  /* torn-paper header image like PageHeader */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 180px;
-    background-image: url('/images/torn-paper-background.png');
-    background-repeat: no-repeat;
-    background-position: top center;
-    background-size: contain;
-    pointer-events: none;
-    z-index: 0;
-  }
+  /* Torn paper header removed */
 
   /* translucent glass like nav */
   & > .container > .headerContent {

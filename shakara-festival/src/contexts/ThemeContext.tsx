@@ -25,7 +25,7 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>('dark') // Default to dark (night mode)
+  const [theme, setTheme] = useState<Theme>('dark') // Default to dark
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -34,10 +34,22 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
       setTheme(savedTheme)
     } else {
-      // Default to dark theme if no saved preference
-      setTheme('dark')
+      // Check system preference
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      setTheme(prefersDark ? 'dark' : 'light')
     }
     setIsLoading(false)
+
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handleChange = (e: MediaQueryListEvent) => {
+      // Only update if user hasn't set a preference
+      if (!localStorage.getItem('shakara-theme')) {
+        setTheme(e.matches ? 'dark' : 'light')
+      }
+    }
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
   }, [])
 
   useEffect(() => {

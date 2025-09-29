@@ -9,6 +9,7 @@ import ScheduleContent from '@/components/schedule/scheduleContext'
 import styles from '@/components/schedule/schedule.module.scss'
 import PaperSection from '@/components/v2/PaperSection'
 import Reveal from '@/components/v2/Reveal'
+import PageHeader from '@/components/v2/PageHeader'
 
 // Server component to fetch initial data
 export default async function SchedulePage() {
@@ -26,8 +27,8 @@ export default async function SchedulePage() {
   return (
     <V2Layout currentPageName="Schedule">
       <ThemedContent transparent>
-        <PaperSection bgImage="/images/torn-paper-background.png">
-          <main className={`pt-16 ${styles.scheduleWrapper}`}>
+        <PaperSection>
+          <main className={styles.scheduleWrapper}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <Reveal>
                 <ScheduleContent

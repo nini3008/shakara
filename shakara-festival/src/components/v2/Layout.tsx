@@ -3,9 +3,10 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Sun, Moon } from 'lucide-react'
+import { Menu, X, ShoppingCart } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { useTheme } from '@/contexts/ThemeContext'
+import { CartProvider, useCart } from '@/contexts/CartContext'
+import CartDropdown from './CartDropdown'
 
 type FooterData = {
   brandSection?: { tagline?: string; location?: string }
@@ -19,16 +20,16 @@ const navigationItems = [
   { title: 'About', url: '/about' },
   { title: 'Lineup', url: '/lineup' },
   { title: 'Schedule', url: '/schedule' },
-  { title: 'Sponsors', url: '/sponsors' },
-  { title: 'Areas', url: '/areas' },
   { title: 'Partnership', url: '/partnership' },
 ]
 
-export default function V2Layout({ children, currentPageName }: { children: React.ReactNode; currentPageName?: string }) {
+function InnerLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   const [footerData, setFooterData] = React.useState<FooterData | null>(null)
-  const { theme, toggleTheme } = useTheme()
+  const { count } = useCart()
+  const [cartOpen, setCartOpen] = React.useState(false)
+  const [cartPulse, setCartPulse] = React.useState(false)
 
   React.useEffect(() => {
     ;(async () => {
@@ -44,8 +45,19 @@ export default function V2Layout({ children, currentPageName }: { children: Reac
     })()
   }, [])
 
+  React.useEffect(() => {
+    const onAdd = () => {
+      setCartPulse(true)
+      setCartOpen(true)
+      window.setTimeout(() => setCartPulse(false), 700)
+      window.setTimeout(() => setCartOpen(false), 1800)
+    }
+    window.addEventListener('cart:add', onAdd as EventListener)
+    return () => window.removeEventListener('cart:add', onAdd as EventListener)
+  }, [])
+
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'dark' : ''} texture-bg`} data-theme={theme}>
+    <div className="relative min-h-screen texture-bg">
       <style>{`
           :root {
             --gradient-primary: linear-gradient(135deg, #DC2626 0%, #F97316 100%);
@@ -58,16 +70,14 @@ export default function V2Layout({ children, currentPageName }: { children: Reac
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            color: transparent;
           }
-          .dark .gradient-text { background: var(--gradient-primary-dark); }
           .gradient-bg { background: var(--gradient-primary); }
-          .dark .gradient-bg { background: var(--gradient-primary-dark); }
           .gradient-bg-secondary { background: var(--gradient-secondary); }
-          .dark .gradient-bg-secondary { background: var(--gradient-secondary-dark); }
         `}</style>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/55 dark:bg-gray-950/45 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
+      <nav className="fixed top-0 left-0 right-0 z-[90] bg-gray-950/45 backdrop-blur-md border-b border-gray-800 overflow-visible">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
@@ -87,41 +97,52 @@ export default function V2Layout({ children, currentPageName }: { children: Reac
                   href={item.url}
                   className={`text-sm font-medium transition-colors duration-200 ${
                     pathname === item.url
-                      ? 'gradient-text'
-                      : 'text-gray-700 hover:text-orange-500 dark:text-gray-200 dark:hover:text-orange-400'
+                      ? 'text-orange-400'
+                      : 'text-gray-200 hover:text-orange-400'
                   }`}
                 >
                   {item.title}
                 </Link>
               ))}
-              <Link href="/tickets">
-                <Button className="gradient-bg text-white hover:opacity-90 transition-opacity">
-                  Buy Tickets
+              <div className="relative inline-flex rounded-md shadow-sm">
+                <Link href="/tickets">
+                  <Button className="gradient-bg text-white hover:opacity-90 transition-opacity rounded-none rounded-l-md">
+                    Buy Tickets
+                  </Button>
+                </Link>
+                <Button
+                  onClick={() => setCartOpen((o) => !o)}
+                  size="icon"
+                  aria-label="Open cart"
+                  className={`rounded-none rounded-r-md bg-white/20 hover:bg-white/30 border-l border-white/30 relative ${cartPulse ? 'animate-pulse' : ''}`}
+                >
+                  <ShoppingCart className="h-4 w-4 text-white" />
+                  {count > 0 && (
+                    <span className="absolute -top-1 -right-1 inline-flex items-center justify-center text-[10px] font-semibold px-1.5 h-4 min-w-4 rounded-full bg-orange-600 text-white pointer-events-none">
+                      {Math.min(count, 99)}
+                    </span>
+                  )}
                 </Button>
-              </Link>
-
-              {/* Theme toggle */}
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Toggle theme"
-                onClick={toggleTheme}
-                className="ml-2 text-gray-700 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400"
-              >
-                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-              </Button>
+                <CartDropdown open={cartOpen} />
+              </div>
             </div>
 
             {/* Mobile menu button */}
             <div className="md:hidden flex items-center gap-2">
+              {/* Cart Icon for Mobile */}
               <Button
                 variant="ghost"
                 size="icon"
-                aria-label="Toggle theme"
-                onClick={toggleTheme}
-                className="text-gray-700 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400"
+                aria-label="Open cart"
+                onClick={() => setCartOpen((o) => !o)}
+                className={`relative text-gray-200 hover:text-orange-400 ${cartPulse ? 'animate-pulse' : ''}`}
               >
-                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                <ShoppingCart className="h-5 w-5" />
+                {count > 0 && (
+                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center">
+                    {count}
+                  </span>
+                )}
               </Button>
               <Button
                 variant="ghost"
@@ -136,7 +157,7 @@ export default function V2Layout({ children, currentPageName }: { children: Reac
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800">
+          <div className="md:hidden bg-gray-950 border-t border-gray-800">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navigationItems.map((item) => (
                 <Link
@@ -144,33 +165,44 @@ export default function V2Layout({ children, currentPageName }: { children: Reac
                   href={item.url}
                   className={`block px-3 py-2 text-base font-medium transition-colors duration-200 ${
                     pathname === item.url
-                      ? 'gradient-text'
-                      : 'text-gray-700 hover:text-orange-500 dark:text-gray-200 dark:hover:text-orange-400'
+                      ? 'text-orange-400'
+                      : 'text-gray-200 hover:text-orange-400'
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.title}
                 </Link>
               ))}
-              <div className="px-3 py-2">
-                <Link href="/tickets" onClick={() => setMobileMenuOpen(false)}>
+              <div className="px-3 py-2 flex items-center gap-2">
+                <Link href="/tickets" onClick={() => setMobileMenuOpen(false)} className="flex-1">
                   <Button className="w-full gradient-bg text-white hover:opacity-90 transition-opacity">
                     Buy Tickets
                   </Button>
                 </Link>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Open cart"
+                  onClick={() => setCartOpen((o) => !o)}
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                </Button>
               </div>
             </div>
           </div>
         )}
       </nav>
 
+      {/* Torn paper overlay at page top over base texture */}
+      {/* Torn paper overlay removed */}
+
       {/* Main Content */}
-      <main className="pt-20">
+      <main className="pt-0">
         {children}
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 dark:bg-black text-white py-16">
+      <footer className="text-white py-16 bg-black/40 dark:bg-black/40 backdrop-blur-md border-t border-gray-800/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
@@ -190,7 +222,7 @@ export default function V2Layout({ children, currentPageName }: { children: Reac
             <div>
               <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
               <div className="space-y-2">
-                {(footerData?.quickLinks?.length ? footerData.quickLinks : navigationItems).map((item: any, idx: number) => {
+                {(footerData?.quickLinks?.length ? footerData.quickLinks : navigationItems).map((item: { label?: string; title?: string; href?: string; url?: string }, idx: number) => {
                   const label = item.label || item.title
                   const href = item.href || item.url
                   return (
@@ -207,11 +239,40 @@ export default function V2Layout({ children, currentPageName }: { children: Reac
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold mb-4">Contact</h3>
-              <div className="space-y-2 text-gray-400">
-                <p>info@shakarafestival.com</p>
-                <p>+1 (555) 123-4567</p>
-                <p>Follow @shakarafestival</p>
+              <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
+              <div className="space-y-3">
+                <a 
+                  href="https://instagram.com/shakarafestival" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="block text-gray-400 hover:text-white transition-colors"
+                >
+                  Instagram
+                </a>
+                <a 
+                  href="https://twitter.com/shakarafestival" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="block text-gray-400 hover:text-white transition-colors"
+                >
+                  Twitter
+                </a>
+                <a 
+                  href="https://facebook.com/shakarafestival" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="block text-gray-400 hover:text-white transition-colors"
+                >
+                  Facebook
+                </a>
+                <a 
+                  href="https://youtube.com/@shakarafestival" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="block text-gray-400 hover:text-white transition-colors"
+                >
+                  YouTube
+                </a>
               </div>
             </div>
           </div>
@@ -222,6 +283,14 @@ export default function V2Layout({ children, currentPageName }: { children: Reac
         </div>
       </footer>
     </div>
+  )
+}
+
+export default function V2Layout({ children }: { children: React.ReactNode; currentPageName?: string }) {
+  return (
+    <CartProvider>
+      <InnerLayout>{children}</InnerLayout>
+    </CartProvider>
   )
 }
 

@@ -8,8 +8,7 @@ export default function AboutPage() {
   return (
     <V2Layout currentPageName="About">
       <ThemedContent transparent>
-        <PageHeader title="About Us" description="The story behind Shakara Festival." />
-        <PaperSection bgImage="/images/torn-background.png">
+        <PaperSection>
           <AboutSection />
         </PaperSection>
       </ThemedContent>

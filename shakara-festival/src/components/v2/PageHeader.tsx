@@ -11,7 +11,7 @@ interface PageHeaderProps {
 export default function PageHeader({ title, description, stats }: PageHeaderProps) {
   return (
     <section className="relative pt-24 pb-6">
-      <div className="absolute inset-x-0 top-0 h-[180px] bg-[url('/images/torn-paper-background.png')] bg-no-repeat bg-top bg-contain pointer-events-none" />
+      {/* Torn paper background removed */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="mx-auto rounded-2xl border border-gray-200/50 dark:border-gray-800/50 bg-white/50 dark:bg-gray-950/40 backdrop-blur-md p-6 md:p-10">
           <div className="text-center max-w-3xl mx-auto">

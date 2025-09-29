@@ -8,8 +8,7 @@ export default function PartnershipPage() {
   return (
     <V2Layout currentPageName="Partnership">
       <ThemedContent transparent>
-        <PageHeader title="Partnerships" description="Work with us to elevate the festival experience." />
-        <PaperSection bgImage="/images/torn-paper-background.png">
+        <PaperSection>
           <PartnersSection />
         </PaperSection>
       </ThemedContent>

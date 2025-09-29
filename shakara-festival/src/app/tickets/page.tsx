@@ -7,7 +7,6 @@ export default function TicketsPage() {
   return (
     <V2Layout currentPageName="Tickets">
       <ThemedContent transparent>
-        <PageHeader title="Tickets" description="Choose your experience: General, VIP, VVIP, or Pit." />
         <TicketsSection />
       </ThemedContent>
     </V2Layout>

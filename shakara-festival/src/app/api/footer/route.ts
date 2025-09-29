@@ -11,7 +11,7 @@ export async function GET() {
     }`
     const data = await client.fetch(query)
     return NextResponse.json(data || {})
-  } catch (e) {
+  } catch {
     return NextResponse.json({}, { status: 200 })
   }
 }

@@ -25,7 +25,6 @@ export default async function LineupPage() {
     <V2Layout currentPageName="Lineup">
       <ThemedContent transparent>
         <main>
-          <PageHeader title="Lineup" description="Explore featured artists and the full daily schedule." />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <Reveal>
             <Tabs defaultValue="featured" className="w-full">

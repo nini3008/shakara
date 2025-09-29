@@ -5,7 +5,7 @@ import './globals.scss'
 import type { Metadata } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import React from 'react'
-import { ThemeProvider } from '@/contexts/ThemeContext'
+import { BackgroundWrapper } from '@/components/BackgroundWrapper'
 
 // Fonts
 const inter = Inter({
@@ -151,9 +151,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.className} antialiased`}>
-        <ThemeProvider>
+        <BackgroundWrapper>
           {children}
-        </ThemeProvider>
+        </BackgroundWrapper>
 
         {/* Analytics only in production */}
         {process.env.NODE_ENV === 'production' && (

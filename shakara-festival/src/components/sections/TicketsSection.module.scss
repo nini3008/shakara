@@ -6,7 +6,7 @@
   isolation: isolate;
   z-index: 60;
   padding: 5rem 0 6rem;
-  overflow: hidden;
+  overflow: visible; // prevent badges/pills from being clipped
   
   // Theme-aware background handled by ThemedContent wrapper
   
