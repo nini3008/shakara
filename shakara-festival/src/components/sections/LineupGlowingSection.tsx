@@ -59,7 +59,6 @@ export function LineupGlowingSection() {
           image="/images/shakara-junction.jpeg"
           title=""
           description=""
-          isJunction={true}
           mobileHeight="h-[500px]"
         />
       </ul>
@@ -72,14 +71,12 @@ const GridItem = ({
   image,
   title,
   description,
-  isJunction = false,
   mobileHeight = "h-[400px]"
 }: {
   area: string;
   image: string;
   title: string;
   description: string;
-  isJunction?: boolean;
   mobileHeight?: string;
 }) => {
   return (

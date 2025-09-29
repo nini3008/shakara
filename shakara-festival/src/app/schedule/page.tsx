@@ -9,7 +9,6 @@ import ScheduleContent from '@/components/schedule/scheduleContext'
 import styles from '@/components/schedule/schedule.module.scss'
 import PaperSection from '@/components/v2/PaperSection'
 import Reveal from '@/components/v2/Reveal'
-import PageHeader from '@/components/v2/PageHeader'
 
 // Server component to fetch initial data
 export default async function SchedulePage() {

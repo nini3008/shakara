@@ -7,7 +7,6 @@ import ScheduleContent from '@/components/schedule/scheduleContext'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import LineupSection from '@/components/sections/LineupSection'
 import Reveal from '@/components/v2/Reveal'
-import PageHeader from '@/components/v2/PageHeader'
 
 export default async function LineupPage() {
   let initialEvents: ScheduleEvent[] = []
