@@ -1,0 +1,66 @@
+.paperSection {
+  position: relative;
+  isolation: isolate;
+  margin: 0 auto;
+  padding: 0;
+  background-position: top center;
+  background-size: contain; /* ensure full image is visible */
+  background-repeat: no-repeat;
+  background-color: transparent;
+}
+
+.flush {
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.inner {
+  position: relative;
+  background: transparent;
+  border-radius: 6px;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+/* Torn paper effects removed */
+
+/* Tone modifiers */
+.red {}
+.cream {}
+
+.content {
+  position: relative;
+  padding: 0;
+}
+
+/* Image mode styles (rip effects already removed) */
+.imageMode {
+  /* No special styling needed */
+}
+
+/* Gradient vignettes to blend image with surrounding content */
+.imageMode::before,
+.imageMode::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 80px;
+  pointer-events: none;
+  z-index: 0;
+}
+.imageMode::before {
+  top: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.65), rgba(0,0,0,0));
+}
+.imageMode::after {
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0));
+}
+
+@media (min-width: 768px) {
+  .content { padding: 0; }
+}
+
+
