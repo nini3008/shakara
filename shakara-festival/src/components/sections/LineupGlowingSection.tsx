@@ -22,37 +22,23 @@ export function LineupGlowingSection() {
         <GridItem
           area="md:[grid-area:1/7/2/13] xl:[grid-area:1/5/2/9]"
           image="/images/lineup/line-up-day-2.jpeg"
-          title="Day 2: Peak Energy"
-          description="The heart of the festival with non-stop performances, cultural showcases, and the biggest names in African music."
+          title="Day 2: LEADING LADIES"
+          description=""
           mobileHeight="h-[400px]"
         />
         <GridItem
           area="md:[grid-area:2/7/4/13] xl:[grid-area:1/9/3/13]"
           image="/images/lineup/line-up-day-3.jpeg"
-          title="Day 3: Grand Finale Weekend"
-          description="Close out the festival with explosive performances, special collaborations, and memories that will last a lifetime under the Lagos skyline."
+          title="Day 3: AFROBEATS"
+          description=""
           mobileHeight="h-[420px]"
         />
         <GridItem
-          area="md:[grid-area:3/1/4/7] xl:[grid-area:2/5/3/9]"
+          area="md:[grid-area:5/1/6/13] xl:[grid-area:3/9/5/13]"
           image="/images/lineup/line-up-day-4.jpeg"
-          title="Day 4: After Party Vibes"
-          description="Keep the energy flowing with intimate sets, DJ sessions, and exclusive after-party experiences that extend the celebration."
-          mobileHeight="h-[380px]"
-        />
-        <GridItem
-          area="md:[grid-area:4/1/5/7] xl:[grid-area:3/1/4/5]"
-          image="/images/lineup/workshop-1.jpeg"
-          title="Cultural Workshops"
-          description="Engage with African culture through dance, art, and music workshops led by renowned artists."
-          mobileHeight="h-[350px]"
-        />
-        <GridItem
-          area="md:[grid-area:4/7/5/13] xl:[grid-area:3/5/4/9]"
-          image="/images/lineup/workshop-2.jpeg"
-          title="Artist Meet & Greets"
-          description="Connect with your favorite artists in exclusive VIP sessions and behind-the-scenes experiences."
-          mobileHeight="h-[350px]"
+          title="Day 4: GOSPEL NIGHT"
+          description=""
+          mobileHeight="h-[500px]"
         />
         <GridItem
           area="md:[grid-area:5/1/6/13] xl:[grid-area:3/9/5/13]"

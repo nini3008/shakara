@@ -39,23 +39,23 @@ export function LineupFeatureSection() {
 
 const lineupDays = [
   {
-    title: "Day 1: Opening Night Spectacular",
-    description: "Experience the grand opening with incredible Afrobeats, Amapiano, and traditional Nigerian sounds that will set the tone for an unforgettable festival.",
+    title: "Day 1: ALTÉ",
+    description: "",
     image: "/images/lineup/line-up-day-1.jpeg"
   },
   {
-    title: "Day 2: Peak Energy",
-    description: "The heart of the festival with non-stop performances, cultural showcases, and the biggest names in African music.",
+    title: "Day 2: LEADING LADIES",
+    description: "",
     image: "/images/lineup/line-up-day-2.jpeg"
   },
   {
-    title: "Day 3: Grand Finale Weekend", 
-    description: "Close out the festival with explosive performances, special collaborations, and memories that will last a lifetime under the Lagos skyline.",
+    title: "Day 3: AFROBEATS", 
+    description: "",
     image: "/images/lineup/line-up-day-3.jpeg"
   },
   {
-    title: "Day 4: After Party Vibes",
-    description: "Keep the energy flowing with intimate sets, DJ sessions, and exclusive after-party experiences that extend the celebration.",
+    title: "Day 4: GOSPEL NIGHT",
+    description: "",
     image: "/images/lineup/line-up-day-4.jpeg"
   }
 ];
