@@ -418,10 +418,10 @@
     background: rgba(0, 0, 0, 0.5);
     color: rgb(217, 119, 6);
     border: 1.5px solid rgb(217, 119, 6);
-    
+
     &:hover {
-      background: rgb(217, 119, 6);
-      color: #000000;
+      background: rgb(217, 119, 6) !important;
+      color: #ffffff !important;
       transform: translateY(-1px);
     }
     
@@ -434,7 +434,7 @@
       
       &:hover {
         background: rgb(217, 119, 6) !important;
-        color: #000000 !important;
+        color: #ffffff !important;
         border-color: rgb(217, 119, 6) !important;
         box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
       }

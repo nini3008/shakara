@@ -18,7 +18,6 @@ async function getFeaturedArtists(): Promise<{ artists: Artist[], sanityArtists:
     }
 
     // If no featured artists, get all artists as fallback
-    console.log('No featured artists found, falling back to all artists');
     const allSanityArtists: SanityArtist[] = await client.fetch(ARTIST_QUERY);
     const artists = allSanityArtists.map(adaptSanityArtist);
     return { artists, sanityArtists: allSanityArtists };
@@ -75,6 +74,25 @@ export default async function LineupSection() {
 
   const lineupData = sectionData || fallbackData;
 
+  // Sort artists by performance day (Day 1, Day 2, Day 3, etc.)
+  const sortedArtists = artists.sort((a, b) => {
+    // If both have days, sort by day number
+    if (a.day && b.day) {
+      return a.day - b.day;
+    }
+    // If only one has a day, put the one with day first
+    if (a.day && !b.day) return -1;
+    if (!a.day && b.day) return 1;
+    // If neither has a day, maintain original order
+    return 0;
+  });
+
+  // Create corresponding sorted sanity artists array
+  const sortedSanityArtists = sortedArtists.map(artist => {
+    const originalIndex = artists.findIndex(a => a.id === artist.id);
+    return sanityArtists[originalIndex];
+  });
+
   return (
     <section id="lineup" className={styles.lineupSection}>
       <div className={styles.container}>
@@ -104,11 +122,11 @@ export default async function LineupSection() {
           </div>
         </div>
         
-        {artists.length > 0 ? (
+        {sortedArtists.length > 0 ? (
           <>
             <div className={styles.artistsGrid}>
-              {artists.slice(0, lineupData.featuredArtistCount).map((artist, index) => {
-                const sanityArtist = sanityArtists[index];
+              {sortedArtists.slice(0, lineupData.featuredArtistCount).map((artist, index) => {
+                const sanityArtist = sortedSanityArtists[index];
                 return (
                   <div key={artist.id} className={styles.artistGroup}>
                     <Link href={`/artists/${sanityArtist.slug.current}`}>

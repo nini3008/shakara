@@ -11,62 +11,64 @@ export function LineupGlowingSection() {
         Featuring
       </h2>
       
-      <ul className="grid grid-cols-1 grid-rows-none gap-4 md:grid-cols-12 md:grid-rows-5 lg:gap-4 xl:grid-rows-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {/* All cards same size - Day 1 */}
         <GridItem
-          area="md:[grid-area:1/1/3/7] xl:[grid-area:1/1/3/5]"
           image="/images/lineup/line-up-day-1.jpeg"
           title="Day 1: ALTÉ"
           description=""
-          mobileHeight="h-[450px]"
+          cardHeight="h-[350px]"
         />
+
+        {/* Day 2 */}
         <GridItem
-          area="md:[grid-area:1/7/2/13] xl:[grid-area:1/5/2/9]"
           image="/images/lineup/line-up-day-2.jpeg"
           title="Day 2: LEADING LADIES"
           description=""
-          mobileHeight="h-[400px]"
+          cardHeight="h-[350px]"
         />
+
+        {/* Day 3 */}
         <GridItem
-          area="md:[grid-area:2/7/4/13] xl:[grid-area:1/9/3/13]"
           image="/images/lineup/line-up-day-3.jpeg"
           title="Day 3: AFROBEATS"
           description=""
-          mobileHeight="h-[420px]"
+          cardHeight="h-[350px]"
         />
+
+        {/* Day 4 */}
         <GridItem
-          area="md:[grid-area:5/1/6/13] xl:[grid-area:3/9/5/13]"
           image="/images/lineup/line-up-day-4.jpeg"
           title="Day 4: GOSPEL NIGHT"
           description=""
-          mobileHeight="h-[500px]"
+          cardHeight="h-[350px]"
         />
+
+        {/* Shakara Junction */}
         <GridItem
-          area="md:[grid-area:3/1/5/7] xl:[grid-area:3/1/5/9]"
           image="/images/shakara-junction.jpeg"
           title="SHAKARA JUNCTION"
           description=""
-          mobileHeight="h-[500px]"
+          cardHeight="h-[350px]"
         />
-      </ul>
+      </div>
     </div>
   );
 }
 
 const GridItem = ({
-  area,
   image,
   title,
   description,
-  mobileHeight = "h-[400px]"
+  cardHeight = "h-[400px]"
 }: {
-  area: string;
   image: string;
   title: string;
   description: string;
-  mobileHeight?: string;
+  cardHeight?: string;
 }) => {
   return (
-    <li className={`list-none ${mobileHeight} md:h-auto ${area}`}>
+    <div className={`${cardHeight}`}>
       <div className="relative h-full rounded-2xl border border-gray-800 p-2 md:rounded-3xl md:p-3">
         <GlowingEffect
           spread={40}
@@ -81,13 +83,18 @@ const GridItem = ({
           style={{
             backgroundImage: `url(${image})`,
             backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat'
           }}
         >
-          {/* Gradient overlay for text readability - only if text exists */}
+          {/* Enhanced overlay for better text readability */}
           {title && (
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+            <>
+              {/* Dark overlay for overall contrast */}
+              <div className="absolute inset-0 bg-black/40"></div>
+              {/* Gradient overlay for text area */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent"></div>
+            </>
           )}
           
           {/* Content */}
@@ -105,6 +112,6 @@ const GridItem = ({
           )}
         </div>
       </div>
-    </li>
+    </div>
   );
 };

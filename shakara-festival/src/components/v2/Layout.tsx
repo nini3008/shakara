@@ -19,8 +19,10 @@ type FooterData = {
 const navigationItems = [
   { title: 'Home', url: '/' },
   { title: 'About', url: '/about' },
+  { title: 'Artists', url: '/artists' },
   { title: 'Lineup', url: '/lineup' },
   { title: 'Schedule', url: '/schedule' },
+  { title: 'Tickets', url: '/tickets' },
   { title: 'Partnership', url: '/partnership' },
 ]
 
@@ -84,7 +86,7 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
             {/* Logo */}
             <Link href="/" className="flex-shrink-0">
               <img
-                src="/images/SHAKARAGradient.png"
+                src="/images/flutterwave-shakara-white.png"
                 alt="Shakara Festival"
                 className="h-12 w-auto"
               />
@@ -216,7 +218,7 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <img
-                src="/images/SHAKARAGradient.png"
+                src="/images/flutterwave-shakara-white.png"
                 alt="Shakara Festival"
                 className="h-16 w-auto mb-4"
               />
@@ -234,10 +236,26 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
                 {(footerData?.quickLinks?.length ? footerData.quickLinks : navigationItems).map((item: { label?: string; title?: string; href?: string; url?: string }, idx: number) => {
                   const label = item.label || item.title
                   const href = item.href || item.url
+
+                  // Skip items without valid href or use navigationItems fallback
+                  if (!href || href === '#') {
+                    const fallbackItem = navigationItems[idx]
+                    if (!fallbackItem) return null
+                    return (
+                      <Link
+                        key={(fallbackItem.title || 'link') + idx}
+                        href={fallbackItem.url}
+                        className="block text-gray-400 hover:text-white transition-colors"
+                      >
+                        {fallbackItem.title}
+                      </Link>
+                    )
+                  }
+
                   return (
                     <Link
                       key={(label || 'link') + idx}
-                      href={href || '#'}
+                      href={href}
                       className="block text-gray-400 hover:text-white transition-colors"
                     >
                       {label}
@@ -250,38 +268,57 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
             <div>
               <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
               <div className="space-y-3">
-                <a 
-                  href="https://instagram.com/shakarafestival" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="block text-gray-400 hover:text-white transition-colors"
-                >
-                  Instagram
-                </a>
-                <a 
-                  href="https://twitter.com/shakarafestival" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="block text-gray-400 hover:text-white transition-colors"
-                >
-                  Twitter
-                </a>
-                <a 
-                  href="https://facebook.com/shakarafestival" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="block text-gray-400 hover:text-white transition-colors"
-                >
-                  Facebook
-                </a>
-                <a 
-                  href="https://youtube.com/@shakarafestival" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="block text-gray-400 hover:text-white transition-colors"
-                >
-                  YouTube
-                </a>
+                {footerData?.socialLinks ? (
+                  Object.entries(footerData.socialLinks)
+                    .filter(([, url]) => url) // Only show platforms with URLs
+                    .map(([platform, url]) => (
+                      <a
+                        key={platform}
+                        href={url!}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block text-gray-400 hover:text-white transition-colors"
+                      >
+                        {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                      </a>
+                    ))
+                ) : (
+                  // Fallback social links when CMS data is not available
+                  <>
+                    <a
+                      href="https://www.instagram.com/theshakarafest/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-gray-400 hover:text-white transition-colors"
+                    >
+                      Instagram
+                    </a>
+                    <a
+                      href="https://x.com/theshakarafest/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-gray-400 hover:text-white transition-colors"
+                    >
+                      Twitter
+                    </a>
+                    <a
+                      href="https://www.facebook.com/theshakarafest/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-gray-400 hover:text-white transition-colors"
+                    >
+                      Facebook
+                    </a>
+                    <a
+                      href="https://www.youtube.com/@theshakarafest"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-gray-400 hover:text-white transition-colors"
+                    >
+                      YouTube
+                    </a>
+                  </>
+                )}
               </div>
             </div>
           </div>
