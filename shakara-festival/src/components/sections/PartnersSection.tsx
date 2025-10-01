@@ -4,6 +4,7 @@ import { client, FEATURED_PARTNERS_QUERY, urlFor } from '@/lib/sanity';
 import { Partner } from '@/types';
 import { SanityPartner, adaptSanityPartner } from '@/types/sanity-adapters';
 import Image from 'next/image';
+import EmailButton from '@/components/EmailButton';
 import styles from './PartnersSection.module.scss';
 
 async function getPartners(): Promise<{ partners: Partner[], sanityPartners: SanityPartner[] }> {
@@ -92,12 +93,14 @@ export default async function PartnersSection() {
                 <div className={styles.typeLabel}>Official Partners</div>
               </div>
             </div>
-            <button 
+            <EmailButton
+              email="contact@shakarafestival.com"
+              subject="Partnership Opportunity - Shakara Festival"
               className={styles.partnerButton}
               aria-label="Become a festival partner"
             >
               Become a Partner
-            </button>
+            </EmailButton>
           </div>
         </div>
       </section>
@@ -178,18 +181,20 @@ export default async function PartnersSection() {
               {"Join our growing family of partners and connect your brand with Africa's most vibrant music festival experience. Let's create something extraordinary together."}
             </p>
             <div className={styles.ctaButtons}>
-              <button 
+              {/* <button 
                 className={styles.primaryCtaButton}
                 aria-label="Learn about partnership opportunities"
               >
                 Partnership Info
-              </button>
-              <button 
+              </button> */}
+              <EmailButton
+                email="contact@shakarafestival.com"
+                subject="Partnership Opportunity - Shakara Festival"
                 className={styles.secondaryCtaButton}
                 aria-label="Contact us about partnering"
               >
                 Contact Us
-              </button>
+              </EmailButton>
             </div>
           </div>
         </div>

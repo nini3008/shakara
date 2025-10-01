@@ -80,6 +80,22 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
   const showCurated = !initialTickets || initialTickets.length === 0
   const curatedTiers = [
     {
+      id: 'pit',
+      name: 'Pit Access',
+      price: 250000,
+      originalPrice: 0,
+      currency: '₦',
+      badge: 'Front Row',
+      theme: 'pit',
+      description: 'Closest to the action in the pit for the biggest headline sets.',
+      features: [
+        'Exclusive pit access at headliners',
+        'Dedicated pit entry lane',
+        'Limited capacity for optimal comfort',
+        'Souvenir lanyard and credential',
+      ],
+    },
+    {
       id: 'general',
       name: 'General Admission',
       price: 75000,
@@ -125,22 +141,6 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
         'Complimentary drinks and canapés',
         'Valet drop-off and dedicated support',
         'Best-in-venue stage viewing access',
-      ],
-    },
-    {
-      id: 'pit',
-      name: 'Pit Access',
-      price: 250000,
-      originalPrice: 0,
-      currency: '₦',
-      badge: 'Front Row',
-      theme: 'pit',
-      description: 'Closest to the action in the pit for the biggest headline sets.',
-      features: [
-        'Exclusive pit access at headliners',
-        'Dedicated pit entry lane',
-        'Limited capacity for optimal comfort',
-        'Souvenir lanyard and credential',
       ],
     },
   ]

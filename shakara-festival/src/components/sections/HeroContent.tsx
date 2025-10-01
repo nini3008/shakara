@@ -63,22 +63,22 @@ export default function HeroContent({ data }: HeroContentProps) {
         {/* Main Title - Now from CMS with smart splitting */}
         <motion.div
           className={styles.titleContainer}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
         >
           {data.logo?.url ? (
                 <img
                 src={data.logo.url}
                 alt={data.logo.alt || data.festivalName || 'Festival Logo'}
-                className={styles.logo}
+                className={`${styles.logo} max-h-40 sm:max-h-48 md:max-h-56 lg:max-h-64 w-auto`}
                 />
             ) : data.festivalName?.split(' ').length > 1 ? (
                 <>
                 <img
-                  src="/images/SHAKARAWhite.png"
+                  src="/images/flutterwave-shakara.png"
                   alt="SHAKARA Festival"
-                  className={`w-full max-w-xs sm:max-w-sm md:max-w-lg lg:max-w-3xl xl:max-w-none h-auto ${styles.responsiveLogo}`}
+                  className={`max-h-40 sm:max-h-48 md:max-h-56 lg:max-h-64 w-auto ${styles.responsiveLogo}`}
                   style={{ filter: 'brightness(1)' }}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
