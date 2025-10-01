@@ -10,9 +10,7 @@ const LineupLampSection = dynamic(() => import('@/components/sections/LineupLamp
   loading: () => <div className="min-h-screen bg-slate-950" />,
 })
 
-const SponsorsWobbleSection = dynamic(() => import('@/components/sections/SponsorsWobbleSection').then(mod => ({ default: mod.SponsorsWobbleSection })), {
-  loading: () => <div className="min-h-[20rem] bg-slate-950" />,
-})
+// Sponsors section hidden
 
 export default async function Home() {
   return (
@@ -28,10 +26,7 @@ export default async function Home() {
         <LineupLampSection />
       </div>
       
-      {/* Sponsors Wobble Section */}
-      <div className="relative z-10">
-        <SponsorsWobbleSection />
-      </div>
+      {/* Sponsors section hidden */}
     </V2Layout>
   )
 }
