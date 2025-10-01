@@ -121,8 +121,17 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 8rem;
-  background: linear-gradient(to top, rgba(0, 0, 0, 1), transparent);
+  height: 18rem;
+  /* stronger, smoother blend from transparent (top) to black (bottom) */
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.98) 0%,
+    rgba(0, 0, 0, 0.7) 40%,
+    rgba(0, 0, 0, 0.35) 70%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 3;
 }
 
 .content {
@@ -130,19 +139,26 @@
   z-index: 5;
   max-width: 80rem;
   margin: 0 auto;
-  padding: 5rem 1.5rem 2rem;
+  padding: 2.5rem 1.5rem 2rem;
   text-align: center;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   
+  // Tablet
   @media (min-width: 768px) {
-    padding: 6rem 1.5rem 2rem;
+    padding: 3.5rem 1.5rem 2rem;
   }
   
+  // Desktop
   @media (min-width: 1024px) {
-    padding: 7rem 1.5rem 2rem;
+    padding: 4rem 1.5rem 2rem;
+  }
+  
+  // Large desktop
+  @media (min-width: 1280px) {
+    padding: 4.5rem 1.5rem 2rem;
   }
 }
 
@@ -540,7 +556,8 @@
 // Refined scroll indicator
 .scrollIndicator {
   position: absolute;
-  bottom: 3rem;
+  /* keep consistently above the fold regardless of viewport */
+  bottom: clamp(3rem, 8vh, 6rem);
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;

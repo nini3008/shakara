@@ -9,7 +9,8 @@
     "start": "sanity start",
     "build": "sanity build",
     "deploy": "sanity deploy",
-    "deploy-graphql": "sanity graphql deploy"
+    "deploy-graphql": "sanity graphql deploy",
+    "export:schema": "tsx scripts/export-schema.ts"
   },
   "keywords": [
     "sanity"
@@ -28,6 +29,8 @@
     "@types/react": "^19.1",
     "eslint": "^9.28",
     "prettier": "^3.5",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
     "typescript": "^5.8"
   },
   "prettier": {

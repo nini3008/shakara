@@ -1,13 +1,14 @@
 // app/schedule/page.tsx
 
-import Navigation from '@/components/Navigation';
-import Footer from '@/components/Footer';
-import ThemedContent from '@/components/ThemedContent';
-import { client, SCHEDULE_QUERY } from '@/lib/sanity';
-import { ScheduleEvent } from '@/types';
-import { SanityScheduleEvent, adaptSanityScheduleEvent } from '@/types/sanity-adapters';
-import ScheduleContent from '@/components/schedule/scheduleContext';
-import styles from '@/components/schedule/schedule.module.scss';
+import V2Layout from '@/components/v2/Layout'
+import ThemedContent from '@/components/ThemedContent'
+import { client, SCHEDULE_QUERY } from '@/lib/sanity'
+import { ScheduleEvent } from '@/types'
+import { SanityScheduleEvent, adaptSanityScheduleEvent } from '@/types/sanity-adapters'
+import ScheduleContent from '@/components/schedule/scheduleContext'
+import styles from '@/components/schedule/schedule.module.scss'
+import PaperSection from '@/components/v2/PaperSection'
+import Reveal from '@/components/v2/Reveal'
 
 // Server component to fetch initial data
 export default async function SchedulePage() {
@@ -23,17 +24,21 @@ export default async function SchedulePage() {
   }
 
   return (
-    <div className="min-h-screen">
-      <Navigation />
-      <ThemedContent>
-        <main className={`pt-16 ${styles.scheduleWrapper}`}>
-          <ScheduleContent 
-            initialEvents={initialEvents} 
-            initialSanityEvents={initialSanityEvents} 
-          />
-        </main>
-        <Footer />
+    <V2Layout currentPageName="Schedule">
+      <ThemedContent transparent>
+        <PaperSection>
+          <main className={styles.scheduleWrapper}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <Reveal>
+                <ScheduleContent
+                  initialEvents={initialEvents}
+                  initialSanityEvents={initialSanityEvents}
+                />
+              </Reveal>
+            </div>
+          </main>
+        </PaperSection>
       </ThemedContent>
-    </div>
-  );
+    </V2Layout>
+  )
 }

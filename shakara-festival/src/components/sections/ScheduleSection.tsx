@@ -6,6 +6,7 @@ import { SanityScheduleEvent, adaptSanityScheduleEvent } from '@/types/sanity-ad
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './ScheduleSection.module.scss';
+import { convertTo24Hour } from '@/lib/utils';
 
 async function getScheduleEvents(): Promise<{ events: ScheduleEvent[], sanityEvents: SanityScheduleEvent[] }> {
   try {
@@ -28,8 +29,24 @@ export default async function ScheduleSection() {
     return acc;
   }, {} as Record<number, ScheduleEvent[]>);
 
-  const featuredEvents = allEvents.filter((_, index) => allSanityEvents[index]?.featured).slice(0, 4);
-  const featuredSanityEvents = allSanityEvents.filter(event => event.featured).slice(0, 4);
+  // Get featured events and sort them chronologically
+  const featuredEventsData = allEvents
+    .map((event, index) => ({ event, sanityEvent: allSanityEvents[index] }))
+    .filter(({ sanityEvent }) => sanityEvent?.featured)
+    .sort((a, b) => {
+      // First sort by day
+      if (a.event.day !== b.event.day) {
+        return a.event.day - b.event.day;
+      }
+      // Then sort by time within the same day
+      const timeA = convertTo24Hour(a.event.time);
+      const timeB = convertTo24Hour(b.event.time);
+      return timeA.localeCompare(timeB);
+    })
+    .slice(0, 4);
+
+  const featuredEvents = featuredEventsData.map(({ event }) => event);
+  const featuredSanityEvents = featuredEventsData.map(({ sanityEvent }) => sanityEvent);
   const hasEvents = allEvents.length > 0;
 
   return (
@@ -47,8 +64,10 @@ export default async function ScheduleSection() {
                 .sort(([a], [b]) => Number(a) - Number(b))
                 .map(([day, events]) => {
                   const sortedEvents = events.sort((a, b) => {
-                    // Simple time sorting - you might want to improve this
-                    return a.time.localeCompare(b.time);
+                    // Convert time strings to comparable format (24-hour format)
+                    const timeA = convertTo24Hour(a.time);
+                    const timeB = convertTo24Hour(b.time);
+                    return timeA.localeCompare(timeB);
                   });
                   
                   return (

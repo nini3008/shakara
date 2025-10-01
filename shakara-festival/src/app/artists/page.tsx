@@ -5,7 +5,8 @@ import { Artist } from '@/types';
 import { SanityArtist, adaptSanityArtist } from '@/types/sanity-adapters';
 import Image from 'next/image';
 import Link from 'next/link';
-import Navigation from '@/components/Navigation';
+import V2Layout from '@/components/v2/Layout';
+import ThemedContent from '@/components/ThemedContent';
 
 async function getArtists(): Promise<{ artists: Artist[], sanityArtists: SanityArtist[] }> {
   try {
@@ -23,62 +24,51 @@ export default async function ArtistsPage() {
 
   if (artists.length === 0) {
     return (
-      <div className="min-h-screen bg-black text-white overflow-hidden">
-        <div className="fixed inset-0 bg-black z-0"></div>
-        <div className="relative z-10">
-          <Navigation />
-          <div className="pt-20 min-h-screen flex items-center justify-center bg-black">
+      <V2Layout currentPageName="Artists">
+        <ThemedContent transparent>
+          <div className="min-h-screen flex items-center justify-center">
             <div className="text-center max-w-2xl mx-auto px-4">
-              <h1 className="text-2xl font-bold mb-4">No Artists Found</h1>
+              <h1 className="text-2xl font-bold mb-4 text-white">No Artists Found</h1>
               <p className="text-gray-400 mb-8">Check your Sanity Studio and make sure you have artists published.</p>
               <Link 
                 href="/" 
-                className="inline-block bg-yellow-400 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition-colors"
+                className="inline-block gradient-bg text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
               >
                 Back to Home
               </Link>
             </div>
           </div>
-        </div>
-      </div>
+        </ThemedContent>
+      </V2Layout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden">
-      {/* Black overlay to cover any background */}
-      <div className="fixed inset-0 bg-black z-0"></div>
-      
-      {/* Main content on top */}
-      <div className="relative z-10">
-        <Navigation />
-        
-        {/* Main Content */}
-        <div className="pt-20 bg-black">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="text-center mb-10">
-              <h1 className="text-3xl md:text-5xl font-bold mb-3 font-space-grotesk">
-                <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-                  Artists
-                </span>
-              </h1>
-              <p className="text-gray-400 text-base max-w-xl mx-auto">
-                Discover the incredible talent performing at Shakara Festival 2025
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {artists.map((artist, index) => {
-                const sanityArtist = sanityArtists[index];
-                return (
-                  <ArtistCard key={artist.id} artist={artist} sanityArtist={sanityArtist} />
-                );
-              })}
-            </div>
+    <V2Layout currentPageName="Artists">
+      <ThemedContent transparent>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center mb-10">
+            <h1 className="text-3xl md:text-5xl font-bold mb-3">
+              <span className="gradient-text">
+                Artists
+              </span>
+            </h1>
+            <p className="text-gray-400 text-base max-w-xl mx-auto">
+              Discover the incredible talent performing at Shakara Festival 2025
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {artists.map((artist, index) => {
+              const sanityArtist = sanityArtists[index];
+              return (
+                <ArtistCard key={artist.id} artist={artist} sanityArtist={sanityArtist} />
+              );
+            })}
           </div>
         </div>
-      </div>
-    </div>
+      </ThemedContent>
+    </V2Layout>
   );
 }
 

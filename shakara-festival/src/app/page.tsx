@@ -1,41 +1,32 @@
 // app/page.tsx
 
-import ComingSoon from '@/components/ComingSoon'
+import dynamic from 'next/dynamic'
+import HeroSection from '@/components/sections/HeroSection'
+import ParallaxHero from '@/components/v2/ParallaxHero'
+import V2Layout from '@/components/v2/Layout'
 
-// Commented out for coming soon page
-// import Navigation from '@/components/Navigation'
-// import Footer from '@/components/Footer'
-// import AboutSection from '@/components/sections/AboutSection'
-// import HeroSection from '@/components/sections/HeroSection'
-// import LineupSection from '@/components/sections/LineupSection'
-// import TicketsSection from '@/components/sections/TicketsSection'
-// import ScheduleSection from '@/components/sections/ScheduleSection'
-// import MerchSection from '@/components/sections/MerchSection'
-// import PartnersSection from '@/components/sections/PartnersSection'
-// import ThemedContent from '@/components/ThemedContent'
+// Dynamically import heavy components to improve initial load
+const LineupLampSection = dynamic(() => import('@/components/sections/LineupLampSection').then(mod => ({ default: mod.LineupLampSection })), {
+  loading: () => <div className="min-h-screen bg-slate-950" />,
+})
+
+// Sponsors section hidden
 
 export default async function Home() {
-  return <ComingSoon />
-  
-  // Full site (commented out)
-  // return (
-  //   <div className="min-h-screen bg-black relative">
-  //     <div className="relative z-50">
-  //       <Navigation />
-  //     </div>
+  return (
+    <V2Layout>
+      <div className="relative z-30 h-screen overflow-hidden">
+        <ParallaxHero>
+          <HeroSection />
+        </ParallaxHero>
+      </div>
       
-  //     <div className="relative z-10 h-screen overflow-hidden -mt-16">
-  //       <HeroSection />
-  //     </div>
+      {/* Lineup Lamp Section - No padding/margins, starts immediately after hero */}
+      <div className="relative z-10">
+        <LineupLampSection />
+      </div>
       
-  //     <ThemedContent className="relative z-30">
-  //       <AboutSection />
-  //       <LineupSection />
-  //       <TicketsSection />
-  //       <ScheduleSection />
-  //       <PartnersSection />
-  //       <Footer />
-  //     </ThemedContent>
-  //   </div>
-  // )
+      {/* Sponsors section hidden */}
+    </V2Layout>
+  )
 }

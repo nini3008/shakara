@@ -103,7 +103,7 @@ const NewsletterSignup = ({ variant = 'hero', className }: NewsletterSignupProps
               {...register('firstName')}
               type="text"
               placeholder="First Name"
-              className="w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+              className="w-full px-4 py-3 rounded-xl bg-white/20 backdrop-blur-xl border border-white/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
             />
             {errors.firstName && (
               <p className="mt-1 text-sm text-red-400">{errors.firstName.message}</p>
@@ -115,7 +115,7 @@ const NewsletterSignup = ({ variant = 'hero', className }: NewsletterSignupProps
               {...register('email')}
               type="email"
               placeholder="Enter your email"
-              className="w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+              className="w-full px-4 py-3 rounded-xl bg-white/20 backdrop-blur-xl border border-white/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
             />
             {errors.email && (
               <p className="mt-1 text-sm text-red-400">{errors.email.message}</p>
@@ -154,7 +154,7 @@ const NewsletterSignup = ({ variant = 'hero', className }: NewsletterSignupProps
                 {...register('firstName')}
                 type="text"
                 placeholder="First Name"
-                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
               />
               {errors.firstName && (
                 <p className="mt-1 text-sm text-red-400">{errors.firstName.message}</p>
@@ -166,7 +166,7 @@ const NewsletterSignup = ({ variant = 'hero', className }: NewsletterSignupProps
                 {...register('email')}
                 type="email"
                 placeholder="Email Address"
-                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-400">{errors.email.message}</p>
@@ -183,7 +183,7 @@ const NewsletterSignup = ({ variant = 'hero', className }: NewsletterSignupProps
                     {...register('interests')}
                     type="checkbox"
                     value={interest}
-                    className="rounded border-gray-600 bg-white/10 text-yellow-400 focus:ring-yellow-400"
+                    className="rounded border-gray-600 bg-white/20 text-yellow-400 focus:ring-yellow-400"
                   />
                   <span className="text-gray-300">{interest}</span>
                 </label>
@@ -213,7 +213,7 @@ const NewsletterSignup = ({ variant = 'hero', className }: NewsletterSignupProps
           {...register('email')}
           type="email"
           placeholder="Enter your email"
-          className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          className="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
         />
         {errors.email && (
           <p className="text-sm text-red-400">{errors.email.message}</p>

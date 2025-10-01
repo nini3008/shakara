@@ -8,6 +8,7 @@ import { SanityScheduleEvent } from '@/types/sanity-adapters';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './schedule.module.scss';
+import { convertTo24Hour } from '@/lib/utils';
 
 interface ScheduleContentProps {
   initialEvents: ScheduleEvent[];
@@ -59,16 +60,28 @@ export default function ScheduleContent({ initialEvents, initialSanityEvents }: 
 
   // Filter events based on selected criteria
   const filteredEvents = useMemo(() => {
-    return initialEvents.filter(event => {
+    const filtered = initialEvents.filter(event => {
       const matchesDay = selectedDay === 'all' || event.day === selectedDay;
       const matchesStage = selectedStage === 'all' || event.stage === selectedStage;
       const matchesType = selectedType === 'all' || event.type === selectedType;
-      const matchesSearch = searchQuery === '' || 
+      const matchesSearch = searchQuery === '' ||
         event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         event.artist?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         event.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
       return matchesDay && matchesStage && matchesType && matchesSearch;
+    });
+
+    // Sort filtered events by day and time for grid view
+    return filtered.sort((a, b) => {
+      // First sort by day
+      if (a.day !== b.day) {
+        return a.day - b.day;
+      }
+      // Then sort by time within the same day
+      const timeA = convertTo24Hour(a.time);
+      const timeB = convertTo24Hour(b.time);
+      return timeA.localeCompare(timeB);
     });
   }, [initialEvents, selectedDay, selectedStage, selectedType, searchQuery]);
 
@@ -86,7 +99,11 @@ export default function ScheduleContent({ initialEvents, initialSanityEvents }: 
 
     // Sort events within each day by time
     Object.keys(grouped).forEach(day => {
-      grouped[Number(day)].sort((a, b) => a.event.time.localeCompare(b.event.time));
+      grouped[Number(day)].sort((a, b) => {
+        const timeA = convertTo24Hour(a.event.time);
+        const timeB = convertTo24Hour(b.event.time);
+        return timeA.localeCompare(timeB);
+      });
     });
 
     return grouped;

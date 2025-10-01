@@ -1,5 +1,6 @@
 // globals.scss
 @use 'sass:map';
+@use 'sass:color';
 @use '../styles/variables' as *;
 @use '../styles/components' as *;
 
@@ -11,6 +12,9 @@
 @tailwind components;
 @tailwind utilities;
 
+// v2 base CSS variables & base layer
+@import '../styles/v2-base.css';
+
 // Base Styles
 * {
   margin: 0;
@@ -20,21 +24,21 @@
 
 // CSS Custom Properties for theme support
 :root {
-  // Light theme colors
+  // Light theme colors - improved contrast
   --bg-primary-light: #ffffff;
   --bg-secondary-light: #f8fafc;
-  --text-primary-light: #1a1a1a;
-  --text-secondary-light: #374151;
+  --text-primary-light: #0f0f10;
+  --text-secondary-light: #1f2937;
   --border-light: #e5e7eb;
   
-  // Dark theme colors (default)
-  --bg-primary-dark: #000000;
-  --bg-secondary-dark: #0a0a0a;
-  --text-primary-dark: #ffffff;
-  --text-secondary-dark: #d1d5db;
-  --border-dark: #1f2937;
+  // Dark theme colors (default) - improved contrast
+  --bg-primary-dark: rgba(10, 10, 10, 0.8);
+  --bg-secondary-dark: rgba(20, 20, 20, 0.8);
+  --text-primary-dark: #fafafa;
+  --text-secondary-dark: #e5e7eb;
+  --border-dark: #374151;
   
-  // Current theme (defaults to dark)
+  // Current theme (defaults to system preference)
   --bg-primary: var(--bg-primary-dark);
   --bg-secondary: var(--bg-secondary-dark);
   --text-primary: var(--text-primary-dark);
@@ -49,21 +53,60 @@
   --text-primary: var(--text-primary-light);
   --text-secondary: var(--text-secondary-light);
   --border: var(--border-light);
+  
+  // Ensure readable text on gradient background
+  .gradient-text {
+    background: linear-gradient(135deg, #c44569 0%, #ff6b9d 50%, #ff9a56 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    filter: brightness(0.8);
+  }
 }
 
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 body {
   font-family: map.get($font-families, 'primary');
-  background: color('black'); // Always keep body dark for festival aesthetic
-  color: color('white');
+  background: #0a0a0a; // Dark theme background
+  color: #fafafa; // Light text for dark theme
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+}
+
+// Festival texture background inspired by brand gradients
+.texture-bg {
+  position: relative;
+  /* background textures removed */
+  background-color: transparent; /* Allow gradient to show through */
+  background-repeat: repeat-y; /* only repeat vertically */
+  background-position: top center;
+  background-size: contain; /* keep paper scale, span width when possible */
+
+  /* All texture and grain effects removed */
+}
+
+/* Global interactive cursor and transitions for buttons/links */
+button, [role="button"], a, input[type="button"], input[type="submit"], .clickable {
+  cursor: pointer;
+}
+
+button, .btn, .gradient-bg, .gradient-bg-secondary {
+  transition: transform 0.15s ease, opacity 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:active, .btn:active {
+  transform: translateY(1px);
 }
 
 // Themed content areas (only apply to specific sections)
@@ -291,6 +334,13 @@ img {
   
   --shadow-glow: #{shadow('glow')};
   --shadow-glow-lg: #{shadow('glow-lg')};
+
+  /* RGB triplets for textured background blotches */
+  --festival-orange-rgb: #{color.channel(color('festival-orange'), 'red', $space: rgb)}, #{color.channel(color('festival-orange'), 'green', $space: rgb)}, #{color.channel(color('festival-orange'), 'blue', $space: rgb)};
+  --festival-pink-rgb: #{color.channel(color('festival-pink'), 'red', $space: rgb)}, #{color.channel(color('festival-pink'), 'green', $space: rgb)}, #{color.channel(color('festival-pink'), 'blue', $space: rgb)};
+  --festival-purple-rgb: #{color.channel(color('festival-purple'), 'red', $space: rgb)}, #{color.channel(color('festival-purple'), 'green', $space: rgb)}, #{color.channel(color('festival-purple'), 'blue', $space: rgb)};
+  --festival-yellow-rgb: #{color.channel(color('festival-yellow'), 'red', $space: rgb)}, #{color.channel(color('festival-yellow'), 'green', $space: rgb)}, #{color.channel(color('festival-yellow'), 'blue', $space: rgb)};
+  --festival-blue-rgb: #{color.channel(color('festival-blue'), 'red', $space: rgb)}, #{color.channel(color('festival-blue'), 'green', $space: rgb)}, #{color.channel(color('festival-blue'), 'blue', $space: rgb)};
 }
 
 // Utility classes for Tailwind extensions
@@ -300,6 +350,7 @@ img {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    color: transparent;
   }
   
   .text-gradient-rainbow {
@@ -307,6 +358,7 @@ img {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    color: transparent;
   }
   
   .bg-glass {
@@ -386,4 +438,57 @@ img {
 
 .mobile-drawer__backdrop {
   z-index: 1200 !important; // Backdrop below drawer but above nav
+}
+
+/* Infinite Moving Cards Animation */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+
+.animate-scroll {
+  animation: scroll linear infinite;
+  animation-duration: var(--animation-duration, 40s);
+  animation-direction: var(--animation-direction, normal);
+}
+
+/* Background Gradient Animation */
+@keyframes moveHorizontal {
+  0% {
+    transform: translateX(-50%) translateY(-10%);
+  }
+  50% {
+    transform: translateX(50%) translateY(10%);
+  }
+  100% {
+    transform: translateX(-50%) translateY(-10%);
+  }
+}
+
+@keyframes moveInCircle {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes moveVertical {
+  0% {
+    transform: translateY(-50%);
+  }
+  50% {
+    transform: translateY(50%);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
 }

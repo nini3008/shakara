@@ -10,23 +10,26 @@
 
 .scheduleHeader {
   position: relative;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(10, 10, 10, 1) 50%,
-    rgba(0, 0, 0, 1) 100%
-  );
   padding: 8rem 0 4rem;
   overflow: hidden;
+
+  /* Torn paper header removed */
+
+  /* translucent glass like nav */
+  & > .container > .headerContent {
+    background: rgba(255,255,255,0.5);
+    border: 1px solid rgba(148,163,184,0.5);
+    backdrop-filter: blur(8px);
+    border-radius: 1rem;
+    padding: 1.25rem;
+  }
   
   // Light theme override
   :global(.themed-content[data-theme="light"]) & {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 1) 0%,
-      rgba(248, 250, 252, 1) 50%,
-      rgba(255, 255, 255, 1) 100%
-    ) !important;
+    & > .container > .headerContent {
+      background: rgba(255,255,255,0.6) !important;
+      border-color: rgba(148,163,184,0.5) !important;
+    }
   }
   
   // Decorative gradient orb

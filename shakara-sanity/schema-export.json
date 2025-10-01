@@ -1,0 +1,2262 @@
+{
+  "generatedAt": "2025-09-26T14:46:17.610Z",
+  "types": [
+    {
+      "name": "heroSection",
+      "title": "Hero Section",
+      "type": "document",
+      "fields": [
+        {
+          "name": "name",
+          "title": "Section Name",
+          "type": "string",
+          "description": "Internal name for this hero section (not displayed on site)"
+        },
+        {
+          "name": "logo",
+          "title": "Festival Logo",
+          "type": "image",
+          "options": {
+            "hotspot": true
+          },
+          "fields": [
+            {
+              "name": "alt",
+              "title": "Alt text",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "name": "slug",
+          "title": "Slug",
+          "type": "slug",
+          "options": {
+            "source": "name",
+            "maxLength": 96
+          }
+        },
+        {
+          "name": "festivalName",
+          "title": "Festival Name",
+          "type": "string",
+          "description": "Main festival title (e.g., \"SHAKARA FESTIVAL\")"
+        },
+        {
+          "name": "badge",
+          "title": "Badge Text",
+          "type": "string",
+          "description": "Text shown in the badge above the title",
+          "initialValue": "🌍 Africa's Premier Music Festival"
+        },
+        {
+          "name": "dates",
+          "title": "Festival Dates",
+          "type": "object",
+          "fields": [
+            {
+              "name": "start",
+              "title": "Start Date",
+              "type": "date"
+            },
+            {
+              "name": "end",
+              "title": "End Date",
+              "type": "date"
+            }
+          ]
+        },
+        {
+          "name": "location",
+          "title": "Location",
+          "type": "object",
+          "fields": [
+            {
+              "name": "venue",
+              "title": "Venue",
+              "type": "string"
+            },
+            {
+              "name": "city",
+              "title": "City",
+              "type": "string"
+            },
+            {
+              "name": "country",
+              "title": "Country",
+              "type": "string",
+              "initialValue": "Nigeria"
+            },
+            {
+              "name": "address",
+              "title": "Full Address",
+              "type": "text",
+              "description": "Complete address for the venue"
+            }
+          ]
+        },
+        {
+          "name": "stats",
+          "title": "Festival Stats",
+          "type": "object",
+          "description": "Statistics displayed in the hero section",
+          "fields": [
+            {
+              "name": "artistCount",
+              "title": "Number of Artists",
+              "type": "number",
+              "description": "Total number of performing artists",
+              "initialValue": 50
+            },
+            {
+              "name": "expectedAttendance",
+              "title": "Expected Attendance",
+              "type": "string",
+              "description": "Expected number of attendees (e.g., \"50K+\")",
+              "initialValue": "50K+"
+            },
+            {
+              "name": "dayCount",
+              "title": "Number of Days",
+              "type": "number",
+              "description": "Duration of the festival in days",
+              "options": {
+                "list": [
+                  {
+                    "title": "1 Day",
+                    "value": 1
+                  },
+                  {
+                    "title": "2 Days",
+                    "value": 2
+                  },
+                  {
+                    "title": "3 Days",
+                    "value": 3
+                  },
+                  {
+                    "title": "4 Days",
+                    "value": 4
+                  },
+                  {
+                    "title": "5 Days",
+                    "value": 5
+                  }
+                ]
+              },
+              "initialValue": 4
+            }
+          ]
+        },
+        {
+          "name": "heroVideo",
+          "title": "Hero Background Video",
+          "type": "file",
+          "description": "Optional background video for the hero section (takes precedence over image)",
+          "options": {
+            "accept": "video/mp4,video/webm,video/ogg"
+          }
+        },
+        {
+          "name": "heroImage",
+          "title": "Hero Background Image",
+          "type": "image",
+          "description": "Background image for the hero section (used when no video is provided)",
+          "options": {
+            "hotspot": true
+          }
+        },
+        {
+          "name": "socialLinks",
+          "title": "Social Media Links",
+          "type": "object",
+          "description": "Social media links displayed in the hero section",
+          "fields": [
+            {
+              "name": "instagram",
+              "title": "Instagram",
+              "type": "url"
+            },
+            {
+              "name": "twitter",
+              "title": "Twitter",
+              "type": "url"
+            },
+            {
+              "name": "tiktok",
+              "title": "TikTok",
+              "type": "url"
+            },
+            {
+              "name": "youtube",
+              "title": "YouTube",
+              "type": "url"
+            },
+            {
+              "name": "facebook",
+              "title": "Facebook",
+              "type": "url"
+            },
+            {
+              "name": "spotify",
+              "title": "Spotify",
+              "type": "url"
+            }
+          ]
+        },
+        {
+          "name": "description",
+          "title": "Festival Description",
+          "type": "text",
+          "description": "Brief description of the festival (for SEO and meta tags)"
+        },
+        {
+          "name": "ctaButtons",
+          "title": "Call-to-Action Buttons",
+          "type": "object",
+          "description": "Optional action buttons in the hero section",
+          "fields": [
+            {
+              "name": "primary",
+              "title": "Primary Button",
+              "type": "object",
+              "fields": [
+                {
+                  "name": "text",
+                  "title": "Button Text",
+                  "type": "string"
+                },
+                {
+                  "name": "url",
+                  "title": "Button URL",
+                  "type": "url"
+                },
+                {
+                  "name": "enabled",
+                  "title": "Show Button",
+                  "type": "boolean",
+                  "initialValue": false
+                }
+              ]
+            },
+            {
+              "name": "secondary",
+              "title": "Secondary Button",
+              "type": "object",
+              "fields": [
+                {
+                  "name": "text",
+                  "title": "Button Text",
+                  "type": "string"
+                },
+                {
+                  "name": "url",
+                  "title": "Button URL",
+                  "type": "url"
+                },
+                {
+                  "name": "enabled",
+                  "title": "Show Button",
+                  "type": "boolean",
+                  "initialValue": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "showScrollIndicator",
+          "title": "Show Scroll Indicator",
+          "type": "boolean",
+          "description": "Display the animated scroll indicator at the bottom",
+          "initialValue": true
+        },
+        {
+          "name": "showStats",
+          "title": "Show Statistics",
+          "type": "boolean",
+          "description": "Display the festival statistics in the hero section",
+          "initialValue": true
+        },
+        {
+          "name": "showSocialLinks",
+          "title": "Show Social Links",
+          "type": "boolean",
+          "description": "Display social media links in the hero section",
+          "initialValue": true
+        },
+        {
+          "name": "active",
+          "title": "Active Hero Section",
+          "type": "boolean",
+          "description": "Set as the active hero section to display on the homepage",
+          "initialValue": false
+        }
+      ],
+      "options": {},
+      "orderings": [
+        {
+          "title": "Active First",
+          "name": "activeFirst",
+          "by": [
+            {
+              "field": "active",
+              "direction": "desc"
+            },
+            {
+              "field": "festivalName",
+              "direction": "asc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "artist",
+      "title": "Artists",
+      "type": "document",
+      "fields": [
+        {
+          "name": "name",
+          "title": "Artist Name",
+          "type": "string"
+        },
+        {
+          "name": "slug",
+          "title": "Slug",
+          "type": "slug",
+          "options": {
+            "source": "name",
+            "maxLength": 96
+          }
+        },
+        {
+          "name": "image",
+          "title": "Artist Image",
+          "type": "image",
+          "options": {
+            "hotspot": true
+          }
+        },
+        {
+          "name": "genre",
+          "title": "Genre",
+          "type": "string",
+          "options": {
+            "list": [
+              {
+                "title": "Afrobeats",
+                "value": "afrobeats"
+              },
+              {
+                "title": "Amapiano",
+                "value": "amapiano"
+              },
+              {
+                "title": "Hip-Hop",
+                "value": "hip-hop"
+              },
+              {
+                "title": "R&B",
+                "value": "rnb"
+              },
+              {
+                "title": "Gospel",
+                "value": "gospel"
+              },
+              {
+                "title": "Highlife",
+                "value": "highlife"
+              },
+              {
+                "title": "Alté",
+                "value": "alte"
+              },
+              {
+                "title": "Grime",
+                "value": "grime"
+              },
+              {
+                "title": "Other",
+                "value": "other"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bio",
+          "title": "Biography",
+          "type": "text"
+        },
+        {
+          "name": "socialLinks",
+          "title": "Social Links",
+          "type": "object",
+          "fields": [
+            {
+              "name": "instagram",
+              "title": "Instagram",
+              "type": "url"
+            },
+            {
+              "name": "twitter",
+              "title": "Twitter",
+              "type": "url"
+            },
+            {
+              "name": "spotify",
+              "title": "Spotify",
+              "type": "url"
+            },
+            {
+              "name": "youtube",
+              "title": "YouTube",
+              "type": "url"
+            }
+          ]
+        },
+        {
+          "name": "performanceDay",
+          "title": "Performance Day",
+          "type": "number",
+          "options": {
+            "list": [
+              {
+                "title": "Day 1",
+                "value": 1
+              },
+              {
+                "title": "Day 2",
+                "value": 2
+              },
+              {
+                "title": "Day 3",
+                "value": 3
+              },
+              {
+                "title": "Day 4",
+                "value": 4
+              }
+            ]
+          }
+        },
+        {
+          "name": "performanceTime",
+          "title": "Performance Time",
+          "type": "string"
+        },
+        {
+          "name": "stage",
+          "title": "Stage",
+          "type": "string",
+          "options": {
+            "list": [
+              {
+                "title": "Main Stage",
+                "value": "main"
+              },
+              {
+                "title": "Secondary Stage",
+                "value": "secondary"
+              },
+              {
+                "title": "Club Stage",
+                "value": "club"
+              },
+              {
+                "title": "Acoustic Stage",
+                "value": "acoustic"
+              }
+            ]
+          }
+        },
+        {
+          "name": "featured",
+          "title": "Featured Artist",
+          "type": "boolean",
+          "description": "Featured artists appear prominently on the lineup",
+          "initialValue": false
+        }
+      ],
+      "options": {},
+      "orderings": []
+    },
+    {
+      "name": "ticket",
+      "title": "Tickets",
+      "type": "document",
+      "fields": [
+        {
+          "name": "name",
+          "title": "Ticket Name",
+          "type": "string"
+        },
+        {
+          "name": "slug",
+          "title": "Slug",
+          "type": "slug",
+          "options": {
+            "source": "name",
+            "maxLength": 96
+          }
+        },
+        {
+          "name": "description",
+          "title": "Description",
+          "type": "text",
+          "rows": 3
+        },
+        {
+          "name": "price",
+          "title": "Price (NGN)",
+          "type": "number"
+        },
+        {
+          "name": "originalPrice",
+          "title": "Original Price (NGN)",
+          "type": "number",
+          "description": "If this ticket is on sale, enter the original price here"
+        },
+        {
+          "name": "currency",
+          "title": "Currency",
+          "type": "string",
+          "options": {
+            "list": [
+              {
+                "title": "Nigerian Naira (NGN)",
+                "value": "NGN"
+              },
+              {
+                "title": "US Dollar (USD)",
+                "value": "USD"
+              },
+              {
+                "title": "British Pound (GBP)",
+                "value": "GBP"
+              },
+              {
+                "title": "Euro (EUR)",
+                "value": "EUR"
+              }
+            ]
+          },
+          "initialValue": "NGN"
+        },
+        {
+          "name": "features",
+          "title": "Features",
+          "type": "array",
+          "of": [
+            {
+              "type": "string"
+            }
+          ],
+          "description": "List of features included with this ticket"
+        },
+        {
+          "name": "available",
+          "title": "Available for Purchase",
+          "type": "boolean",
+          "initialValue": true
+        },
+        {
+          "name": "duration",
+          "title": "Duration",
+          "type": "string",
+          "options": {
+            "list": [
+              {
+                "title": "1 Day",
+                "value": "1-day"
+              },
+              {
+                "title": "2 Days",
+                "value": "2-day"
+              },
+              {
+                "title": "3 Days",
+                "value": "3-day"
+              },
+              {
+                "title": "4 Days (Full Festival)",
+                "value": "4-day"
+              }
+            ]
+          }
+        },
+        {
+          "name": "type",
+          "title": "Ticket Type",
+          "type": "string",
+          "options": {
+            "list": [
+              {
+                "title": "General Admission",
+                "value": "general"
+              },
+              {
+                "title": "Pit Access",
+                "value": "pit"
+              },
+              {
+                "title": "VIP",
+                "value": "vip"
+              },
+              {
+                "title": "VVIP",
+                "value": "vvip"
+              },
+              {
+                "title": "Family Package",
+                "value": "family"
+              },
+              {
+                "title": "Student",
+                "value": "student"
+              },
+              {
+                "title": "Early Bird",
+                "value": "early-bird"
+              }
+            ]
+          }
+        },
+        {
+          "name": "discount",
+          "title": "Discount Percentage",
+          "type": "number",
+          "description": "Enter discount percentage (e.g., 25 for 25% off)"
+        },
+        {
+          "name": "maxQuantity",
+          "title": "Maximum Quantity per Order",
+          "type": "number",
+          "initialValue": 10
+        },
+        {
+          "name": "soldOut",
+          "title": "Sold Out",
+          "type": "boolean",
+          "initialValue": false
+        },
+        {
+          "name": "saleStartDate",
+          "title": "Sale Start Date",
+          "type": "datetime",
+          "description": "When this ticket becomes available for purchase"
+        },
+        {
+          "name": "saleEndDate",
+          "title": "Sale End Date",
+          "type": "datetime",
+          "description": "When this ticket stops being available for purchase"
+        },
+        {
+          "name": "featured",
+          "title": "Featured Ticket",
+          "type": "boolean",
+          "description": "Featured tickets appear prominently on the tickets page",
+          "initialValue": false
+        },
+        {
+          "name": "badge",
+          "title": "Badge Text",
+          "type": "string",
+          "description": "Optional badge text (e.g., \"BEST VALUE\", \"LIMITED TIME\")"
+        },
+        {
+          "name": "order",
+          "title": "Display Order",
+          "type": "number",
+          "description": "Order in which tickets should be displayed (lower numbers first)",
+          "initialValue": 0
+        }
+      ],
+      "options": {},
+      "orderings": [
+        {
+          "title": "Price (Low to High)",
+          "name": "priceAsc",
+          "by": [
+            {
+              "field": "price",
+              "direction": "asc"
+            }
+          ]
+        },
+        {
+          "title": "Price (High to Low)",
+          "name": "priceDesc",
+          "by": [
+            {
+              "field": "price",
+              "direction": "desc"
+            }
+          ]
+        },
+        {
+          "title": "Display Order",
+          "name": "orderAsc",
+          "by": [
+            {
+              "field": "order",
+              "direction": "asc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "scheduleEvent",
+      "title": "Schedule Events",
+      "type": "document",
+      "fields": [
+        {
+          "name": "title",
+          "title": "Event Title",
+          "type": "string"
+        },
+        {
+          "name": "slug",
+          "title": "Slug",
+          "type": "slug",
+          "options": {
+            "source": "title",
+            "maxLength": 96
+          }
+        },
+        {
+          "name": "description",
+          "title": "Description",
+          "type": "text",
+          "rows": 3
+        },
+        {
+          "name": "time",
+          "title": "Start Time",
+          "type": "string",
+          "description": "Event start time (e.g., \"6:00 PM\")"
+        },
+        {
+          "name": "endTime",
+          "title": "End Time",
+          "type": "string",
+          "description": "Event end time (optional)"
+        },
+        {
+          "name": "day",
+          "title": "Festival Day",
+          "type": "number",
+          "options": {
+            "list": [
+              {
+                "title": "Day 1 (Dec 17)",
+                "value": 1
+              },
+              {
+                "title": "Day 2 (Dec 18)",
+                "value": 2
+              },
+              {
+                "title": "Day 3 (Dec 19)",
+                "value": 3
+              },
+              {
+                "title": "Day 4 (Dec 20)",
+                "value": 4
+              }
+            ]
+          }
+        },
+        {
+          "name": "type",
+          "title": "Event Type",
+          "type": "string",
+          "options": {
+            "list": [
+              {
+                "title": "Musical Performance",
+                "value": "music"
+              },
+              {
+                "title": "Panel Discussion",
+                "value": "panel"
+              },
+              {
+                "title": "Vendors/Market",
+                "value": "vendors"
+              },
+              {
+                "title": "After Party",
+                "value": "afterparty"
+              },
+              {
+                "title": "Workshop",
+                "value": "workshop"
+              },
+              {
+                "title": "Food & Drinks",
+                "value": "food"
+              },
+              {
+                "title": "Art Installation",
+                "value": "art"
+              },
+              {
+                "title": "Meet & Greet",
+                "value": "meetgreet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "artist",
+          "title": "Featured Artist",
+          "type": "reference",
+          "to": [
+            {
+              "type": "artist"
+            }
+          ],
+          "description": "Link to artist if this is a musical performance"
+        },
+        {
+          "name": "stage",
+          "title": "Stage/Location",
+          "type": "string",
+          "options": {
+            "list": [
+              {
+                "title": "Main Stage",
+                "value": "main"
+              },
+              {
+                "title": "Secondary Stage",
+                "value": "secondary"
+              },
+              {
+                "title": "Club Stage",
+                "value": "club"
+              },
+              {
+                "title": "Acoustic Stage",
+                "value": "acoustic"
+              },
+              {
+                "title": "Conference Hall",
+                "value": "conference"
+              },
+              {
+                "title": "VIP Lounge",
+                "value": "vip-lounge"
+              },
+              {
+                "title": "Food Court",
+                "value": "food-court"
+              },
+              {
+                "title": "Art Gallery",
+                "value": "art-gallery"
+              },
+              {
+                "title": "Vendor Area",
+                "value": "vendor-area"
+              }
+            ]
+          }
+        },
+        {
+          "name": "featured",
+          "title": "Featured Event",
+          "type": "boolean",
+          "description": "Featured events appear prominently in the schedule",
+          "initialValue": false
+        },
+        {
+          "name": "ticketRequired",
+          "title": "Ticket Required",
+          "type": "string",
+          "options": {
+            "list": [
+              {
+                "title": "General Admission",
+                "value": "general"
+              },
+              {
+                "title": "VIP Only",
+                "value": "vip"
+              },
+              {
+                "title": "VVIP Only",
+                "value": "vvip"
+              },
+              {
+                "title": "Free/No Ticket",
+                "value": "free"
+              },
+              {
+                "title": "Separate Ticket",
+                "value": "separate"
+              }
+            ]
+          },
+          "initialValue": "general"
+        },
+        {
+          "name": "capacity",
+          "title": "Capacity",
+          "type": "number",
+          "description": "Maximum number of attendees (optional)"
+        },
+        {
+          "name": "image",
+          "title": "Event Image",
+          "type": "image",
+          "options": {
+            "hotspot": true
+          }
+        }
+      ],
+      "options": {},
+      "orderings": [
+        {
+          "title": "By Day and Time",
+          "name": "dayAndTime",
+          "by": [
+            {
+              "field": "day",
+              "direction": "asc"
+            },
+            {
+              "field": "time",
+              "direction": "asc"
+            }
+          ]
+        },
+        {
+          "title": "By Type",
+          "name": "type",
+          "by": [
+            {
+              "field": "type",
+              "direction": "asc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "merchItem",
+      "title": "Merchandise",
+      "type": "document",
+      "fields": [
+        {
+          "name": "name",
+          "title": "Product Name",
+          "type": "string"
+        },
+        {
+          "name": "slug",
+          "title": "Slug",
+          "type": "slug",
+          "options": {
+            "source": "name",
+            "maxLength": 96
+          }
+        },
+        {
+          "name": "description",
+          "title": "Description",
+          "type": "text",
+          "rows": 4
+        },
+        {
+          "name": "price",
+          "title": "Price (NGN)",
+          "type": "number"
+        },
+        {
+          "name": "compareAtPrice",
+          "title": "Compare at Price (NGN)",
+          "type": "number",
+          "description": "Original price if item is on sale"
+        },
+        {
+          "name": "images",
+          "title": "Product Images",
+          "type": "array",
+          "of": [
+            {
+              "type": "image",
+              "options": {
+                "hotspot": true
+              }
+            }
+          ]
+        },
+        {
+          "name": "category",
+          "title": "Category",
+          "type": "string",
+          "options": {
+            "list": [
+              {
+                "title": "Apparel",
+                "value": "apparel"
+              },
+              {
+                "title": "Headwear",
+                "value": "headwear"
+              },
+              {
+                "title": "Accessories",
+                "value": "accessories"
+              },
+              {
+                "title": "Festival Gear",
+                "value": "gear"
+              },
+              {
+                "title": "Home & Living",
+                "value": "home"
+              },
+              {
+                "title": "Collectibles",
+                "value": "collectibles"
+              }
+            ]
+          }
+        },
+        {
+          "name": "available",
+          "title": "Available for Purchase",
+          "type": "boolean",
+          "initialValue": true
+        },
+        {
+          "name": "preOrder",
+          "title": "Pre-Order Item",
+          "type": "boolean",
+          "initialValue": false,
+          "description": "Check if this is a pre-order item"
+        },
+        {
+          "name": "sizes",
+          "title": "Available Sizes",
+          "type": "array",
+          "of": [
+            {
+              "type": "string"
+            }
+          ],
+          "options": {
+            "list": [
+              {
+                "title": "XS",
+                "value": "XS"
+              },
+              {
+                "title": "S",
+                "value": "S"
+              },
+              {
+                "title": "M",
+                "value": "M"
+              },
+              {
+                "title": "L",
+                "value": "L"
+              },
+              {
+                "title": "XL",
+                "value": "XL"
+              },
+              {
+                "title": "XXL",
+                "value": "XXL"
+              },
+              {
+                "title": "3XL",
+                "value": "3XL"
+              },
+              {
+                "title": "One Size",
+                "value": "one-size"
+              }
+            ]
+          }
+        },
+        {
+          "name": "colors",
+          "title": "Available Colors",
+          "type": "array",
+          "of": [
+            {
+              "type": "string"
+            }
+          ],
+          "options": {
+            "list": [
+              {
+                "title": "Black",
+                "value": "black"
+              },
+              {
+                "title": "White",
+                "value": "white"
+              },
+              {
+                "title": "Yellow",
+                "value": "yellow"
+              },
+              {
+                "title": "Pink",
+                "value": "pink"
+              },
+              {
+                "title": "Blue",
+                "value": "blue"
+              },
+              {
+                "title": "Orange",
+                "value": "orange"
+              },
+              {
+                "title": "Purple",
+                "value": "purple"
+              },
+              {
+                "title": "Red",
+                "value": "red"
+              },
+              {
+                "title": "Green",
+                "value": "green"
+              },
+              {
+                "title": "Natural",
+                "value": "natural"
+              },
+              {
+                "title": "Silver",
+                "value": "silver"
+              },
+              {
+                "title": "Gold",
+                "value": "gold"
+              }
+            ]
+          }
+        },
+        {
+          "name": "material",
+          "title": "Material",
+          "type": "string",
+          "description": "e.g., 100% Cotton, Polyester Blend, etc."
+        },
+        {
+          "name": "featured",
+          "title": "Featured Product",
+          "type": "boolean",
+          "initialValue": false
+        },
+        {
+          "name": "newArrival",
+          "title": "New Arrival",
+          "type": "boolean",
+          "initialValue": false
+        },
+        {
+          "name": "limitedEdition",
+          "title": "Limited Edition",
+          "type": "boolean",
+          "initialValue": false
+        },
+        {
+          "name": "inventory",
+          "title": "Inventory Count",
+          "type": "number",
+          "description": "Leave blank for unlimited inventory"
+        },
+        {
+          "name": "weight",
+          "title": "Weight (grams)",
+          "type": "number",
+          "description": "Product weight for shipping calculations"
+        },
+        {
+          "name": "tags",
+          "title": "Tags",
+          "type": "array",
+          "of": [
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Tags for search and filtering"
+        }
+      ],
+      "options": {},
+      "orderings": [
+        {
+          "title": "Price (Low to High)",
+          "name": "priceAsc",
+          "by": [
+            {
+              "field": "price",
+              "direction": "asc"
+            }
+          ]
+        },
+        {
+          "title": "Name A-Z",
+          "name": "nameAsc",
+          "by": [
+            {
+              "field": "name",
+              "direction": "asc"
+            }
+          ]
+        },
+        {
+          "title": "Category",
+          "name": "category",
+          "by": [
+            {
+              "field": "category",
+              "direction": "asc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "partner",
+      "title": "Partners",
+      "type": "document",
+      "fields": [
+        {
+          "name": "name",
+          "title": "Partner Name",
+          "type": "string"
+        },
+        {
+          "name": "slug",
+          "title": "Slug",
+          "type": "slug",
+          "options": {
+            "source": "name",
+            "maxLength": 96
+          }
+        },
+        {
+          "name": "logo",
+          "title": "Partner Logo",
+          "type": "image",
+          "options": {
+            "hotspot": true
+          }
+        },
+        {
+          "name": "website",
+          "title": "Website URL",
+          "type": "url",
+          "description": "Partner website link (optional)"
+        },
+        {
+          "name": "tier",
+          "title": "Partnership Tier",
+          "type": "string",
+          "options": {
+            "list": [
+              {
+                "title": "Title Sponsor",
+                "value": "title"
+              },
+              {
+                "title": "Presenting Sponsor",
+                "value": "presenting"
+              },
+              {
+                "title": "Official Partner",
+                "value": "official"
+              },
+              {
+                "title": "Media Partner",
+                "value": "media"
+              },
+              {
+                "title": "Supporting Partner",
+                "value": "supporting"
+              }
+            ]
+          },
+          "initialValue": "official"
+        },
+        {
+          "name": "category",
+          "title": "Partner Category",
+          "type": "string",
+          "options": {
+            "list": [
+              {
+                "title": "Music & Entertainment",
+                "value": "music"
+              },
+              {
+                "title": "Technology",
+                "value": "technology"
+              },
+              {
+                "title": "Food & Beverage",
+                "value": "food"
+              },
+              {
+                "title": "Fashion & Lifestyle",
+                "value": "fashion"
+              },
+              {
+                "title": "Media & Broadcasting",
+                "value": "media"
+              },
+              {
+                "title": "Financial Services",
+                "value": "finance"
+              },
+              {
+                "title": "Transportation",
+                "value": "transport"
+              },
+              {
+                "title": "Hospitality",
+                "value": "hospitality"
+              },
+              {
+                "title": "Healthcare",
+                "value": "healthcare"
+              },
+              {
+                "title": "Other",
+                "value": "other"
+              }
+            ]
+          }
+        },
+        {
+          "name": "description",
+          "title": "Partner Description",
+          "type": "text",
+          "rows": 3,
+          "description": "Brief description of the partnership"
+        },
+        {
+          "name": "featured",
+          "title": "Featured Partner",
+          "type": "boolean",
+          "description": "Show in featured partners section",
+          "initialValue": false
+        },
+        {
+          "name": "active",
+          "title": "Active Partnership",
+          "type": "boolean",
+          "description": "Is this partnership currently active?",
+          "initialValue": true
+        },
+        {
+          "name": "order",
+          "title": "Display Order",
+          "type": "number",
+          "description": "Order for displaying partners (lower numbers first)",
+          "initialValue": 100
+        },
+        {
+          "name": "logoVariant",
+          "title": "Logo Variant",
+          "type": "string",
+          "options": {
+            "list": [
+              {
+                "title": "Full Color",
+                "value": "color"
+              },
+              {
+                "title": "White/Light",
+                "value": "light"
+              },
+              {
+                "title": "Black/Dark",
+                "value": "dark"
+              },
+              {
+                "title": "Monochrome",
+                "value": "mono"
+              }
+            ]
+          },
+          "initialValue": "color",
+          "description": "Which version of the logo to display"
+        },
+        {
+          "name": "contactInfo",
+          "title": "Contact Information",
+          "type": "object",
+          "fields": [
+            {
+              "name": "email",
+              "title": "Contact Email",
+              "type": "email"
+            },
+            {
+              "name": "phone",
+              "title": "Phone Number",
+              "type": "string"
+            },
+            {
+              "name": "contactPerson",
+              "title": "Contact Person",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "name": "socialLinks",
+          "title": "Social Media Links",
+          "type": "object",
+          "fields": [
+            {
+              "name": "instagram",
+              "title": "Instagram",
+              "type": "url"
+            },
+            {
+              "name": "twitter",
+              "title": "Twitter",
+              "type": "url"
+            },
+            {
+              "name": "facebook",
+              "title": "Facebook",
+              "type": "url"
+            },
+            {
+              "name": "linkedin",
+              "title": "LinkedIn",
+              "type": "url"
+            },
+            {
+              "name": "youtube",
+              "title": "YouTube",
+              "type": "url"
+            }
+          ]
+        },
+        {
+          "name": "partnershipDetails",
+          "title": "Partnership Details",
+          "type": "object",
+          "fields": [
+            {
+              "name": "startDate",
+              "title": "Partnership Start Date",
+              "type": "date"
+            },
+            {
+              "name": "endDate",
+              "title": "Partnership End Date",
+              "type": "date"
+            },
+            {
+              "name": "benefits",
+              "title": "Partnership Benefits",
+              "type": "array",
+              "of": [
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "List of benefits provided by this partnership"
+            }
+          ]
+        }
+      ],
+      "options": {},
+      "orderings": [
+        {
+          "title": "Display Order",
+          "name": "orderAsc",
+          "by": [
+            {
+              "field": "order",
+              "direction": "asc"
+            },
+            {
+              "field": "tier",
+              "direction": "asc"
+            },
+            {
+              "field": "name",
+              "direction": "asc"
+            }
+          ]
+        },
+        {
+          "title": "Partnership Tier",
+          "name": "tierAsc",
+          "by": [
+            {
+              "field": "tier",
+              "direction": "asc"
+            },
+            {
+              "field": "order",
+              "direction": "asc"
+            },
+            {
+              "field": "name",
+              "direction": "asc"
+            }
+          ]
+        },
+        {
+          "title": "Name A-Z",
+          "name": "nameAsc",
+          "by": [
+            {
+              "field": "name",
+              "direction": "asc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "aboutSection",
+      "title": "About Section",
+      "type": "document",
+      "fields": [
+        {
+          "name": "name",
+          "title": "Section Name",
+          "type": "string",
+          "initialValue": "About Section"
+        },
+        {
+          "name": "slug",
+          "title": "Slug",
+          "type": "slug",
+          "options": {
+            "source": "name",
+            "maxLength": 96
+          }
+        },
+        {
+          "name": "title",
+          "title": "Section Title",
+          "type": "string",
+          "initialValue": "About Shakara Festival"
+        },
+        {
+          "name": "description",
+          "title": "Festival Description",
+          "type": "text",
+          "rows": 4,
+          "description": "Main description of the festival"
+        },
+        {
+          "name": "stats",
+          "title": "Festival Statistics",
+          "type": "object",
+          "fields": [
+            {
+              "name": "artistCount",
+              "title": "Number of Artists",
+              "type": "string",
+              "initialValue": "50+"
+            },
+            {
+              "name": "dayCount",
+              "title": "Number of Days",
+              "type": "string",
+              "initialValue": "4"
+            },
+            {
+              "name": "stageCount",
+              "title": "Number of Stages",
+              "type": "string",
+              "initialValue": "5"
+            },
+            {
+              "name": "expectedAttendance",
+              "title": "Expected Attendance",
+              "type": "string",
+              "initialValue": "50K"
+            }
+          ]
+        },
+        {
+          "name": "highlights",
+          "title": "Festival Highlights",
+          "type": "array",
+          "of": [
+            {
+              "type": "object",
+              "fields": [
+                {
+                  "name": "icon",
+                  "title": "Icon",
+                  "type": "string",
+                  "description": "Icon name from react-icons (e.g., FaMusic, FaUtensils, FaPalette, FaUsers)",
+                  "options": {
+                    "list": [
+                      {
+                        "title": "🎵 Music (FaMusic)",
+                        "value": "FaMusic"
+                      },
+                      {
+                        "title": "🍽️ Food (FaUtensils)",
+                        "value": "FaUtensils"
+                      },
+                      {
+                        "title": "🎨 Art (FaPalette)",
+                        "value": "FaPalette"
+                      },
+                      {
+                        "title": "👥 Community (FaUsers)",
+                        "value": "FaUsers"
+                      },
+                      {
+                        "title": "🎤 Microphone (FaMicrophone)",
+                        "value": "FaMicrophone"
+                      },
+                      {
+                        "title": "🎸 Guitar (FaGuitar)",
+                        "value": "FaGuitar"
+                      },
+                      {
+                        "title": "🎪 Tent (FaCampground)",
+                        "value": "FaCampground"
+                      },
+                      {
+                        "title": "🎯 Target (FaBullseye)",
+                        "value": "FaBullseye"
+                      },
+                      {
+                        "title": "🎊 Party (FaCocktail)",
+                        "value": "FaCocktail"
+                      },
+                      {
+                        "title": "🌟 Star (FaStar)",
+                        "value": "FaStar"
+                      },
+                      {
+                        "title": "⚡ Lightning (FaBolt)",
+                        "value": "FaBolt"
+                      },
+                      {
+                        "title": "🔥 Fire (FaFire)",
+                        "value": "FaFire"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "title",
+                  "title": "Highlight Title",
+                  "type": "string"
+                },
+                {
+                  "name": "description",
+                  "title": "Highlight Description",
+                  "type": "string"
+                }
+              ],
+              "preview": {
+                "select": {
+                  "title": "title",
+                  "subtitle": "description",
+                  "icon": "icon"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "essentialInfo",
+          "title": "Essential Information",
+          "type": "array",
+          "of": [
+            {
+              "type": "object",
+              "fields": [
+                {
+                  "name": "title",
+                  "title": "Info Title",
+                  "type": "string"
+                },
+                {
+                  "name": "content",
+                  "title": "Info Content",
+                  "type": "text",
+                  "rows": 3
+                }
+              ],
+              "preview": {
+                "select": {
+                  "title": "title",
+                  "subtitle": "content"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "socialSection",
+          "title": "Social Media Section",
+          "type": "object",
+          "fields": [
+            {
+              "name": "title",
+              "title": "Social Section Title",
+              "type": "string",
+              "initialValue": "Follow Us"
+            },
+            {
+              "name": "showSocialLinks",
+              "title": "Show Social Links",
+              "type": "boolean",
+              "initialValue": true
+            },
+            {
+              "name": "socialLinks",
+              "title": "Social Media Links",
+              "type": "object",
+              "fields": [
+                {
+                  "name": "instagram",
+                  "title": "Instagram",
+                  "type": "url"
+                },
+                {
+                  "name": "twitter",
+                  "title": "Twitter",
+                  "type": "url"
+                },
+                {
+                  "name": "facebook",
+                  "title": "Facebook",
+                  "type": "url"
+                },
+                {
+                  "name": "youtube",
+                  "title": "YouTube",
+                  "type": "url"
+                },
+                {
+                  "name": "spotify",
+                  "title": "Spotify",
+                  "type": "url"
+                },
+                {
+                  "name": "tiktok",
+                  "title": "TikTok",
+                  "type": "url"
+                },
+                {
+                  "name": "linkedin",
+                  "title": "LinkedIn",
+                  "type": "url"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "active",
+          "title": "Active Section",
+          "type": "boolean",
+          "description": "Is this the active about section?",
+          "initialValue": true
+        },
+        {
+          "name": "order",
+          "title": "Display Order",
+          "type": "number",
+          "description": "Order for displaying sections (lower numbers first)",
+          "initialValue": 100
+        }
+      ],
+      "options": {},
+      "orderings": [
+        {
+          "title": "Display Order",
+          "name": "orderAsc",
+          "by": [
+            {
+              "field": "order",
+              "direction": "asc"
+            },
+            {
+              "field": "name",
+              "direction": "asc"
+            }
+          ]
+        },
+        {
+          "title": "Active First",
+          "name": "activeFirst",
+          "by": [
+            {
+              "field": "active",
+              "direction": "desc"
+            },
+            {
+              "field": "order",
+              "direction": "asc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lineupSection",
+      "title": "Lineup Section",
+      "type": "document",
+      "fields": [
+        {
+          "name": "name",
+          "title": "Section Name",
+          "type": "string",
+          "initialValue": "Lineup Section"
+        },
+        {
+          "name": "slug",
+          "title": "Slug",
+          "type": "slug",
+          "options": {
+            "source": "name",
+            "maxLength": 96
+          }
+        },
+        {
+          "name": "title",
+          "title": "Section Title",
+          "type": "string",
+          "initialValue": "Festival Lineup"
+        },
+        {
+          "name": "introText",
+          "title": "Introduction Text",
+          "type": "text",
+          "rows": 3,
+          "description": "Brief description of the lineup"
+        },
+        {
+          "name": "stats",
+          "title": "Lineup Statistics",
+          "type": "object",
+          "fields": [
+            {
+              "name": "artistCount",
+              "title": "Number of Artists",
+              "type": "string",
+              "initialValue": "50+"
+            },
+            {
+              "name": "stageCount",
+              "title": "Number of Stages",
+              "type": "string",
+              "initialValue": "5"
+            },
+            {
+              "name": "genreCount",
+              "title": "Number of Genres",
+              "type": "string",
+              "initialValue": "15"
+            }
+          ]
+        },
+        {
+          "name": "ctaSection",
+          "title": "Call to Action Section",
+          "type": "object",
+          "fields": [
+            {
+              "name": "text",
+              "title": "CTA Text",
+              "type": "string",
+              "initialValue": "Don't miss these incredible performances!"
+            },
+            {
+              "name": "primaryButton",
+              "title": "Primary Button",
+              "type": "object",
+              "fields": [
+                {
+                  "name": "text",
+                  "title": "Button Text",
+                  "type": "string",
+                  "initialValue": "Get Your Tickets"
+                },
+                {
+                  "name": "url",
+                  "title": "Button URL",
+                  "type": "string",
+                  "initialValue": "/tickets"
+                },
+                {
+                  "name": "enabled",
+                  "title": "Show Button",
+                  "type": "boolean",
+                  "initialValue": true
+                }
+              ]
+            },
+            {
+              "name": "secondaryButton",
+              "title": "Secondary Button",
+              "type": "object",
+              "fields": [
+                {
+                  "name": "text",
+                  "title": "Button Text",
+                  "type": "string",
+                  "initialValue": "View Schedule"
+                },
+                {
+                  "name": "url",
+                  "title": "Button URL",
+                  "type": "string",
+                  "initialValue": "#schedule"
+                },
+                {
+                  "name": "enabled",
+                  "title": "Show Button",
+                  "type": "boolean",
+                  "initialValue": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "emptyState",
+          "title": "Empty State (When No Artists)",
+          "type": "object",
+          "fields": [
+            {
+              "name": "title",
+              "title": "Empty State Title",
+              "type": "string",
+              "initialValue": "Lineup Coming Soon"
+            },
+            {
+              "name": "description",
+              "title": "Empty State Description",
+              "type": "text",
+              "rows": 2,
+              "initialValue": "Get ready for an incredible lineup announcement featuring the best of African music!"
+            },
+            {
+              "name": "buttonText",
+              "title": "Notification Button Text",
+              "type": "string",
+              "initialValue": "Get Notified"
+            },
+            {
+              "name": "buttonUrl",
+              "title": "Notification Button URL",
+              "type": "string",
+              "initialValue": "/newsletter"
+            }
+          ]
+        },
+        {
+          "name": "featuredArtistCount",
+          "title": "Number of Featured Artists to Show",
+          "type": "number",
+          "initialValue": 8,
+          "description": "How many artists to display in the grid"
+        },
+        {
+          "name": "active",
+          "title": "Active Section",
+          "type": "boolean",
+          "description": "Is this the active lineup section?",
+          "initialValue": true
+        },
+        {
+          "name": "order",
+          "title": "Display Order",
+          "type": "number",
+          "description": "Order for displaying sections (lower numbers first)",
+          "initialValue": 100
+        }
+      ],
+      "options": {},
+      "orderings": [
+        {
+          "title": "Display Order",
+          "name": "orderAsc",
+          "by": [
+            {
+              "field": "order",
+              "direction": "asc"
+            },
+            {
+              "field": "name",
+              "direction": "asc"
+            }
+          ]
+        },
+        {
+          "title": "Active First",
+          "name": "activeFirst",
+          "by": [
+            {
+              "field": "active",
+              "direction": "desc"
+            },
+            {
+              "field": "order",
+              "direction": "asc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "footerSection",
+      "title": "Footer Section",
+      "type": "document",
+      "fields": [
+        {
+          "name": "name",
+          "title": "Configuration Name",
+          "type": "string",
+          "description": "Internal name for this footer configuration"
+        },
+        {
+          "name": "slug",
+          "title": "Slug",
+          "type": "slug",
+          "description": "Unique identifier for this footer configuration",
+          "options": {
+            "source": "name",
+            "maxLength": 96
+          }
+        },
+        {
+          "name": "active",
+          "title": "Active",
+          "type": "boolean",
+          "description": "Enable this footer configuration",
+          "initialValue": true
+        },
+        {
+          "name": "brandSection",
+          "title": "Brand Section",
+          "type": "object",
+          "fields": [
+            {
+              "name": "festivalName",
+              "title": "Festival Name",
+              "type": "string",
+              "initialValue": "SHAKARA FESTIVAL"
+            },
+            {
+              "name": "tagline",
+              "title": "Tagline",
+              "type": "string",
+              "initialValue": "Africa's premier music festival"
+            },
+            {
+              "name": "location",
+              "title": "Location & Date",
+              "type": "string",
+              "initialValue": "Victoria Island, Lagos • December 2025"
+            }
+          ]
+        },
+        {
+          "name": "quickLinks",
+          "title": "Quick Links",
+          "type": "array",
+          "of": [
+            {
+              "type": "object",
+              "fields": [
+                {
+                  "name": "label",
+                  "title": "Link Label",
+                  "type": "string"
+                },
+                {
+                  "name": "href",
+                  "title": "Link URL",
+                  "type": "string",
+                  "description": "Use # for anchor links (e.g., #about) or full URLs"
+                }
+              ],
+              "preview": {
+                "select": {
+                  "title": "label",
+                  "subtitle": "href"
+                }
+              }
+            }
+          ],
+          "initialValue": [
+            {
+              "label": "About",
+              "href": "#about"
+            },
+            {
+              "label": "Lineup",
+              "href": "#lineup"
+            },
+            {
+              "label": "Tickets",
+              "href": "#tickets"
+            },
+            {
+              "label": "Schedule",
+              "href": "#schedule"
+            },
+            {
+              "label": "Partners",
+              "href": "#partners"
+            }
+          ]
+        },
+        {
+          "name": "socialLinks",
+          "title": "Social Media Links",
+          "type": "object",
+          "fields": [
+            {
+              "name": "instagram",
+              "title": "Instagram",
+              "type": "url",
+              "description": "Instagram profile URL"
+            },
+            {
+              "name": "twitter",
+              "title": "Twitter",
+              "type": "url",
+              "description": "Twitter profile URL"
+            },
+            {
+              "name": "facebook",
+              "title": "Facebook",
+              "type": "url",
+              "description": "Facebook page URL"
+            },
+            {
+              "name": "youtube",
+              "title": "YouTube",
+              "type": "url",
+              "description": "YouTube channel URL"
+            },
+            {
+              "name": "spotify",
+              "title": "Spotify",
+              "type": "url",
+              "description": "Spotify playlist or artist URL"
+            },
+            {
+              "name": "tiktok",
+              "title": "TikTok",
+              "type": "url",
+              "description": "TikTok profile URL"
+            },
+            {
+              "name": "linkedin",
+              "title": "LinkedIn",
+              "type": "url",
+              "description": "LinkedIn page URL"
+            }
+          ],
+          "options": {
+            "collapsible": true,
+            "collapsed": false
+          }
+        },
+        {
+          "name": "legalLinks",
+          "title": "Legal Links",
+          "type": "array",
+          "of": [
+            {
+              "type": "object",
+              "fields": [
+                {
+                  "name": "label",
+                  "title": "Link Label",
+                  "type": "string"
+                },
+                {
+                  "name": "href",
+                  "title": "Link URL",
+                  "type": "string"
+                }
+              ],
+              "preview": {
+                "select": {
+                  "title": "label",
+                  "subtitle": "href"
+                }
+              }
+            }
+          ],
+          "initialValue": [
+            {
+              "label": "Privacy Policy",
+              "href": "/privacy"
+            },
+            {
+              "label": "Terms of Service",
+              "href": "/terms"
+            }
+          ]
+        },
+        {
+          "name": "copyright",
+          "title": "Copyright Text",
+          "type": "string",
+          "description": "Copyright text (year will be automatically added)",
+          "initialValue": "Shakara Festival. All rights reserved."
+        },
+        {
+          "name": "order",
+          "title": "Display Order",
+          "type": "number",
+          "description": "Order in which this footer appears (lower numbers first)",
+          "initialValue": 1
+        }
+      ],
+      "options": {},
+      "orderings": [
+        {
+          "title": "Active First",
+          "name": "activeFirst",
+          "by": [
+            {
+              "field": "active",
+              "direction": "desc"
+            },
+            {
+              "field": "order",
+              "direction": "asc"
+            },
+            {
+              "field": "name",
+              "direction": "asc"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
