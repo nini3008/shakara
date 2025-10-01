@@ -15,8 +15,8 @@ export function LineupGlowingSection() {
         <GridItem
           area="md:[grid-area:1/1/3/7] xl:[grid-area:1/1/3/5]"
           image="/images/lineup/line-up-day-1.jpeg"
-          title="Day 1: Opening Night Spectacular"
-          description="Experience the grand opening with incredible Afrobeats, Amapiano, and traditional Nigerian sounds that will set the tone for an unforgettable festival."
+          title="Day 1: ALTÉ"
+          description=""
           mobileHeight="h-[450px]"
         />
         <GridItem
@@ -41,9 +41,9 @@ export function LineupGlowingSection() {
           mobileHeight="h-[500px]"
         />
         <GridItem
-          area="md:[grid-area:5/1/6/13] xl:[grid-area:3/9/5/13]"
+          area="md:[grid-area:3/1/5/7] xl:[grid-area:3/1/5/9]"
           image="/images/shakara-junction.jpeg"
-          title=""
+          title="SHAKARA JUNCTION"
           description=""
           mobileHeight="h-[500px]"
         />

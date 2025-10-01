@@ -42,9 +42,7 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
     return () => observer.disconnect();
   }, []);
 
-  const formatPrice = (price: number, currency: string = '₦') => {
-    return `${currency}${price.toLocaleString()}`;
-  };
+  // Prices are intentionally hidden on ticket cards
 
   const handleNotifySubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -177,23 +175,7 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                       <div className={styles.cardContent}>
                         <h3 className={styles.ticketName}>{ticket.name}</h3>
                         
-                        <div className={styles.priceContainer}>
-                          <div className={styles.priceGroup}>
-                            <span className={styles.currentPrice}>
-                              {formatPrice(ticket.price, sanityTicket.currency)}
-                            </span>
-                            {ticket.originalPrice && ticket.originalPrice > ticket.price && (
-                              <span className={styles.originalPrice}>
-                                {formatPrice(ticket.originalPrice, sanityTicket.currency)}
-                              </span>
-                            )}
-                          </div>
-                          {ticket.discount && (
-                            <span className={styles.discount}>
-                              Save {ticket.discount}%
-                            </span>
-                          )}
-                        </div>
+                        {/* Pricing hidden */}
                         
                         {ticket.description && (
                           <p className={styles.description}>{ticket.description}</p>
@@ -299,14 +281,7 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                     {t.badge && <div className={styles.badge}>{t.badge}</div>}
                     <div className={styles.cardContent}>
                       <h3 className={styles.ticketName}>{t.name}</h3>
-                      <div className={styles.priceContainer}>
-                        <div className={styles.priceGroup}>
-                          <span className={styles.currentPrice}>{`${t.currency}${t.price.toLocaleString()}`}</span>
-                          {!!t.originalPrice && t.originalPrice > t.price && (
-                            <span className={styles.originalPrice}>{`${t.currency}${t.originalPrice.toLocaleString()}`}</span>
-                          )}
-                        </div>
-                      </div>
+                      {/* Pricing hidden */}
                       <p className={styles.description}>{t.description}</p>
                       <ul className={styles.featuresList}>
                         {t.features.map((f) => (
