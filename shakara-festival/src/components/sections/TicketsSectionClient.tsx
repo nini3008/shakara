@@ -6,6 +6,7 @@ import { TicketType } from '@/types';
 import { SanityTicket } from '@/types/sanity-adapters';
 import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
+import { CART_ENABLED } from '@/lib/featureFlags';
 import styles from './TicketsSection.module.scss';
 
 interface TicketsSectionClientProps {
@@ -222,7 +223,15 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                       </div>
                       
                       <div className={styles.cardFooter}>
-                        {sanityTicket.soldOut ? (
+                        {!CART_ENABLED ? (
+                          <button 
+                            disabled 
+                            className={styles.unavailableButton}
+                            aria-label={`${ticket.name} - Not Available`}
+                          >
+                            Coming Soon
+                          </button>
+                        ) : sanityTicket.soldOut ? (
                           <button 
                             disabled 
                             className={styles.soldOutButton}
@@ -309,9 +318,15 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                       </ul>
                     </div>
                     <div className={styles.cardFooter}>
-                      <button onClick={() => { addItem({ id: `curated-${t.id}`, name: t.name, price: t.price, quantity: 1, category: 'ticket' }); window.dispatchEvent(new Event('cart:add')) }} className={styles.buyButton + ' clickable'} aria-label={`Add ${t.name} ticket`}>
-                        Add to Basket
-                      </button>
+                      {CART_ENABLED ? (
+                        <button onClick={() => { addItem({ id: `curated-${t.id}`, name: t.name, price: t.price, quantity: 1, category: 'ticket' }); window.dispatchEvent(new Event('cart:add')) }} className={styles.buyButton + ' clickable'} aria-label={`Add ${t.name} ticket`}>
+                          Add to Basket
+                        </button>
+                      ) : (
+                        <button disabled className={styles.unavailableButton} aria-label={`${t.name} - Not Available`}>
+                          Coming Soon
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

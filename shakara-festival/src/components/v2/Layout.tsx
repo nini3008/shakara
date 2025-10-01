@@ -7,6 +7,7 @@ import { Menu, X, ShoppingCart } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { CartProvider, useCart } from '@/contexts/CartContext'
 import CartDropdown from './CartDropdown'
+import { CART_ENABLED } from '@/lib/featureFlags'
 
 type FooterData = {
   brandSection?: { tagline?: string; location?: string }
@@ -106,44 +107,50 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
               ))}
               <div className="relative inline-flex rounded-md shadow-sm">
                 <Link href="/tickets">
-                  <Button className="gradient-bg text-white hover:opacity-90 transition-opacity rounded-none rounded-l-md">
+                  <Button className="gradient-bg text-white hover:opacity-90 transition-opacity rounded-md">
                     Buy Tickets
                   </Button>
                 </Link>
-                <Button
-                  onClick={() => setCartOpen((o) => !o)}
-                  size="icon"
-                  aria-label="Open cart"
-                  className={`rounded-none rounded-r-md bg-white/20 hover:bg-white/30 border-l border-white/30 relative ${cartPulse ? 'animate-pulse' : ''}`}
-                >
-                  <ShoppingCart className="h-4 w-4 text-white" />
-                  {count > 0 && (
-                    <span className="absolute -top-1 -right-1 inline-flex items-center justify-center text-[10px] font-semibold px-1.5 h-4 min-w-4 rounded-full bg-orange-600 text-white pointer-events-none">
-                      {Math.min(count, 99)}
-                    </span>
-                  )}
-                </Button>
-                <CartDropdown open={cartOpen} />
+                {CART_ENABLED && (
+                  <>
+                    <Button
+                      onClick={() => setCartOpen((o) => !o)}
+                      size="icon"
+                      aria-label="Open cart"
+                      className={`rounded-none rounded-r-md bg-white/20 hover:bg-white/30 border-l border-white/30 relative ${cartPulse ? 'animate-pulse' : ''}`}
+                    >
+                      <ShoppingCart className="h-4 w-4 text-white" />
+                      {count > 0 && (
+                        <span className="absolute -top-1 -right-1 inline-flex items-center justify-center text-[10px] font-semibold px-1.5 h-4 min-w-4 rounded-full bg-orange-600 text-white pointer-events-none">
+                          {Math.min(count, 99)}
+                        </span>
+                      )}
+                    </Button>
+                    <CartDropdown open={cartOpen} />
+                  </>
+                )}
               </div>
             </div>
 
             {/* Mobile menu button */}
             <div className="md:hidden flex items-center gap-2">
               {/* Cart Icon for Mobile */}
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Open cart"
-                onClick={() => setCartOpen((o) => !o)}
-                className={`relative text-gray-200 hover:text-orange-400 ${cartPulse ? 'animate-pulse' : ''}`}
-              >
-                <ShoppingCart className="h-5 w-5" />
-                {count > 0 && (
-                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center">
-                    {count}
-                  </span>
+                {CART_ENABLED && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Open cart"
+                    onClick={() => setCartOpen((o) => !o)}
+                    className={`relative text-gray-200 hover:text-orange-400 ${cartPulse ? 'animate-pulse' : ''}`}
+                  >
+                    <ShoppingCart className="h-5 w-5" />
+                    {count > 0 && (
+                      <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center">
+                        {count}
+                      </span>
+                    )}
+                  </Button>
                 )}
-              </Button>
               <Button
                 variant="ghost"
                 size="icon"
@@ -175,18 +182,20 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
               ))}
               <div className="px-3 py-2 flex items-center gap-2">
                 <Link href="/tickets" onClick={() => setMobileMenuOpen(false)} className="flex-1">
-                  <Button className="w-full gradient-bg text-white hover:opacity-90 transition-opacity">
+                  <Button className="w-full gradient-bg text-white hover:opacity-90 transition-opacity rounded-md">
                     Buy Tickets
                   </Button>
                 </Link>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Open cart"
-                  onClick={() => setCartOpen((o) => !o)}
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                </Button>
+                {CART_ENABLED && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Open cart"
+                    onClick={() => setCartOpen((o) => !o)}
+                  >
+                    <ShoppingCart className="h-5 w-5" />
+                  </Button>
+                )}
               </div>
             </div>
           </div>

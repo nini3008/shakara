@@ -166,13 +166,9 @@
 }
 
 .theme_pit {
-  background: #ffffff;
-  border-color: #111827;
-  .ticketName { color: #111827; }
-  .currentPrice { color: #111827; }
-  .description, .featureItem { color: #374151; }
-  .featureIcon { color: #ef4444; }
-  .buyButton { background: #111827; color: #ffffff; }
+  // Align with other themed cards and base styling
+  background: linear-gradient(135deg, rgba(255, 154, 86, 0.08), rgba(255, 107, 157, 0.08));
+  border-color: rgba(217, 119, 6, 0.35);
 }
 
 .badge {
