@@ -44,9 +44,10 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({ exists: false })
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Resend returns 404 when contact doesn't exist
-      if (error.statusCode === 404 || error.message?.includes('not found')) {
+      const resendError = error as { statusCode?: number; message?: string }
+      if (resendError.statusCode === 404 || resendError.message?.includes('not found')) {
         return NextResponse.json({ exists: false })
       }
 

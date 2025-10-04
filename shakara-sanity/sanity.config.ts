@@ -52,12 +52,21 @@ export default defineConfig({
                   .filter('_type == "merchItem"')
               ),
 
+            // FAQ section
+            S.listItem()
+              .title('FAQ')
+              .child(
+                S.documentTypeList('faq')
+                  .title('FAQs')
+                  .filter('_type == "faq"')
+              ),
+
             // Divider
             S.divider(),
 
             // All documents
             ...S.documentTypeListItems().filter(
-              (listItem) => !['artist', 'ticket', 'scheduleEvent', 'merchItem'].includes(listItem.getId()!)
+              (listItem) => !['artist', 'ticket', 'scheduleEvent', 'merchItem', 'faq'].includes(listItem.getId()!)
             ),
           ]),
     }),

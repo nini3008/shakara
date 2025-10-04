@@ -138,7 +138,7 @@ export default function FAQSection() {
             Need More Information?
           </h3>
           <p className="text-gray-300 text-center mb-10 text-lg">
-            Can't find what you're looking for? Reach out to us directly:
+            Can&apos;t find what you&apos;re looking for? Reach out to us directly:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-gray-900/60 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 hover:border-yellow-400/30 transition-all duration-300">

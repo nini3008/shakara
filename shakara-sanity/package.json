@@ -18,10 +18,10 @@
   "dependencies": {
     "@sanity/icons": "^3.7.4",
     "@sanity/ui": "^3.0.5",
-    "@sanity/vision": "^4.7.0",
+    "@sanity/vision": "^4.10.2",
     "react": "^19.1",
     "react-dom": "^19.1",
-    "sanity": "^4.7.0",
+    "sanity": "^4.10.2",
     "styled-components": "^6.1.18"
   },
   "devDependencies": {

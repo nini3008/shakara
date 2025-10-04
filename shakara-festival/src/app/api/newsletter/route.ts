@@ -41,9 +41,10 @@ export async function POST(request: NextRequest) {
             error: 'You are already subscribed to our newsletter!',
           }, { status: 409 });
         }
-      } catch (contactError: any) {
+      } catch (contactError: unknown) {
         // 404 means contact doesn't exist, which is what we want
-        if (contactError.statusCode !== 404 && !contactError.message?.includes('not found')) {
+        const resendError = contactError as { statusCode?: number; message?: string }
+        if (resendError.statusCode !== 404 && !resendError.message?.includes('not found')) {
           console.error('Contact check error:', contactError);
           // Continue with signup even if contact check fails
         }
@@ -96,7 +97,8 @@ export async function POST(request: NextRequest) {
       console.error('Resend error:', error)
 
       // Handle rate limiting specifically
-      if ((error as any).name === 'rate_limit_exceeded' || (error as any).statusCode === 429) {
+      const resendError = error as { name?: string; statusCode?: number }
+      if (resendError.name === 'rate_limit_exceeded' || resendError.statusCode === 429) {
         return NextResponse.json({
           success: true,
           message: 'Successfully subscribed! Welcome email will be sent shortly.',
