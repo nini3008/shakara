@@ -7,6 +7,7 @@ import { Menu, X, ShoppingCart } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { CartProvider, useCart } from '@/contexts/CartContext'
 import CartDropdown from './CartDropdown'
+import NewsletterSignup from '@/components/sections/NewsLetterSignup'
 import { CART_ENABLED } from '@/lib/featureFlags'
 
 type FooterData = {
@@ -19,10 +20,11 @@ type FooterData = {
 const navigationItems = [
   { title: 'Home', url: '/' },
   { title: 'About', url: '/about' },
-  { title: 'Artists', url: '/artists' },
   { title: 'Lineup', url: '/lineup' },
   { title: 'Schedule', url: '/schedule' },
   { title: 'Tickets', url: '/tickets' },
+  { title: 'Vendors', url: '/vendors' },
+  { title: 'Stay Updated', url: '#newsletter' },
   { title: 'Partnership', url: '/partnership' },
 ]
 
@@ -93,7 +95,7 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-6">
+            <div className="hidden lg:flex items-center space-x-6">
               {navigationItems.map((item) => (
                 <Link
                   key={item.title}
@@ -103,6 +105,16 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
                       ? 'text-orange-400'
                       : 'text-gray-200 hover:text-orange-400'
                   }`}
+                  onClick={(e) => {
+                    // Handle smooth scrolling for anchor links
+                    if (item.url.startsWith('#')) {
+                      e.preventDefault()
+                      const element = document.querySelector(item.url)
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' })
+                      }
+                    }
+                  }}
                 >
                   {item.title}
                 </Link>
@@ -135,7 +147,7 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
             </div>
 
             {/* Mobile menu button */}
-            <div className="md:hidden flex items-center gap-2">
+            <div className="lg:hidden flex items-center gap-2">
               {/* Cart Icon for Mobile */}
                 {CART_ENABLED && (
                   <Button
@@ -166,7 +178,7 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-gray-950 border-t border-gray-800">
+          <div className="lg:hidden bg-gray-950 border-t border-gray-800">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navigationItems.map((item) => (
                 <Link
@@ -177,7 +189,20 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
                       ? 'text-orange-400'
                       : 'text-gray-200 hover:text-orange-400'
                   }`}
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={(e) => {
+                    setMobileMenuOpen(false)
+                    // Handle smooth scrolling for anchor links
+                    if (item.url.startsWith('#')) {
+                      e.preventDefault()
+                      // Small delay to allow mobile menu to close
+                      setTimeout(() => {
+                        const element = document.querySelector(item.url)
+                        if (element) {
+                          element.scrollIntoView({ behavior: 'smooth' })
+                        }
+                      }, 150)
+                    }
+                  }}
                 >
                   {item.title}
                 </Link>
@@ -215,6 +240,19 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
       {/* Footer */}
       <footer className="text-white py-16 bg-black/40 dark:bg-black/40 backdrop-blur-md border-t border-gray-800/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Newsletter Section - Full Width */}
+          <div id="newsletter" className="mb-12">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold text-white mb-2">Stay in the Loop</h3>
+              <p className="text-gray-400 max-w-2xl mx-auto">
+                Get first access to tickets, lineup announcements, and exclusive festival updates delivered straight to your inbox
+              </p>
+            </div>
+            <div className="max-w-lg mx-auto">
+              <NewsletterSignup variant="modal" className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50" />
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <img
@@ -222,17 +260,77 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
                 alt="Shakara Festival"
                 className="h-16 w-auto mb-4"
               />
-              <p className="text-gray-400 text-lg leading-relaxed max-w-md">
+              <p className="text-gray-400 text-lg leading-relaxed max-w-md mb-4">
                 {footerData?.brandSection?.tagline || 'Experience the ultimate music festival with world-class artists, immersive stages, and unforgettable moments.'}
               </p>
               {footerData?.brandSection?.location && (
-                <p className="text-gray-500 mt-2">{footerData.brandSection.location}</p>
+                <p className="text-gray-500 mb-4">{footerData.brandSection.location}</p>
               )}
+
+              {/* Social Links moved here */}
+              <div className="flex space-x-4">
+                {footerData?.socialLinks ? (
+                  Object.entries(footerData.socialLinks)
+                    .filter(([, url]) => url) // Only show platforms with URLs
+                    .map(([platform, url]) => (
+                      <a
+                        key={platform}
+                        href={url!}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-400 hover:text-orange-400 transition-colors"
+                        aria-label={`Follow us on ${platform}`}
+                      >
+                        {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                      </a>
+                    ))
+                ) : (
+                  // Fallback social links when CMS data is not available
+                  <>
+                    <a
+                      href="https://www.instagram.com/theshakarafest/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-orange-400 transition-colors"
+                      aria-label="Follow us on Instagram"
+                    >
+                      Instagram
+                    </a>
+                    <a
+                      href="https://x.com/theshakarafest/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-orange-400 transition-colors"
+                      aria-label="Follow us on Twitter"
+                    >
+                      Twitter
+                    </a>
+                    <a
+                      href="https://www.facebook.com/theshakarafest/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-orange-400 transition-colors"
+                      aria-label="Follow us on Facebook"
+                    >
+                      Facebook
+                    </a>
+                    <a
+                      href="https://www.youtube.com/@theshakarafest"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-orange-400 transition-colors"
+                      aria-label="Follow us on YouTube"
+                    >
+                      YouTube
+                    </a>
+                  </>
+                )}
+              </div>
             </div>
 
-            <div>
+            <div className="md:col-span-2">
               <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-              <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-2">
                 {(footerData?.quickLinks?.length ? footerData.quickLinks : navigationItems).map((item: { label?: string; title?: string; href?: string; url?: string }, idx: number) => {
                   const label = item.label || item.title
                   const href = item.href || item.url
@@ -262,63 +360,12 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
                     </Link>
                   )
                 })}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
-              <div className="space-y-3">
-                {footerData?.socialLinks ? (
-                  Object.entries(footerData.socialLinks)
-                    .filter(([, url]) => url) // Only show platforms with URLs
-                    .map(([platform, url]) => (
-                      <a
-                        key={platform}
-                        href={url!}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block text-gray-400 hover:text-white transition-colors"
-                      >
-                        {platform.charAt(0).toUpperCase() + platform.slice(1)}
-                      </a>
-                    ))
-                ) : (
-                  // Fallback social links when CMS data is not available
-                  <>
-                    <a
-                      href="https://www.instagram.com/theshakarafest/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block text-gray-400 hover:text-white transition-colors"
-                    >
-                      Instagram
-                    </a>
-                    <a
-                      href="https://x.com/theshakarafest/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block text-gray-400 hover:text-white transition-colors"
-                    >
-                      Twitter
-                    </a>
-                    <a
-                      href="https://www.facebook.com/theshakarafest/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block text-gray-400 hover:text-white transition-colors"
-                    >
-                      Facebook
-                    </a>
-                    <a
-                      href="https://www.youtube.com/@theshakarafest"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block text-gray-400 hover:text-white transition-colors"
-                    >
-                      YouTube
-                    </a>
-                  </>
-                )}
+                <Link
+                  href="/faq"
+                  className="block text-gray-400 hover:text-white transition-colors"
+                >
+                  FAQ
+                </Link>
               </div>
             </div>
           </div>
