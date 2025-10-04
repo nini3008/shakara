@@ -399,3 +399,11 @@ export const ALL_FOOTER_SECTIONS_QUERY = `
     order
   }
 `;
+
+export const FAQ_QUERY = `*[_type == "faq" && active == true] | order(category asc, order asc) {
+  _id,
+  category,
+  question,
+  answer,
+  order
+}`;
