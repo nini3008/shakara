@@ -47,7 +47,7 @@ export default async function LineupSection() {
     introText: 'Experience the best of African music with world-class artists across multiple stages and genres.',
     stats: {
       artistCount: '50+',
-      stageCount: '5',
+      stageCount: '1',
       genreCount: '15'
     },
     ctaSection: {
