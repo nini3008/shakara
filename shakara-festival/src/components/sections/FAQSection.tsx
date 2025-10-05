@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { ChevronDown } from 'lucide-react'
+import styles from './FAQSection.module.scss'
 
 interface FAQ {
   _id: string
@@ -19,24 +20,20 @@ function FAQItem({ faq }: { faq: FAQ }) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <div className="border-b border-gray-700/30 last:border-0">
+    <div className={styles.faqItem}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full py-7 px-6 md:px-8 flex items-start justify-between text-left hover:bg-white/5 transition-all duration-200"
+        className={styles.questionButton}
       >
-        <span className="text-lg md:text-xl font-semibold text-white pr-8 leading-relaxed">{faq.question}</span>
-        <ChevronDown
-          className={`flex-shrink-0 w-6 h-6 text-orange-400 transition-transform duration-300 mt-1 ${
-            isOpen ? 'rotate-180' : ''
-          }`}
-        />
+        <span className={styles.questionText}>{faq.question}</span>
+        <ChevronDown className={`${styles.icon} ${isOpen ? styles.open : ''}`} />
       </button>
       <div
         className={`overflow-hidden transition-all duration-300 ${
-          isOpen ? 'max-h-[500px] pb-7' : 'max-h-0'
+          isOpen ? 'max-h-[500px]' : 'max-h-0'
         }`}
       >
-        <div className="px-6 md:px-8 text-gray-300 whitespace-pre-line leading-relaxed text-base md:text-lg">
+        <div className={styles.answer}>
           {faq.answer}
         </div>
       </div>
@@ -57,13 +54,13 @@ function FAQsByCategory({ faqs }: FAQsByCategoryProps) {
   const categories = Object.keys(faqsByCategory).sort()
 
   return (
-    <div className="space-y-16">
+    <div className={styles.faqSection}>
       {categories.map((category) => (
-        <div key={category}>
-          <h2 className="text-2xl md:text-3xl font-bold mb-6 text-yellow-400">
+        <div key={category} className={styles.categorySection}>
+          <h2 className={styles.categoryTitle}>
             {category}
           </h2>
-          <div className="bg-gray-900/60 backdrop-blur-md rounded-3xl border border-gray-700/50 overflow-hidden shadow-2xl">
+          <div className={styles.faqList}>
             {faqsByCategory[category].map((faq) => (
               <FAQItem key={faq._id} faq={faq} />
             ))}
@@ -104,7 +101,7 @@ export default function FAQSection() {
       <div className="max-w-5xl mx-auto relative z-10">
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
+          <h1 className={styles.title}>
             Frequently Asked Questions
           </h1>
           <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto">
@@ -133,11 +130,11 @@ export default function FAQSection() {
         )}
 
         {/* Contact Section */}
-        <div className="mt-20 p-10 md:p-12 bg-gradient-to-br from-orange-500/5 to-red-500/5 backdrop-blur-md rounded-3xl border border-gray-700/50 shadow-2xl">
-          <h3 className="text-2xl md:text-3xl font-bold text-center mb-4 text-yellow-400">
+        <div className={styles.contactSection}>
+          <h3 className={styles.contactTitle}>
             Need More Information?
           </h3>
-          <p className="text-gray-300 text-center mb-10 text-lg">
+          <p className={styles.contactText}>
             Can&apos;t find what you&apos;re looking for? Reach out to us directly:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

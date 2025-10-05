@@ -146,7 +146,7 @@ export default async function AboutSection() {
               
               <div className={styles.statCard}>
                 <div className={styles.statNumber}>{sectionData.stats.stageCount}</div>
-                <div className={styles.statLabel}>Stages</div>
+                <div className={styles.statLabel}>{sectionData.stats.stageCount === '1' ? 'Stage' : 'Stages'}</div>
               </div>
               
               <div className={styles.statCard}>

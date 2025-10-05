@@ -1,6 +1,6 @@
 // app/schedule/page.tsx
 
-import V2Layout from '@/components/v2/Layout'
+import LayoutWrapper from '@/components/v2/LayoutWrapper'
 import ThemedContent from '@/components/ThemedContent'
 import { client, SCHEDULE_QUERY } from '@/lib/sanity'
 import { ScheduleEvent } from '@/types'
@@ -24,21 +24,19 @@ export default async function SchedulePage() {
   }
 
   return (
-    <V2Layout currentPageName="Schedule">
+    <LayoutWrapper currentPageName="Schedule">
       <ThemedContent transparent>
-        <PaperSection>
-          <main className={styles.scheduleWrapper}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <Reveal>
-                <ScheduleContent
-                  initialEvents={initialEvents}
-                  initialSanityEvents={initialSanityEvents}
-                />
-              </Reveal>
-            </div>
-          </main>
-        </PaperSection>
+        <main className={styles.scheduleWrapper}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Reveal>
+              <ScheduleContent
+                initialEvents={initialEvents}
+                initialSanityEvents={initialSanityEvents}
+              />
+            </Reveal>
+          </div>
+        </main>
       </ThemedContent>
-    </V2Layout>
+    </LayoutWrapper>
   )
 }

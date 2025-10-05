@@ -1,4 +1,4 @@
-import V2Layout from '@/components/v2/Layout'
+import LayoutWrapper from '@/components/v2/LayoutWrapper'
 import ThemedContent from '@/components/ThemedContent'
 import { client, SCHEDULE_QUERY } from '@/lib/sanity'
 import { ScheduleEvent } from '@/types'
@@ -21,7 +21,7 @@ export default async function LineupPage() {
   }
 
   return (
-    <V2Layout currentPageName="Lineup">
+    <LayoutWrapper currentPageName="Lineup">
       <ThemedContent transparent>
         <main>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -51,7 +51,7 @@ export default async function LineupPage() {
           </div>
         </main>
       </ThemedContent>
-    </V2Layout>
+    </LayoutWrapper>
   )
 }
 

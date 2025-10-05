@@ -1,4 +1,4 @@
-import V2Layout from '@/components/v2/Layout'
+import LayoutWrapper from '@/components/v2/LayoutWrapper'
 import ThemedContent from '@/components/ThemedContent'
 import PaperSection from '@/components/v2/PaperSection'
 import FAQSection from '@/components/sections/FAQSection'
@@ -10,12 +10,12 @@ export const metadata = {
 
 export default function FAQPage() {
   return (
-    <V2Layout currentPageName="FAQ">
+    <LayoutWrapper currentPageName="FAQ">
       <ThemedContent transparent>
         <PaperSection>
           <FAQSection />
         </PaperSection>
       </ThemedContent>
-    </V2Layout>
+    </LayoutWrapper>
   )
 }

@@ -5,7 +5,7 @@ import { Artist } from '@/types';
 import { SanityArtist, adaptSanityArtist } from '@/types/sanity-adapters';
 import Image from 'next/image';
 import Link from 'next/link';
-import V2Layout from '@/components/v2/Layout';
+import LayoutWrapper from '@/components/v2/LayoutWrapper';
 import { notFound } from 'next/navigation';
 import styles from '@/components/styles/ArtistDetail.module.scss';
 
@@ -63,7 +63,7 @@ export default async function ArtistDetailPage({
   const dayName = artist.day ? `Day ${artist.day}` : null;
 
   return (
-    <V2Layout>
+    <LayoutWrapper>
       <div className={styles.artistPage}>
         {/* Main Content */}
         <main className={styles.mainContent}>
@@ -252,6 +252,6 @@ export default async function ArtistDetailPage({
           </div>
         </main>
       </div>
-    </V2Layout>
+    </LayoutWrapper>
   );
 }
