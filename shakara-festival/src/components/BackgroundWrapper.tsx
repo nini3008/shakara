@@ -7,16 +7,16 @@ export function BackgroundWrapper({ children }: { children: React.ReactNode }) {
   return (
     <>
       <BackgroundGradientAnimation
-        gradientBackgroundStart="rgb(108, 0, 162)" // Deep purple base
-        gradientBackgroundEnd="rgb(0, 17, 82)" // Dark blue base
-        firstColor="138, 43, 226" // Blue violet from logo
-        secondColor="255, 20, 147" // Hot pink/magenta from logo
-        thirdColor="0, 191, 255" // Bright cyan/blue from logo
-        fourthColor="255, 165, 0" // Orange from logo
-        fifthColor="50, 205, 50" // Lime green from logo
-        pointerColor="255, 69, 0" // Red orange from logo
-        size="80%"
-        blendingValue="hard-light"
+        gradientBackgroundStart="rgb(10, 8, 15)" // Dark base with slight purple
+        gradientBackgroundEnd="rgb(5, 5, 5)" // Very dark grey base
+        firstColor="120, 40, 40" // Deep red
+        secondColor="140, 60, 25" // Deep burnt orange
+        thirdColor="150, 70, 30" // Muted orange
+        fourthColor="130, 50, 20" // Deep burnt orange
+        fifthColor="110, 35, 35" // Deep red
+        pointerColor="140, 65, 30" // Warm accent
+        size="50%"
+        blendingValue="soft-light"
         interactive={true}
         containerClassName="fixed inset-0"
         className="absolute inset-0"

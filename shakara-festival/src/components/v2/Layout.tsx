@@ -17,6 +17,11 @@ type FooterData = {
   copyright?: string
 }
 
+type InnerLayoutProps = {
+  children: React.ReactNode
+  footerData?: FooterData | null
+}
+
 const navigationItems = [
   { title: 'Home', url: '/' },
   { title: 'About', url: '/about' },
@@ -28,27 +33,32 @@ const navigationItems = [
   { title: 'Partnership', url: '/partnership' },
 ]
 
-function InnerLayout({ children }: { children: React.ReactNode }) {
+function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutProps) {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
-  const [footerData, setFooterData] = React.useState<FooterData | null>(null)
+  const [footerData, setFooterData] = React.useState<FooterData | null>(initialFooterData || null)
   const { count } = useCart()
   const [cartOpen, setCartOpen] = React.useState(false)
   const [cartPulse, setCartPulse] = React.useState(false)
 
+  // Fetch footer data from CMS on client side
   React.useEffect(() => {
-    ;(async () => {
+    async function fetchFooterData() {
       try {
-        const res = await fetch('/api/footer', { cache: 'no-store' })
-        if (res.ok) {
-          const data = await res.json()
+        const response = await fetch('/api/footer')
+        if (response.ok) {
+          const data = await response.json()
           setFooterData(data)
         }
-      } catch {
-        // ignore
+      } catch (error) {
+        console.error('Error fetching footer data:', error)
       }
-    })()
-  }, [])
+    }
+
+    if (!initialFooterData) {
+      fetchFooterData()
+    }
+  }, [initialFooterData])
 
   React.useEffect(() => {
     const onAdd = () => {
@@ -271,7 +281,7 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
               <div className="flex space-x-4">
                 {footerData?.socialLinks ? (
                   Object.entries(footerData.socialLinks)
-                    .filter(([, url]) => url) // Only show platforms with URLs
+                    .filter(([platform, url]) => url && platform !== 'facebook' && platform !== 'youtube') // Hide Facebook and YouTube
                     .map(([platform, url]) => (
                       <a
                         key={platform}
@@ -306,22 +316,13 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
                       Twitter
                     </a>
                     <a
-                      href="https://www.facebook.com/theshakarafest/"
+                      href="https://www.tiktok.com/@theshakarafest/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-gray-400 hover:text-orange-400 transition-colors"
-                      aria-label="Follow us on Facebook"
+                      aria-label="Follow us on TikTok"
                     >
-                      Facebook
-                    </a>
-                    <a
-                      href="https://www.youtube.com/@theshakarafest"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-gray-400 hover:text-orange-400 transition-colors"
-                      aria-label="Follow us on YouTube"
-                    >
-                      YouTube
+                      TikTok
                     </a>
                   </>
                 )}
@@ -379,10 +380,10 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default function V2Layout({ children }: { children: React.ReactNode; currentPageName?: string }) {
+export default function V2Layout({ children, footerData }: { children: React.ReactNode; currentPageName?: string; footerData?: FooterData | null }) {
   return (
     <CartProvider>
-      <InnerLayout>{children}</InnerLayout>
+      <InnerLayout footerData={footerData}>{children}</InnerLayout>
     </CartProvider>
   )
 }

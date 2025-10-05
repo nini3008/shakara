@@ -57,7 +57,7 @@ export default async function ArtistsPage() {
               Discover the incredible talent performing at Shakara Festival 2025
             </p>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {artists.map((artist, index) => {
               const sanityArtist = sanityArtists[index];

@@ -26,18 +26,16 @@ export default async function SchedulePage() {
   return (
     <V2Layout currentPageName="Schedule">
       <ThemedContent transparent>
-        <PaperSection>
-          <main className={styles.scheduleWrapper}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <Reveal>
-                <ScheduleContent
-                  initialEvents={initialEvents}
-                  initialSanityEvents={initialSanityEvents}
-                />
-              </Reveal>
-            </div>
-          </main>
-        </PaperSection>
+        <main className={styles.scheduleWrapper}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Reveal>
+              <ScheduleContent
+                initialEvents={initialEvents}
+                initialSanityEvents={initialSanityEvents}
+              />
+            </Reveal>
+          </div>
+        </main>
       </ThemedContent>
     </V2Layout>
   )

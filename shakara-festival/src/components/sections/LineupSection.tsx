@@ -113,7 +113,7 @@ export default async function LineupSection() {
             </div>
             <div className={styles.statItem}>
               <span className={styles.statNumber}>{lineupData.stats.stageCount}</span>
-              <span className={styles.statLabel}>Stages</span>
+              <span className={styles.statLabel}>{lineupData.stats.stageCount === '1' ? 'Stage' : 'Stages'}</span>
             </div>
             <div className={styles.statItem}>
               <span className={styles.statNumber}>{lineupData.stats.genreCount}</span>
@@ -122,7 +122,8 @@ export default async function LineupSection() {
           </div>
         </div>
         
-        {sortedArtists.length > 0 ? (
+        {/* Artist grid hidden - coming soon */}
+        {false && sortedArtists.length > 0 ? (
           <>
             <div className={styles.artistsGrid}>
               {sortedArtists.slice(0, lineupData.featuredArtistCount).map((artist, index) => {

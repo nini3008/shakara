@@ -2,14 +2,10 @@
 
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import V2Layout from '@/components/v2/Layout'
-import ThemedContent from '@/components/ThemedContent'
 import { motion } from 'framer-motion'
 import { CheckCircle2, Home, Ticket } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
-
-export const dynamic = 'force-dynamic'
 
 function SuccessContent() {
   const searchParams = useSearchParams()
@@ -86,18 +82,14 @@ function SuccessContent() {
   )
 }
 
-export default function SuccessPage() {
+export default function SuccessClient() {
   return (
-    <V2Layout currentPageName="Payment Success">
-      <ThemedContent transparent>
-        <Suspense fallback={
-          <div className="min-h-[60vh] flex items-center justify-center">
-            <div className="text-gray-300">Loading...</div>
-          </div>
-        }>
-          <SuccessContent />
-        </Suspense>
-      </ThemedContent>
-    </V2Layout>
+    <Suspense fallback={
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-gray-300">Loading...</div>
+      </div>
+    }>
+      <SuccessContent />
+    </Suspense>
   )
 }

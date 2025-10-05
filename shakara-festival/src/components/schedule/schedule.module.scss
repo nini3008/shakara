@@ -16,13 +16,13 @@
   /* Torn paper header removed */
 
   /* translucent glass like nav */
-  & > .container > .headerContent {
-    background: rgba(255,255,255,0.5);
-    border: 1px solid rgba(148,163,184,0.5);
-    backdrop-filter: blur(8px);
-    border-radius: 1rem;
-    padding: 1.25rem;
-  }
+  // & > .container > .headerContent {
+  //   background: rgba(255,255,255,0.5);
+  //   border: 1px solid rgba(148,163,184,0.5);
+  //   backdrop-filter: blur(8px);
+  //   border-radius: 1rem;
+  //   padding: 1.25rem;
+  // }
   
   // Light theme override
   :global(.themed-content[data-theme="light"]) & {
