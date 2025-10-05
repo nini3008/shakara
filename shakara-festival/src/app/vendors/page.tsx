@@ -1,4 +1,4 @@
-import LayoutWrapper from '@/components/v2/LayoutWrapper'
+import V2Layout from '@/components/v2/Layout'
 import ThemedContent from '@/components/ThemedContent'
 import PaperSection from '@/components/v2/PaperSection'
 
@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function VendorsPage() {
   return (
-    <LayoutWrapper currentPageName="Vendors">
+    <V2Layout currentPageName="Vendors">
       <ThemedContent transparent>
         <PaperSection>
           <div className="min-h-screen flex items-center justify-center py-24 px-4">
@@ -27,6 +27,6 @@ export default function VendorsPage() {
           </div>
         </PaperSection>
       </ThemedContent>
-    </LayoutWrapper>
+    </V2Layout>
   )
 }

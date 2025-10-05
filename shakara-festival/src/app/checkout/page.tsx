@@ -1,14 +1,14 @@
-import LayoutWrapper from '@/components/v2/LayoutWrapper'
+import V2Layout from '@/components/v2/Layout'
 import ThemedContent from '@/components/ThemedContent'
 import CheckoutForm from '@/components/v2/checkout/CheckoutForm'
 
 export default function CheckoutPage() {
   return (
-    <LayoutWrapper currentPageName="Checkout">
+    <V2Layout currentPageName="Checkout">
       <ThemedContent transparent>
         <CheckoutForm />
       </ThemedContent>
-    </LayoutWrapper>
+    </V2Layout>
   )
 }
 

@@ -1,17 +1,17 @@
-import LayoutWrapper from '@/components/v2/LayoutWrapper'
+import V2Layout from '@/components/v2/Layout'
 import ThemedContent from '@/components/ThemedContent'
 import AboutSection from '@/components/sections/AboutSection'
 import PaperSection from '@/components/v2/PaperSection'
 
 export default function AboutPage() {
   return (
-    <LayoutWrapper currentPageName="About">
+    <V2Layout currentPageName="About">
       <ThemedContent transparent>
         <PaperSection>
           <AboutSection />
         </PaperSection>
       </ThemedContent>
-    </LayoutWrapper>
+    </V2Layout>
   )
 }
 

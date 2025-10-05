@@ -5,7 +5,7 @@ import { Artist } from '@/types';
 import { SanityArtist, adaptSanityArtist } from '@/types/sanity-adapters';
 import Image from 'next/image';
 import Link from 'next/link';
-import LayoutWrapper from '@/components/v2/LayoutWrapper';
+import V2Layout from '@/components/v2/Layout';
 import ThemedContent from '@/components/ThemedContent';
 
 async function getArtists(): Promise<{ artists: Artist[], sanityArtists: SanityArtist[] }> {
@@ -24,7 +24,7 @@ export default async function ArtistsPage() {
 
   if (artists.length === 0) {
     return (
-      <LayoutWrapper currentPageName="Artists">
+      <V2Layout currentPageName="Artists">
         <ThemedContent transparent>
           <div className="min-h-screen flex items-center justify-center">
             <div className="text-center max-w-2xl mx-auto px-4">
@@ -39,12 +39,12 @@ export default async function ArtistsPage() {
             </div>
           </div>
         </ThemedContent>
-      </LayoutWrapper>
+      </V2Layout>
     );
   }
 
   return (
-    <LayoutWrapper currentPageName="Artists">
+    <V2Layout currentPageName="Artists">
       <ThemedContent transparent>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center mb-10">
@@ -68,7 +68,7 @@ export default async function ArtistsPage() {
           </div>
         </div>
       </ThemedContent>
-    </LayoutWrapper>
+    </V2Layout>
   );
 }
 
