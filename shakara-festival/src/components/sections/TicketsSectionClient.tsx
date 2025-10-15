@@ -76,9 +76,25 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
     }
   };
 
-  // Fallback curated tiers if no Sanity tickets available yet
-  const showCurated = !initialTickets || initialTickets.length === 0
+  // Disable curated fallback; if CMS has no tickets, show the "Tickets Coming Soon" empty state
+  const showCurated = false
   const curatedTiers = [
+    {
+      id: 'pit',
+      name: 'Pit Access',
+      price: 250000,
+      originalPrice: 0,
+      currency: '₦',
+      badge: 'Front Row',
+      theme: 'pit',
+      description: 'Closest to the action in the pit for the biggest headline sets.',
+      features: [
+        'Exclusive pit access at headliners',
+        'Dedicated pit entry lane',
+        'Limited capacity for optimal comfort',
+        'Souvenir lanyard and credential',
+      ],
+    },
     {
       id: 'general',
       name: 'General Admission',
@@ -127,22 +143,6 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
         'Best-in-venue stage viewing access',
       ],
     },
-    {
-      id: 'pit',
-      name: 'Pit Access',
-      price: 250000,
-      originalPrice: 0,
-      currency: '₦',
-      badge: 'Front Row',
-      theme: 'pit',
-      description: 'Closest to the action in the pit for the biggest headline sets.',
-      features: [
-        'Exclusive pit access at headliners',
-        'Dedicated pit entry lane',
-        'Limited capacity for optimal comfort',
-        'Souvenir lanyard and credential',
-      ],
-    },
   ]
 
   return (
@@ -174,8 +174,19 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                       
                       <div className={styles.cardContent}>
                         <h3 className={styles.ticketName}>{ticket.name}</h3>
-                        
-                        {/* Pricing hidden */}
+
+                        <div className={styles.priceContainer}>
+                          <div className={styles.priceGroup}>
+                            {ticket.originalPrice && ticket.originalPrice > 0 && (
+                              <span className={styles.originalPrice}>
+                                ₦{ticket.originalPrice.toLocaleString()}
+                              </span>
+                            )}
+                            <span className={styles.currentPrice}>
+                              ₦{ticket.price.toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
                         
                         {ticket.description && (
                           <p className={styles.description}>{ticket.description}</p>
@@ -224,7 +235,7 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                         ) : ticket.available ? (
                           <button
                             onClick={() => {
-                              addItem({ id: `sanity-${sanityTicket.slug.current}`, name: ticket.name, price: ticket.price, quantity: 1, category: 'ticket' })
+                              addItem({ id: sanityTicket.sku, name: ticket.name, price: ticket.price, quantity: 1, category: 'ticket' })
                               window.dispatchEvent(new Event('cart:add'))
                             }}
                             className={styles.buyButton + ' clickable'}
@@ -248,29 +259,6 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
               })}
             </div>
             
-            <div className={styles.buttonContainer}>
-              <Link 
-                href="/tickets" 
-                className={styles.viewAllButton}
-                aria-label="View all available tickets"
-              >
-                View All Tickets
-                <svg 
-                  className={styles.buttonIcon} 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M9 5l7 7-7 7" 
-                  />
-                </svg>
-              </Link>
-            </div>
           </>
         ) : showCurated ? (
           <>
@@ -281,7 +269,18 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                     {t.badge && <div className={styles.badge}>{t.badge}</div>}
                     <div className={styles.cardContent}>
                       <h3 className={styles.ticketName}>{t.name}</h3>
-                      {/* Pricing hidden */}
+                      <div className={styles.priceContainer}>
+                        <div className={styles.priceGroup}>
+                          {t.originalPrice && t.originalPrice > 0 && (
+                            <span className={styles.originalPrice}>
+                              ₦{t.originalPrice.toLocaleString()}
+                            </span>
+                          )}
+                          <span className={styles.currentPrice}>
+                            ₦{t.price.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
                       <p className={styles.description}>{t.description}</p>
                       <ul className={styles.featuresList}>
                         {t.features.map((f) => (

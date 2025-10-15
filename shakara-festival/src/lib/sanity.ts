@@ -5,7 +5,7 @@ import { SanityImageSource } from '@sanity/image-url/lib/types/types'
 export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-  useCdn: false, // set to `false` to bypass the edge cache
+  useCdn: false, // always bypass cache in dev
   apiVersion: '2023-05-03', // use current date (YYYY-MM-DD) to target the latest API version
 })
 
@@ -25,6 +25,18 @@ export const getFileUrl = (fileRef: string) => {
   
   return `https://cdn.sanity.io/files/${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}/${process.env.NEXT_PUBLIC_SANITY_DATASET}/${hash}.${extension}`
 }
+
+// Write-enabled client (requires SANITY_WRITE_TOKEN); falls back to read client
+export const writeClient = process.env.SANITY_WRITE_TOKEN
+  ? createClient({
+      projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+      dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
+      useCdn: false,
+      apiVersion: '2023-05-03',
+      token: process.env.SANITY_WRITE_TOKEN,
+      perspective: 'published',
+    })
+  : client
 
 // GROQ queries
 export const ARTIST_QUERY = `*[_type == "artist"] | order(featured desc, name asc) {
@@ -59,21 +71,36 @@ export const TICKETS_QUERY = `*[_type == "ticket"] | order(order asc, price asc)
   name,
   slug,
   description,
+  sku,
   price,
   originalPrice,
+  testPrice,
   currency,
   features,
   available,
   duration,
   type,
+  category,
+  bundleSize,
+  packageType,
   discount,
   maxQuantity,
   soldOut,
+  inventory,
+  sold,
+  reserved,
+  allowOversell,
   saleStartDate,
   saleEndDate,
   featured,
   badge,
-  order
+  order,
+  live,
+  taxInclusive,
+  feesIncluded,
+  fwProductId,
+  fwPaymentLink,
+  lastSyncedNote
 }`
 
 export const FEATURED_TICKETS_QUERY = `*[_type == "ticket" && featured == true] | order(order asc, price asc) {
@@ -81,15 +108,25 @@ export const FEATURED_TICKETS_QUERY = `*[_type == "ticket" && featured == true] 
   name,
   slug,
   description,
+  sku,
   price,
   originalPrice,
+  testPrice,
   currency,
   features,
   available,
   duration,
   type,
+  category,
+  bundleSize,
+  packageType,
   discount,
-  badge
+  badge,
+  live,
+  taxInclusive,
+  feesIncluded,
+  fwProductId,
+  fwPaymentLink
 }`
 
 export const SCHEDULE_QUERY = `*[_type == "scheduleEvent"] | order(day asc, time asc) {
@@ -399,3 +436,11 @@ export const ALL_FOOTER_SECTIONS_QUERY = `
     order
   }
 `;
+
+export const FAQ_QUERY = `*[_type == "faq" && active == true] | order(category asc, order asc) {
+  _id,
+  category,
+  question,
+  answer,
+  order
+}`;

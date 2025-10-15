@@ -9,6 +9,7 @@ import aboutSection from '../schemas/aboutSection'
 import merchItem from '../schemas/merchItem'
 import lineupsection from '../schemas/lineupsection'
 import footer from '../schemas/footer'
+import faq from '../schemas/faq'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   hero,
@@ -20,4 +21,5 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   aboutSection,
   lineupsection,
   footer,
+  faq,
 ]

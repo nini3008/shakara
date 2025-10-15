@@ -4,6 +4,8 @@ import { Resend } from 'resend'
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
 export async function POST(request: NextRequest) {
+  let email = '';
+
   try {
     if (!resend) {
       return NextResponse.json(
@@ -12,7 +14,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { email, firstName, interests } = await request.json()
+    const { email: userEmail, firstName, interests } = await request.json()
+    email = userEmail;
 
     if (!email || !firstName) {
       return NextResponse.json(
@@ -21,34 +24,37 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if already subscribed and add to Resend contacts
     const audienceId = process.env.RESEND_AUDIENCE_ID;
+
+    // Double-check if contact already exists (backend validation)
     if (audienceId) {
       try {
-        await resend.contacts.create({
+        const existingContact = await resend.contacts.get({
           email: email,
-          firstName: firstName,
-          unsubscribed: false,
           audienceId: audienceId,
         });
-      } catch (contactError: unknown) {
-        // If contact already exists, return friendly error
-        const errorMessage = contactError instanceof Error ? contactError.message : String(contactError)
-        const errorName = contactError instanceof Error && 'name' in contactError ? contactError.name : ''
-        if (errorMessage.includes('already exists') || errorName === 'validation_error') {
+
+        if (existingContact.data) {
+          console.log('Duplicate signup attempt blocked:', existingContact.data.id);
           return NextResponse.json({
             success: false,
             error: 'You are already subscribed to our newsletter!',
           }, { status: 409 });
         }
-        console.log('Error adding to audience:', contactError);
-        // For other errors, continue with email sending
+      } catch (contactError: unknown) {
+        // 404 means contact doesn't exist, which is what we want
+        const resendError = contactError as { statusCode?: number; message?: string }
+        if (resendError.statusCode !== 404 && !resendError.message?.includes('not found')) {
+          console.error('Contact check error:', contactError);
+          // Continue with signup even if contact check fails
+        }
       }
-    } else {
-      console.log('RESEND_AUDIENCE_ID not configured - skipping contact creation');
+
+      // Add 600ms delay before sending email to respect rate limit
+      await new Promise(resolve => setTimeout(resolve, 600));
     }
 
-    // Send welcome email with Resend's built-in unsubscribe
+    // Send welcome email
     const { data, error } = await resend.emails.send({
       from: 'Shakara Festival <contact@shakarafestival.com>',
       to: [email],
@@ -89,11 +95,43 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Resend error:', error)
+
+      // Handle rate limiting specifically
+      const resendError = error as { name?: string; statusCode?: number }
+      if (resendError.name === 'rate_limit_exceeded' || resendError.statusCode === 429) {
+        return NextResponse.json({
+          success: true,
+          message: 'Successfully subscribed! Welcome email will be sent shortly.',
+          note: 'You are now subscribed to our newsletter. Due to high demand, your welcome email may arrive with a slight delay.',
+        }, { status: 200 })
+      }
       return NextResponse.json({
         success: false,
-        error: 'Failed to send welcome email',
+        error: 'Failed to send welcome email. Please try again.',
       }, { status: 500 })
     }
+
+    // Email sent successfully, now create the contact
+    if (audienceId) {
+      // Add 600ms delay to respect rate limit (2 req/sec = 500ms minimum)
+      await new Promise(resolve => setTimeout(resolve, 600));
+
+      try {
+        const contactResult = await resend.contacts.create({
+          email: email,
+          firstName: firstName,
+          unsubscribed: false,
+          audienceId: audienceId,
+        });
+
+        console.log('New contact created after email:', contactResult.data?.id);
+      } catch (contactError: unknown) {
+        console.error('Contact creation after email error:', contactError);
+        // Don't fail the signup if contact creation fails after email is sent
+      }
+    }
+
+    // Contact and email created successfully
 
     return NextResponse.json({
       success: true,
@@ -103,9 +141,11 @@ export async function POST(request: NextRequest) {
 
   } catch (error: unknown) {
     console.error('Newsletter signup error:', error)
-    
+
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
-    
+
+    // Error occurred during signup process
+
     return NextResponse.json({
       success: false,
       error: 'Failed to subscribe. Please try again later.',

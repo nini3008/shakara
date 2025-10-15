@@ -18,7 +18,6 @@ async function getFeaturedArtists(): Promise<{ artists: Artist[], sanityArtists:
     }
 
     // If no featured artists, get all artists as fallback
-    console.log('No featured artists found, falling back to all artists');
     const allSanityArtists: SanityArtist[] = await client.fetch(ARTIST_QUERY);
     const artists = allSanityArtists.map(adaptSanityArtist);
     return { artists, sanityArtists: allSanityArtists };
@@ -48,7 +47,7 @@ export default async function LineupSection() {
     introText: 'Experience the best of African music with world-class artists across multiple stages and genres.',
     stats: {
       artistCount: '50+',
-      stageCount: '5',
+      stageCount: '1',
       genreCount: '15'
     },
     ctaSection: {
@@ -75,6 +74,25 @@ export default async function LineupSection() {
 
   const lineupData = sectionData || fallbackData;
 
+  // Sort artists by performance day (Day 1, Day 2, Day 3, etc.)
+  const sortedArtists = artists.sort((a, b) => {
+    // If both have days, sort by day number
+    if (a.day && b.day) {
+      return a.day - b.day;
+    }
+    // If only one has a day, put the one with day first
+    if (a.day && !b.day) return -1;
+    if (!a.day && b.day) return 1;
+    // If neither has a day, maintain original order
+    return 0;
+  });
+
+  // Create corresponding sorted sanity artists array
+  const sortedSanityArtists = sortedArtists.map(artist => {
+    const originalIndex = artists.findIndex(a => a.id === artist.id);
+    return sanityArtists[originalIndex];
+  });
+
   return (
     <section id="lineup" className={styles.lineupSection}>
       <div className={styles.container}>
@@ -95,7 +113,7 @@ export default async function LineupSection() {
             </div>
             <div className={styles.statItem}>
               <span className={styles.statNumber}>{lineupData.stats.stageCount}</span>
-              <span className={styles.statLabel}>Stages</span>
+              <span className={styles.statLabel}>{lineupData.stats.stageCount === '1' ? 'Stage' : 'Stages'}</span>
             </div>
             <div className={styles.statItem}>
               <span className={styles.statNumber}>{lineupData.stats.genreCount}</span>
@@ -104,11 +122,12 @@ export default async function LineupSection() {
           </div>
         </div>
         
-        {artists.length > 0 ? (
+        {/* Artist grid hidden - coming soon */}
+        {false && sortedArtists.length > 0 ? (
           <>
             <div className={styles.artistsGrid}>
-              {artists.slice(0, lineupData.featuredArtistCount).map((artist, index) => {
-                const sanityArtist = sanityArtists[index];
+              {sortedArtists.slice(0, lineupData.featuredArtistCount).map((artist, index) => {
+                const sanityArtist = sortedSanityArtists[index];
                 return (
                   <div key={artist.id} className={styles.artistGroup}>
                     <Link href={`/artists/${sanityArtist.slug.current}`}>

@@ -25,8 +25,23 @@ export interface TicketType {
   features: string[];
   available: boolean;
   duration: '1-day' | '2-day' | '3-day' | '4-day';
-  type: 'general' | 'pit' | 'vip' | 'vvip' | 'family';
+  type: 'general' | 'pit' | 'vip' | 'vvip' | 'family' | 'addon';
   discount?: number;
+  sku?: string;
+  testPrice?: number;
+  category?: 'early-bird' | 'standard';
+  bundleSize?: number;
+  packageType?: 'standard' | 'table';
+  inventory?: number;
+  sold?: number;
+  reserved?: number;
+  allowOversell?: boolean;
+  live?: boolean;
+  taxInclusive?: boolean;
+  feesIncluded?: boolean;
+  fwProductId?: string;
+  fwPaymentLink?: string;
+  lastSyncedNote?: string;
 }
 
 export interface ScheduleEvent {

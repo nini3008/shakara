@@ -3,11 +3,9 @@
 import { client, urlFor } from '@/lib/sanity';
 import { Artist } from '@/types';
 import { SanityArtist, adaptSanityArtist } from '@/types/sanity-adapters';
-import ThemedContent from '@/components/ThemedContent';
 import Image from 'next/image';
 import Link from 'next/link';
-import Navigation from '@/components/Navigation';
-import Footer from '@/components/Footer';
+import V2Layout from '@/components/v2/Layout';
 import { notFound } from 'next/navigation';
 import styles from '@/components/styles/ArtistDetail.module.scss';
 
@@ -65,40 +63,35 @@ export default async function ArtistDetailPage({
   const dayName = artist.day ? `Day ${artist.day}` : null;
 
   return (
-    <div className={styles.artistPage}>
-      {/* Navigation - Consistent with main site */}
-      <div className={styles.navigationWrapper}>
-        <Navigation />
-      </div>
-
-      <ThemedContent>
+    <V2Layout>
+      <div className={styles.artistPage}>
         {/* Main Content */}
         <main className={styles.mainContent}>
-        <div className={styles.container}>
-          {/* Back Navigation */}
-          <nav className={styles.breadcrumb}>
-            <Link
-              href="/#lineup"
-              className={styles.backLink}
-              aria-label="Back to Lineup"
-            >
-              <svg
-                className={styles.backIcon}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
+          <div className={styles.container}>
+            {/* Back Navigation */}
+            <nav className={styles.breadcrumb}>
+              <Link
+                href="/lineup"
+                className={styles.backLink}
+                aria-label="Back to Lineup"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-              Back to Lineup
-            </Link>
-          </nav>
+                <svg
+                  className={styles.backIcon}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+                Back to Lineup
+              </Link>
+            </nav>
 
           {/* Artist Content Grid */}
           <div className={styles.artistGrid}>
@@ -256,14 +249,9 @@ export default async function ArtistDetailPage({
               </div>
             </div>
           </div>
-        </div>
-      </main>
-
-          {/* Footer */}
-          <Footer />
-      </ThemedContent>
-      
-      
-    </div>
+          </div>
+        </main>
+      </div>
+    </V2Layout>
   );
 }

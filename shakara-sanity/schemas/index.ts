@@ -4,11 +4,14 @@ import hero from './hero'
 import artist from './artist'
 import ticket from './ticket'
 import scheduleEvent from './scheduleEvent'
-import partner from './partner' 
+import partner from './partner'
 import aboutSection from './aboutSection'
 import merchItem from './merchItem'
 import lineupsection from './lineupsection'
 import footer from './footer'
+import faq from './faq'
+import reservation from './reservation'
+import order from './order'
 
 export const schema: {types: SchemaTypeDefinition[]} = {
   types: [
@@ -22,6 +25,9 @@ export const schema: {types: SchemaTypeDefinition[]} = {
     aboutSection,
     lineupsection,
     footer,
+    faq,
+    reservation,
+    order,
   ],
 }
 

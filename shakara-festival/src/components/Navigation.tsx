@@ -163,8 +163,8 @@ const Navigation = () => {
             whileTap={{ scale: 0.95 }}
           >
             <Link href="/" className={styles.logo}>
-              <img 
-                src="/images/SHAKARAGradient.png" 
+              <img
+                src="/images/flutterwave-shakara-white.png"
                 alt="SHAKARA Festival"
                 style={{ height: '40px', width: 'auto' }}
               />
@@ -250,8 +250,8 @@ const Navigation = () => {
                     transition={{ delay: 0.1 }}
                   >
                     <Link href="/" onClick={() => setIsOpen(false)}>
-                      <img 
-                        src="/images/SHAKARAGradient.png" 
+                      <img
+                        src="/images/flutterwave-shakara-white.png"
                         alt="SHAKARA Festival"
                         style={{ height: '32px', width: 'auto' }}
                       />

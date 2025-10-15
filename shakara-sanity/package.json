@@ -10,7 +10,9 @@
     "build": "sanity build",
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy",
-    "export:schema": "tsx scripts/export-schema.ts"
+    "export:schema": "tsx scripts/export-schema.ts",
+    "seed:tickets": "tsx scripts/seed-tickets.ts",
+    "seed:addons": "tsx scripts/seed-addons.ts"
   },
   "keywords": [
     "sanity"
@@ -18,10 +20,10 @@
   "dependencies": {
     "@sanity/icons": "^3.7.4",
     "@sanity/ui": "^3.0.5",
-    "@sanity/vision": "^4.7.0",
+    "@sanity/vision": "^4.10.2",
     "react": "^19.1",
     "react-dom": "^19.1",
-    "sanity": "^4.7.0",
+    "sanity": "^4.10.2",
     "styled-components": "^6.1.18"
   },
   "devDependencies": {

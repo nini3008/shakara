@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Flutterwave from 'flutterwave-node-v3'
 import crypto from 'crypto'
+import { writeClient } from '@/lib/sanity'
 
 function verifySignature(req: NextRequest, body: string) {
   const signature = req.headers.get('verif-hash') || req.headers.get('verif-hash'.toUpperCase())
@@ -46,18 +47,30 @@ export async function POST(req: NextRequest) {
     const isSuccessful = verification?.data?.status === 'successful'
     
     if (isSuccessful) {
-      console.log(`Payment verified for tx_ref: ${txRef}`)
-      
-      // TODO: Here you would typically:
-      // 1. Update your database with the successful payment
-      // 2. Send confirmation email to customer
-      // 3. Generate tickets/vouchers
-      // 4. Update inventory if needed
-      
-      // Example of what you might do:
-      // await updateOrderStatus(txRef, 'completed', verification.data)
-      // await sendConfirmationEmail(verification.data.customer.email, txRef)
-      // await generateTickets(verification.data)
+      try {
+        const reservation = await writeClient.fetch(
+          `*[_type == "reservation" && tx_ref == $tx_ref][0]{ _id, amount, currency, lines[] { sku, units } }`,
+          { tx_ref: txRef }
+        )
+        if (reservation && Number(verification?.data?.amount) === Number(reservation.amount)) {
+          await writeClient.transaction()
+            .patch(reservation._id, p => p.set({ status: 'confirmed' }))
+            .create({
+              _type: 'order',
+              tx_ref: txRef,
+              amount: reservation.amount,
+              currency: reservation.currency,
+              lines: reservation.lines,
+              status: 'paid',
+              gateway: 'flutterwave',
+              verification: { id: verification?.data?.id, tx_ref: txRef, gateway_amount: verification?.data?.amount },
+              createdAt: new Date().toISOString(),
+            })
+            .commit({ autoGenerateArrayKeys: true })
+        }
+      } catch (err) {
+        console.error('Finalize webhook error:', err)
+      }
     } else {
       console.error(`Payment verification failed for tx_ref: ${txRef}`)
     }

@@ -58,10 +58,10 @@ export default async function Footer() {
       { label: 'Partners', href: '#partners' }
     ],
     socialLinks: {
-      instagram: 'https://instagram.com/shakarafestival',
-      twitter: 'https://twitter.com/shakarafestival',
-      facebook: 'https://facebook.com/shakarafestival',
-      youtube: 'https://youtube.com/@shakarafestival'
+      instagram: 'https://www.instagram.com/theshakarafest/',
+      twitter: 'https://x.com/theshakarafest/',
+      facebook: 'https://www.instagram.com/theshakarafest/',
+      youtube: 'https://www.youtube.com/@theshakarafest'
     },
     legalLinks: [
       { label: 'Privacy Policy', href: '/privacy' },

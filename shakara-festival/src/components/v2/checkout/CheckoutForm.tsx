@@ -13,7 +13,7 @@ declare global {
     FlutterwaveCheckout?: (config: {
       public_key: string;
       tx_ref: string;
-      amount: number;
+      amount: number | string;
       currency: string;
       payment_options: string;
       customer: { email: string; phone_number: string; name: string };
@@ -90,36 +90,60 @@ export default function CheckoutForm() {
     }
 
     try {
-      const txRef = generateTxRef()
-      
-      // Build meta data with cart items
-      const meta = {
-        items: items.map((item) => ({
-          id: item.id,
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity,
-        })),
-        totalItems: count,
-        totalAmount: total,
+      // Guard against legacy curated-* items without SKUs
+      const validItems = items.filter((i) => !i.id?.startsWith('curated-'))
+      if (validItems.length === 0) {
+        setPaymentError('Your cart contains items that are no longer valid. Please add tickets again from the Tickets page.')
+        setLoading(false)
+        return
       }
 
-      // Configure Flutterwave Inline
+      // Ask the server to compute authoritative totals and create a reservation
+      const prepareRes = await fetch('/api/checkout/prepare', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          lines: validItems.map((item) => ({ sku: item.id, quantity: item.quantity })),
+        }),
+      })
+      if (!prepareRes.ok) {
+        const err = await prepareRes.json().catch(() => ({}))
+        setPaymentError(err.error || 'Could not prepare checkout')
+        setLoading(false)
+        return
+      }
+      const prepared = await prepareRes.json()
+
+      // Build safe meta data (strings only) to avoid SDK sanitization errors
+      type PreparedLine = { sku: string; name: string; unitPrice: number; quantity: number }
+      const meta = {
+        items: JSON.stringify((prepared?.lines || []).map((l: PreparedLine) => ({
+          sku: String(l.sku),
+          name: String(l.name),
+          unitPrice: String(l.unitPrice),
+          quantity: String(l.quantity),
+        }))),
+        totalItems: String(count),
+        serverAmount: String(prepared.amount),
+      }
+
+      // Configure Flutterwave Inline with server-prepared values
       const config = {
-        public_key: publicKey,
-        tx_ref: txRef,
-        amount: total,
+        public_key: String(publicKey),
+        tx_ref: String(prepared.tx_ref),
+        amount: String(prepared.amount),
         currency: 'NGN',
         payment_options: 'card,mobilemoney,ussd',
         customer: {
-          email: email,
-          phone_number: phone,
-          name: `${firstName} ${lastName}`.trim(),
+          email: String(email || ''),
+          phone_number: String(phone || ''),
+          name: String(`${firstName} ${lastName}`.trim() || ''),
         },
         customizations: {
           title: 'Shakara Festival',
-          description: `${items.map(item => `${item.name} x${item.quantity}`).join(', ')} - Total: ${count} ticket(s)`,
-          logo: `${window.location.origin}/images/SHAKARAGradient.png`,
+          description: String(`${validItems.map(item => `${item.name} x${item.quantity}`).join(', ')}`),
+          logo: String(`${window.location.origin}/images/flutterwave-shakara-white.png`),
         },
         meta,
         callback: async function(data: { transaction_id: number; tx_ref: string }) {
@@ -135,7 +159,6 @@ export default function CheckoutForm() {
               body: JSON.stringify({
                 transactionId: data.transaction_id,
                 tx_ref: data.tx_ref,
-                expectedAmount: total,
                 expectedCurrency: 'NGN',
               }),
             })
@@ -144,10 +167,16 @@ export default function CheckoutForm() {
             
             if (result.ok) {
               // Save email for success page
-              localStorage.setItem('checkout-email', email)
-              // Clear cart and redirect to success page
+              try { localStorage.setItem('checkout-email', email) } catch {}
+              // Clear cart
               clear()
-              router.push(`/success?tx_ref=${data.tx_ref}`)
+              // Force a full page navigation so the Flutterwave modal is torn down
+              const successUrl = `/success?tx_ref=${encodeURIComponent(data.tx_ref)}`
+              if (typeof window !== 'undefined') {
+                window.location.assign(successUrl)
+              } else {
+                router.push(successUrl)
+              }
             } else {
               setPaymentError('Payment verification failed. Please contact support.')
               setLoading(false)
@@ -181,7 +210,7 @@ export default function CheckoutForm() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="rounded-2xl border border-gray-200/50 dark:border-gray-800/50 bg-white/70 dark:bg-gray-950/20 backdrop-blur-sm p-6 md:p-10 text-center"
+          className="rounded-2xl border border-gray-800/40 text-white p-6 md:p-10 text-center shadow-2xl bg-gradient-to-br from-[#1a0f1f] via-[#0b0b0e] to-[#1f0d09]"
           >
             <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
@@ -206,7 +235,7 @@ export default function CheckoutForm() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="rounded-2xl border border-gray-200/50 dark:border-gray-800/50 bg-white/70 dark:bg-gray-950/20 backdrop-blur-sm p-6 md:p-10"
+          className="rounded-2xl border border-gray-800/40 text-white p-6 md:p-10 shadow-2xl bg-gradient-to-br from-[#1a0f1f] via-[#0b0b0e] to-[#1f0d09]"
         >
           <div className="grid md:grid-cols-2 gap-8">
             {/* Order Summary */}

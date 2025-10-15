@@ -49,7 +49,7 @@ function SuccessContent() {
           <h1 className="text-4xl font-bold mb-4 gradient-text">
             Payment Successful!
           </h1>
-          
+
           <p className="text-lg text-gray-300 mb-2">
             Thank you for your purchase. Your tickets have been confirmed.
           </p>
