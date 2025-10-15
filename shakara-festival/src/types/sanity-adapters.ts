@@ -161,6 +161,23 @@ export function adaptSanityTicket(sanityTicket: SanityTicket): TicketType {
     vip: 'vip',
     vvip: 'vvip',
     family: 'family',
+    addon: 'addon',
+  };
+
+  // Map category string to your type
+  const categoryMap: Record<string, TicketType['category']> = {
+    'early-bird': 'early-bird',
+    'early bird': 'early-bird',
+    early: 'early-bird',
+    standard: 'standard',
+    regular: 'standard',
+  };
+
+  // Map packageType string to your type
+  const packageTypeMap: Record<string, TicketType['packageType']> = {
+    standard: 'standard',
+    table: 'table',
+    'vip-table': 'table',
   };
 
   return {
@@ -176,9 +193,9 @@ export function adaptSanityTicket(sanityTicket: SanityTicket): TicketType {
     discount: sanityTicket.discount,
     sku: sanityTicket.sku,
     testPrice: sanityTicket.testPrice,
-    category: sanityTicket.category,
+    category: categoryMap[sanityTicket.category?.toLowerCase() || ''],
     bundleSize: sanityTicket.bundleSize ?? 1,
-    packageType: sanityTicket.packageType,
+    packageType: packageTypeMap[sanityTicket.packageType?.toLowerCase() || ''],
     inventory: sanityTicket.inventory,
     sold: sanityTicket.sold ?? 0,
     reserved: sanityTicket.reserved ?? 0,

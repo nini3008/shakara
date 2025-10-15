@@ -51,7 +51,8 @@ export async function POST(req: NextRequest) {
 
     let amount = 0
     const currency = 'NGN'
-    const resolvedLines: Array<{ sku: string; quantity: number; units: number; unitPrice: number; name: string }> = []
+    type ResolvedLine = { sku: string; quantity: number; units: number; unitPrice: number; name: string }
+    const resolvedLines: ResolvedLine[] = []
 
     for (const line of lines) {
       const doc = skuToDoc.get(line.sku) || idToDoc.get(`ticket.${line.sku}`)
@@ -95,9 +96,13 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ tx_ref, amount, currency, lines: resolvedLines })
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('Prepare error', e)
-    return NextResponse.json({ error: `Prepare failed: ${e?.message || 'unknown'}` }, { status: 500 })
+    const message =
+      typeof e === 'object' && e !== null && 'message' in e
+        ? String((e as { message?: unknown }).message)
+        : 'unknown'
+    return NextResponse.json({ error: `Prepare failed: ${message}` }, { status: 500 })
   }
 }
 

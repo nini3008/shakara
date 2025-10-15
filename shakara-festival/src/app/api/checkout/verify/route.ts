@@ -27,7 +27,8 @@ export async function POST(req: NextRequest) {
 
       if (ok) {
         // Finalize: move reserved -> sold; mark reservation confirmed; create order
-        const skus: string[] = (reservation.lines || []).map((l: any) => l.sku)
+        type ReservationLine = { sku: string; units: number }
+        const skus: string[] = (reservation.lines || []).map((l: ReservationLine) => l.sku)
         const tickets: Array<{ _id: string; sku: string }> = await writeClient.fetch(
           `*[_type == "ticket" && sku in $skus]{ _id, sku }`,
           { skus }

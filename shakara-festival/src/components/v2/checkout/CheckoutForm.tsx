@@ -116,8 +116,9 @@ export default function CheckoutForm() {
       const prepared = await prepareRes.json()
 
       // Build safe meta data (strings only) to avoid SDK sanitization errors
+      type PreparedLine = { sku: string; name: string; unitPrice: number; quantity: number }
       const meta = {
-        items: JSON.stringify((prepared?.lines || []).map((l: any) => ({
+        items: JSON.stringify((prepared?.lines || []).map((l: PreparedLine) => ({
           sku: String(l.sku),
           name: String(l.name),
           unitPrice: String(l.unitPrice),

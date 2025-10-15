@@ -13,7 +13,7 @@ async function getFeaturedTickets(): Promise<{ tickets: TicketType[], sanityTick
     // Use writeClient if available for consistent environment/perspective
     const reader = writeClient || client
     const sanityTickets: SanityTicket[] = await reader.fetch(TICKETS_QUERY);
-    const nonAddons = sanityTickets.filter((t: any) => t?.type !== 'addon');
+    const nonAddons = sanityTickets.filter((t: SanityTicket) => t?.type !== 'addon');
     const tickets = nonAddons.map(adaptSanityTicket);
     return { tickets, sanityTickets: nonAddons };
   } catch (error) {
