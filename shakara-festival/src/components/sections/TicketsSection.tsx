@@ -1,14 +1,21 @@
 // components/sections/TicketsSection.tsx - Server Component
-import { client, FEATURED_TICKETS_QUERY } from '@/lib/sanity';
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+import { writeClient, client, TICKETS_QUERY } from '@/lib/sanity';
 import { TicketType } from '@/types';
 import { SanityTicket, adaptSanityTicket } from '@/types/sanity-adapters';
 import TicketsSectionClient from './TicketsSectionClient';
+import AddonsUpsell from './TicketsSectionAddonsUpsell'
 
 async function getFeaturedTickets(): Promise<{ tickets: TicketType[], sanityTickets: SanityTicket[] }> {
   try {
-    const sanityTickets: SanityTicket[] = await client.fetch(FEATURED_TICKETS_QUERY);
-    const tickets = sanityTickets.map(adaptSanityTicket);
-    return { tickets, sanityTickets };
+    // Fetch all tickets directly from Sanity without additional filtering
+    // Use writeClient if available for consistent environment/perspective
+    const reader = writeClient || client
+    const sanityTickets: SanityTicket[] = await reader.fetch(TICKETS_QUERY);
+    const nonAddons = sanityTickets.filter((t: any) => t?.type !== 'addon');
+    const tickets = nonAddons.map(adaptSanityTicket);
+    return { tickets, sanityTickets: nonAddons };
   } catch (error) {
     console.error('Error fetching featured tickets:', error);
     return { tickets: [], sanityTickets: [] };
@@ -19,9 +26,13 @@ export default async function TicketsSection() {
   const { tickets, sanityTickets } = await getFeaturedTickets();
   
   return (
-    <TicketsSectionClient 
-      initialTickets={tickets}
-      initialSanityTickets={sanityTickets}
-    />
+    <>
+      <TicketsSectionClient 
+        initialTickets={tickets}
+        initialSanityTickets={sanityTickets}
+      />
+      {/* Add-ons upsell strip */}
+      <AddonsUpsell />
+    </>
   );
 }

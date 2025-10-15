@@ -131,7 +131,7 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
               ))}
               <div className="relative inline-flex rounded-md shadow-sm">
                 <Link href="/tickets">
-                  <Button className="gradient-bg text-white hover:opacity-90 transition-opacity rounded-md">
+                  <Button className="gradient-bg text-white hover:opacity-90 transition-opacity rounded-none rounded-l-md">
                     Buy Tickets
                   </Button>
                 </Link>
@@ -150,7 +150,6 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
                         </span>
                       )}
                     </Button>
-                    <CartDropdown open={cartOpen} />
                   </>
                 )}
               </div>
@@ -219,7 +218,7 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
               ))}
               <div className="px-3 py-2 flex items-center gap-2">
                 <Link href="/tickets" onClick={() => setMobileMenuOpen(false)} className="flex-1">
-                  <Button className="w-full gradient-bg text-white hover:opacity-90 transition-opacity rounded-md">
+                  <Button className="w-full gradient-bg text-white hover:opacity-90 transition-opacity rounded-none rounded-l-md">
                     Buy Tickets
                   </Button>
                 </Link>
@@ -237,12 +236,14 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
             </div>
           </div>
         )}
+        {/* Cart dropdown mounted globally so it works on mobile and desktop */}
+        {CART_ENABLED && <CartDropdown open={cartOpen} />}
       </nav>
 
       {/* Torn paper overlay at page top over base texture */}
       {/* Torn paper overlay removed */}
 
-      {/* Main Content */}
+      {/* Main Content - allow nav to overlap hero/content */}
       <main className="pt-0">
         {children}
       </main>

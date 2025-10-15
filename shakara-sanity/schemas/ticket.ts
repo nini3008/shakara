@@ -6,6 +6,13 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({
+      name: 'sku',
+      title: 'SKU',
+      type: 'string',
+      description: 'Unique Stock Keeping Unit for this sellable variant',
+      validation: (Rule) => Rule.required().regex(/^[A-Z0-9\-]+$/, {name: 'SKU'}),
+    }),
+    defineField({
       name: 'name',
       title: 'Ticket Name',
       type: 'string',
@@ -28,10 +35,27 @@ export default defineType({
       rows: 3
     }),
     defineField({
+      name: 'category',
+      title: 'Category',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Early Bird', value: 'early-bird'},
+          {title: 'Standard', value: 'standard'},
+        ]
+      },
+    }),
+    defineField({
       name: 'price',
       title: 'Price (NGN)',
       type: 'number',
       validation: (Rule) => Rule.required().min(0)
+    }),
+    defineField({
+      name: 'testPrice',
+      title: 'Test Price (NGN)',
+      type: 'number',
+      description: 'Optional sandbox/test price override',
     }),
     defineField({
       name: 'originalPrice',
@@ -67,6 +91,13 @@ export default defineType({
       initialValue: true
     }),
     defineField({
+      name: 'live',
+      title: 'Live (Production)',
+      type: 'boolean',
+      description: 'Whether this price represents production/live pricing',
+      initialValue: true,
+    }),
+    defineField({
       name: 'duration',
       title: 'Duration',
       type: 'string',
@@ -90,12 +121,27 @@ export default defineType({
           {title: 'Pit Access', value: 'pit'},
           {title: 'VIP', value: 'vip'},
           {title: 'VVIP', value: 'vvip'},
+          {title: 'Add-on', value: 'addon'},
           {title: 'Family Package', value: 'family'},
           {title: 'Student', value: 'student'},
           {title: 'Early Bird', value: 'early-bird'}
         ]
       },
       validation: (Rule) => Rule.required()
+    }),
+    defineField({
+      name: 'bundleSize',
+      title: 'Bundle Size',
+      type: 'number',
+      description: 'Units per ticket (e.g., 2/3/4 for family bundles)',
+      initialValue: 1,
+      validation: (Rule) => Rule.min(1)
+    }),
+    defineField({
+      name: 'packageType',
+      title: 'Package Type',
+      type: 'string',
+      options: { list: [ {title: 'Standard', value: 'standard'}, {title: 'Table', value: 'table'} ] },
     }),
     defineField({
       name: 'discount',
@@ -116,6 +162,30 @@ export default defineType({
       title: 'Sold Out',
       type: 'boolean',
       initialValue: false
+    }),
+    defineField({
+      name: 'inventory',
+      title: 'Inventory Cap (units)',
+      type: 'number',
+      description: 'Leave empty for unlimited inventory',
+    }),
+    defineField({
+      name: 'sold',
+      title: 'Units Sold',
+      type: 'number',
+      initialValue: 0,
+    }),
+    defineField({
+      name: 'reserved',
+      title: 'Units Reserved (Holds)',
+      type: 'number',
+      initialValue: 0,
+    }),
+    defineField({
+      name: 'allowOversell',
+      title: 'Allow Oversell',
+      type: 'boolean',
+      initialValue: false,
     }),
     defineField({
       name: 'saleStartDate',
@@ -142,6 +212,34 @@ export default defineType({
       type: 'string',
       description: 'Optional badge text (e.g., "BEST VALUE", "LIMITED TIME")',
       validation: (Rule) => Rule.max(20)
+    }),
+    defineField({
+      name: 'taxInclusive',
+      title: 'Prices Include Tax',
+      type: 'boolean',
+      initialValue: true,
+    }),
+    defineField({
+      name: 'feesIncluded',
+      title: 'Prices Include Fees',
+      type: 'boolean',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'fwProductId',
+      title: 'Flutterwave Product ID',
+      type: 'string',
+    }),
+    defineField({
+      name: 'fwPaymentLink',
+      title: 'Flutterwave Payment Link',
+      type: 'url',
+    }),
+    defineField({
+      name: 'lastSyncedNote',
+      title: 'Last Synced Note',
+      type: 'string',
+      description: 'Notes about the last manual sync with Flutterwave',
     }),
     defineField({
       name: 'order',

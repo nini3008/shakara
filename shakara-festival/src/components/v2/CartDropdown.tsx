@@ -17,7 +17,7 @@ export default function CartDropdown({ open }: { open: boolean }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.15 }}
-          className="fixed right-4 top-20 w-[calc(100vw-1rem)] max-w-md rounded-xl border border-gray-200/50 dark:border-gray-800/50 bg-white/80 dark:bg-gray-950/70 backdrop-blur-md shadow-xl z-[100]"
+          className="fixed right-4 top-20 w-[calc(100vw-1rem)] max-w-md rounded-xl border border-gray-200/20 dark:border-gray-800/40 text-white shadow-2xl z-[100] bg-gradient-to-br from-[#1a0f1f] via-[#0b0b0e] to-[#1f0d09]"
         >
           <div className="p-4 max-h-96 overflow-auto">
             {items.length === 0 ? (
