@@ -160,7 +160,9 @@ export default function RootLayout({
         {process.env.NODE_ENV === 'production' && (
           <>
             {/* Meta Pixel */}
-            <MetaPixel pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID || '1363440188458129'} />
+            <React.Suspense fallback={null}>
+              <MetaPixel pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID || '1363440188458129'} />
+            </React.Suspense>
             <script
               async
               src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
