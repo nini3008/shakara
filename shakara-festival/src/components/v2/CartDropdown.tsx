@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import { CHECKOUT_ENABLED } from '@/lib/featureFlags'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCart } from '@/contexts/CartContext'
 import { Button } from '@/components/ui/Button'
@@ -50,9 +51,13 @@ export default function CartDropdown({ open }: { open: boolean }) {
             <div className="font-bold">₦{total.toLocaleString()}</div>
           </div>
           <div className="p-4 pt-0">
-            <Link href="/checkout">
-              <Button className="w-full gradient-bg text-white">Proceed to checkout</Button>
-            </Link>
+            {CHECKOUT_ENABLED ? (
+              <Link href="/checkout">
+                <Button className="w-full gradient-bg text-white">Proceed to checkout</Button>
+              </Link>
+            ) : (
+              <Button disabled className="w-full opacity-60">Checkout Unavailable</Button>
+            )}
           </div>
         </motion.div>
       )}
