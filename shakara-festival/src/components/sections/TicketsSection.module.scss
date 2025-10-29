@@ -103,7 +103,7 @@
   border-radius: 1rem;
   padding: 2rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
+  overflow: visible; // allow badges to overflow the card edge without clipping
   
   // Subtle hover glow
   &::before {

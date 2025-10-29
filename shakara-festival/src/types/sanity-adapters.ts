@@ -38,14 +38,23 @@ export interface SanityTicket {
     current: string;
   };
   description?: string;
+  sku: string;
   price: number;
   originalPrice?: number;
+  testPrice?: number;
   currency: string;
   features?: string[];
   available: boolean;
   duration?: string;
   type?: string;
   discount?: number;
+  category?: string;
+  bundleSize?: number;
+  packageType?: string;
+  inventory?: number;
+  sold?: number;
+  reserved?: number;
+  allowOversell?: boolean;
   maxQuantity?: number;
   soldOut: boolean;
   saleStartDate?: string;
@@ -53,6 +62,12 @@ export interface SanityTicket {
   featured: boolean;
   badge?: string;
   order?: number;
+  live?: boolean;
+  taxInclusive?: boolean;
+  feesIncluded?: boolean;
+  fwProductId?: string;
+  fwPaymentLink?: string;
+  lastSyncedNote?: string;
 }
 
 export interface SanityScheduleEvent {
@@ -146,6 +161,23 @@ export function adaptSanityTicket(sanityTicket: SanityTicket): TicketType {
     vip: 'vip',
     vvip: 'vvip',
     family: 'family',
+    addon: 'addon',
+  };
+
+  // Map category string to your type
+  const categoryMap: Record<string, TicketType['category']> = {
+    'early-bird': 'early-bird',
+    'early bird': 'early-bird',
+    early: 'early-bird',
+    standard: 'standard',
+    regular: 'standard',
+  };
+
+  // Map packageType string to your type
+  const packageTypeMap: Record<string, TicketType['packageType']> = {
+    standard: 'standard',
+    table: 'table',
+    'vip-table': 'table',
   };
 
   return {
@@ -159,6 +191,21 @@ export function adaptSanityTicket(sanityTicket: SanityTicket): TicketType {
     duration: durationMap[sanityTicket.duration?.toLowerCase() || ''] || '1-day',
     type: typeMap[sanityTicket.type?.toLowerCase() || ''] || 'general',
     discount: sanityTicket.discount,
+    sku: sanityTicket.sku,
+    testPrice: sanityTicket.testPrice,
+    category: categoryMap[sanityTicket.category?.toLowerCase() || ''],
+    bundleSize: sanityTicket.bundleSize ?? 1,
+    packageType: packageTypeMap[sanityTicket.packageType?.toLowerCase() || ''],
+    inventory: sanityTicket.inventory,
+    sold: sanityTicket.sold ?? 0,
+    reserved: sanityTicket.reserved ?? 0,
+    allowOversell: sanityTicket.allowOversell ?? false,
+    live: sanityTicket.live ?? true,
+    taxInclusive: sanityTicket.taxInclusive ?? true,
+    feesIncluded: sanityTicket.feesIncluded ?? false,
+    fwProductId: sanityTicket.fwProductId,
+    fwPaymentLink: sanityTicket.fwPaymentLink,
+    lastSyncedNote: sanityTicket.lastSyncedNote,
   };
 }
 
