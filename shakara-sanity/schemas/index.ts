@@ -10,6 +10,8 @@ import merchItem from './merchItem'
 import lineupsection from './lineupsection'
 import footer from './footer'
 import faq from './faq'
+import reservation from './reservation'
+import order from './order'
 
 export const schema: {types: SchemaTypeDefinition[]} = {
   types: [
@@ -24,6 +26,8 @@ export const schema: {types: SchemaTypeDefinition[]} = {
     lineupsection,
     footer,
     faq,
+    reservation,
+    order,
   ],
 }
 
