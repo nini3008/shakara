@@ -100,7 +100,7 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
               <img
                 src="/images/SHAKARABW.png"
                 alt="Shakara Festival"
-                className="h-12 w-auto"
+                className="h-10 w-auto"
               />
             </Link>
 
@@ -269,7 +269,7 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
               <img
                 src="/images/SHAKARABW.png"
                 alt="Shakara Festival"
-                className="h-16 w-auto mb-4"
+                className="h-12 w-auto mb-4"
               />
               <p className="text-gray-400 text-lg leading-relaxed max-w-md mb-4">
                 {footerData?.brandSection?.tagline || 'Experience the ultimate music festival with world-class artists, immersive stages, and unforgettable moments.'}

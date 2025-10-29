@@ -166,7 +166,7 @@ const Navigation = () => {
               <img
                 src="/images/SHAKARABW.png"
                 alt="SHAKARA Festival"
-                style={{ height: '40px', width: 'auto' }}
+                style={{ height: '32px', width: 'auto' }}
               />
             </Link>
           </motion.div>
@@ -253,7 +253,7 @@ const Navigation = () => {
                       <img
                         src="/images/SHAKARABW.png"
                         alt="SHAKARA Festival"
-                        style={{ height: '32px', width: 'auto' }}
+                        style={{ height: '26px', width: 'auto' }}
                       />
                     </Link>
                   </motion.h2>

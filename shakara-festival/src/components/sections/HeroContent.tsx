@@ -71,14 +71,14 @@ export default function HeroContent({ data }: HeroContentProps) {
                 <img
                 src={data.logo.url}
                 alt={data.logo.alt || data.festivalName || 'Festival Logo'}
-                className={`${styles.logo} max-h-40 sm:max-h-48 md:max-h-56 lg:max-h-64 w-auto`}
+                className={`${styles.logo} max-h-32 sm:max-h-40 md:max-h-44 lg:max-h-52 w-auto`}
                 />
             ) : data.festivalName?.split(' ').length > 1 ? (
                 <>
                 <img
                   src="/images/SHAKARAGradientBorder.png"
                   alt="SHAKARA Festival"
-                  className={`max-h-40 sm:max-h-48 md:max-h-56 lg:max-h-64 w-auto ${styles.responsiveLogo}`}
+                  className={`max-h-32 sm:max-h-40 md:max-h-44 lg:max-h-52 w-auto ${styles.responsiveLogo}`}
                   style={{ filter: 'brightness(1)' }}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
