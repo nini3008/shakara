@@ -98,7 +98,7 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
             {/* Logo */}
             <Link href="/" className="flex-shrink-0">
               <img
-                src="/images/flutterwave-shakara-white.png"
+                src="/images/SHAKARAWhite.png"
                 alt="Shakara Festival"
                 className="h-12 w-auto"
               />
@@ -267,7 +267,7 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <img
-                src="/images/flutterwave-shakara-white.png"
+                src="/images/SHAKARAWhite.png"
                 alt="Shakara Festival"
                 className="h-16 w-auto mb-4"
               />
