@@ -7,7 +7,7 @@ export default function ComingSoon() {
         {/* Logo */}
         <div className="mb-8">
           <Image
-            src="/images/SHAKARAWhite.png" 
+            src="/images/SHAKARABWpng" 
             alt="Shakara Festival"
             width={400}
             height={200}
