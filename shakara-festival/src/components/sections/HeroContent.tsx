@@ -76,7 +76,7 @@ export default function HeroContent({ data }: HeroContentProps) {
             ) : data.festivalName?.split(' ').length > 1 ? (
                 <>
                 <img
-                  src="/images/SHAKARAWhite.png"
+                  src="/images/SHAKARAGradientBorder.png"
                   alt="SHAKARA Festival"
                   className={`max-h-40 sm:max-h-48 md:max-h-56 lg:max-h-64 w-auto ${styles.responsiveLogo}`}
                   style={{ filter: 'brightness(1)' }}
