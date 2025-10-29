@@ -164,7 +164,7 @@ const Navigation = () => {
           >
             <Link href="/" className={styles.logo}>
               <img
-                src="/images/flutterwave-shakara-white.png"
+                src="/images/SHAKARAWhite.png"
                 alt="SHAKARA Festival"
                 style={{ height: '40px', width: 'auto' }}
               />
@@ -251,7 +251,7 @@ const Navigation = () => {
                   >
                     <Link href="/" onClick={() => setIsOpen(false)}>
                       <img
-                        src="/images/flutterwave-shakara-white.png"
+                        src="/images/SHAKARAWhite.png"
                         alt="SHAKARA Festival"
                         style={{ height: '32px', width: 'auto' }}
                       />

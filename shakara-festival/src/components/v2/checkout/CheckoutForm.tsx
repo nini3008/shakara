@@ -143,7 +143,7 @@ export default function CheckoutForm() {
         customizations: {
           title: 'Shakara Festival',
           description: String(`${validItems.map(item => `${item.name} x${item.quantity}`).join(', ')}`),
-          logo: String(`${window.location.origin}/images/flutterwave-shakara-white.png`),
+          logo: String(`${window.location.origin}/images/SHAKARAWhite.png`),
         },
         meta,
         callback: async function(data: { transaction_id: number; tx_ref: string }) {
