@@ -8,8 +8,13 @@ import { motion } from 'framer-motion'
 import { CheckCircle2, Home, Ticket } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
+import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
 
 function SuccessContent() {
   const searchParams = useSearchParams()

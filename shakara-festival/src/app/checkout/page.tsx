@@ -4,6 +4,11 @@ import CheckoutForm from '@/components/v2/checkout/CheckoutForm'
 import { CHECKOUT_ENABLED } from '@/lib/featureFlags'
 import { notFound } from 'next/navigation'
 import AddonsSection from '@/components/v2/checkout/AddonsSection'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
 
 export default function CheckoutPage() {
   if (!CHECKOUT_ENABLED) {
