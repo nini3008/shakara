@@ -34,3 +34,14 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## SEO configuration
+
+- The sitemap and robots are provided via Next.js metadata routes:
+  - `app/sitemap.ts`
+  - `app/robots.ts`
+- Absolute URLs are built from `NEXT_PUBLIC_SITE_URL`. If not set, the fallback is `https://shakarafestival.com`.
+- To set base URL in Vercel:
+  - Go to Project Settings → Environment Variables
+  - Add `NEXT_PUBLIC_SITE_URL` with your canonical origin (e.g., `https://shakarafestival.com`)
+- Transactional routes (`/checkout`, `/success`) and `/api/` are excluded from robots and not included in the sitemap.
