@@ -164,9 +164,9 @@ const Navigation = () => {
           >
             <Link href="/" className={styles.logo}>
               <img
-                src="/images/SHAKARAWhite.png"
+                src="/images/SHAKARABW.png"
                 alt="SHAKARA Festival"
-                style={{ height: '40px', width: 'auto' }}
+                style={{ height: '32px', width: 'auto' }}
               />
             </Link>
           </motion.div>
@@ -251,9 +251,9 @@ const Navigation = () => {
                   >
                     <Link href="/" onClick={() => setIsOpen(false)}>
                       <img
-                        src="/images/SHAKARAWhite.png"
+                        src="/images/SHAKARABW.png"
                         alt="SHAKARA Festival"
-                        style={{ height: '32px', width: 'auto' }}
+                        style={{ height: '26px', width: 'auto' }}
                       />
                     </Link>
                   </motion.h2>
