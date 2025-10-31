@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { format } from 'date-fns'
 import { ArrowLeft, ArrowRight, Calendar, Clock, Share2 } from 'lucide-react'
-import type { PortableTextBlock } from '@portabletext/types'
+import type { PortableTextBlock } from '@/types'
 
 import LayoutWrapper from '@/components/v2/LayoutWrapper'
 import BlogContent from '@/components/BlogContent'

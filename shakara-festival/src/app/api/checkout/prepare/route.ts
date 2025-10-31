@@ -200,15 +200,15 @@ export async function POST(req: NextRequest) {
           }
         })
       } else {
-        const bundleSize = Math.max(1, doc.bundleSize ?? 1)
+      const bundleSize = Math.max(1, doc.bundleSize ?? 1)
         const units = bundleSize * qty
-        const inv = doc.inventory ?? Number.POSITIVE_INFINITY
-        const sold = doc.sold ?? 0
-        const reserved = doc.reserved ?? 0
-        const availableUnits = inv - sold - reserved
-        if (!doc.allowOversell && availableUnits < units) {
-          return NextResponse.json({ error: `Insufficient inventory for ${line.sku}` }, { status: 409 })
-        }
+      const inv = doc.inventory ?? Number.POSITIVE_INFINITY
+      const sold = doc.sold ?? 0
+      const reserved = doc.reserved ?? 0
+      const availableUnits = inv - sold - reserved
+      if (!doc.allowOversell && availableUnits < units) {
+        return NextResponse.json({ error: `Insufficient inventory for ${line.sku}` }, { status: 409 })
+      }
 
         const unitPrice = priceFor(doc)
         amount += unitPrice * qty
