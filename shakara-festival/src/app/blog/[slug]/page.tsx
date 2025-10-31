@@ -13,9 +13,9 @@ import { client, BLOG_POST_BY_SLUG_QUERY, BLOG_POSTS_QUERY } from '@/lib/sanity'
 import { adaptSanityBlogPost, type SanityBlogPost } from '@/types/sanity-adapters'
 import type { BlogPost } from '@/types'
 
-const PAGE_REVALIDATE_SECONDS = 120
+export const revalidate = 120
 
-export const revalidate = PAGE_REVALIDATE_SECONDS
+const PAGE_REVALIDATE_SECONDS = revalidate
 
 type PageParams = {
   params: { slug: string }

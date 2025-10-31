@@ -10,7 +10,9 @@ import { client, BLOG_POSTS_QUERY } from '@/lib/sanity'
 import { adaptSanityBlogPost, type SanityBlogPost } from '@/types/sanity-adapters'
 import type { BlogPost } from '@/types'
 
-const PAGE_REVALIDATE_SECONDS = 120
+export const revalidate = 120
+
+const PAGE_REVALIDATE_SECONDS = revalidate
 
 export const metadata: Metadata = {
   title: 'Festival Blog',
@@ -40,8 +42,6 @@ export const metadata: Metadata = {
     ],
   },
 }
-
-export const revalidate = PAGE_REVALIDATE_SECONDS
 
 async function getBlogPosts(): Promise<BlogPost[]> {
   try {
