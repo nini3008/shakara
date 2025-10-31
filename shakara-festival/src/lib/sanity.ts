@@ -80,6 +80,10 @@ export const TICKETS_QUERY = `*[_type == "ticket"] | order(order asc, price asc)
   available,
   duration,
   type,
+  day,
+  isBundle,
+  unitsPerBundle,
+  bundleTargetSku,
   category,
   bundleSize,
   packageType,
@@ -117,6 +121,10 @@ export const FEATURED_TICKETS_QUERY = `*[_type == "ticket" && featured == true] 
   available,
   duration,
   type,
+  day,
+  isBundle,
+  unitsPerBundle,
+  bundleTargetSku,
   category,
   bundleSize,
   packageType,
@@ -443,4 +451,118 @@ export const FAQ_QUERY = `*[_type == "faq" && active == true] | order(category a
   question,
   answer,
   order
+}`;
+
+const BLOG_POST_PROJECTION = `
+  _id,
+  _createdAt,
+  title,
+  "slug": slug.current,
+  excerpt,
+  featured,
+  status,
+  publishedAt,
+  featuredImage {
+    ...,
+    alt,
+    caption,
+    asset,
+    "assetMeta": asset-> {
+      _id,
+      url,
+      metadata {
+        dimensions {
+          width,
+          height
+        },
+        lqip
+      }
+    }
+  },
+  content[] {
+    ...,
+    _type == "image" => {
+      ...,
+      alt,
+      caption,
+      isFullWidth,
+      asset,
+      "assetMeta": asset-> {
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height
+          },
+          lqip
+        }
+      }
+    }
+  },
+  author-> {
+    _id,
+    name,
+    "slug": slug.current,
+    bio,
+    active,
+    socialLinks,
+    profileImage {
+      alt,
+      asset,
+      "assetMeta": asset-> {
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height
+          },
+          lqip
+        }
+      }
+    }
+  },
+  seo {
+    seoTitle,
+    seoDescription
+  }
+`;
+
+const PUBLISHED_STATUS_FILTER = 'coalesce(lower(status), "draft") == "published"'
+
+export const BLOG_POSTS_QUERY = `*[_type == "blogPost" && ${PUBLISHED_STATUS_FILTER}] | order(publishedAt desc) {
+  ${BLOG_POST_PROJECTION}
+}`;
+
+export const FEATURED_BLOG_POST_QUERY = `*[_type == "blogPost" && ${PUBLISHED_STATUS_FILTER} && featured == true] | order(publishedAt desc)[0] {
+  ${BLOG_POST_PROJECTION}
+}`;
+
+export const BLOG_POST_BY_SLUG_QUERY = `*[_type == "blogPost" && slug.current == $slug && ${PUBLISHED_STATUS_FILTER}][0] {
+  ${BLOG_POST_PROJECTION}
+}`;
+
+export const BLOG_AUTHORS_QUERY = `*[_type == "blogAuthor" && active == true] | order(name asc) {
+  _id,
+  name,
+  "slug": slug.current,
+  bio,
+  active,
+  socialLinks,
+  profileImage {
+    alt,
+    asset,
+    "assetMeta": asset-> {
+      _id,
+      url,
+      metadata {
+        dimensions {
+          width,
+          height
+        },
+        lqip
+      }
+    }
+  }
 }`;

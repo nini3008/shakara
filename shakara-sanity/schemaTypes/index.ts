@@ -10,6 +10,8 @@ import merchItem from '../schemas/merchItem'
 import lineupsection from '../schemas/lineupsection'
 import footer from '../schemas/footer'
 import faq from '../schemas/faq'
+import blogAuthor from '../schemas/blogAuthor'
+import blogPost from '../schemas/blogPost'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   hero,
@@ -22,4 +24,6 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   lineupsection,
   footer,
   faq,
+  blogAuthor,
+  blogPost,
 ]

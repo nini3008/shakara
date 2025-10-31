@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     let ok = data?.status === 'successful' && (expectedCurrency ? data?.currency === expectedCurrency : true)
     try {
       const reservation = await writeClient.fetch(
-        `*[_type == "reservation" && tx_ref == $tx_ref][0]{ _id, amount, currency, lines[] { sku, units }, status }`,
+        `*[_type == "reservation" && tx_ref == $tx_ref][0]{ _id, amount, currency, lines[] { sku, units, selectedDate }, status }`,
         { tx_ref }
       )
       if (!reservation) return NextResponse.json({ ok: false, reason: 'Reservation not found' }, { status: 404 })

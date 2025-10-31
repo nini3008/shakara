@@ -18,21 +18,26 @@ type TicketSeed = {
   type: 'general' | 'pit' | 'vip' | 'vvip'
   category: 'standard' | 'early-bird'
   duration: '1-day' | '2-day' | '3-day' | '4-day'
+  day: '2025-12-18' | '2025-12-19' | '2025-12-20' | '2025-12-21'
   price: number
   originalPrice?: number
   badge?: string
   features: string[]
   featured?: boolean
+  isBundle?: boolean
+  unitsPerBundle?: number
+  bundleTargetSku?: string
 }
 
 const seeds: TicketSeed[] = [
   {
-    sku: 'TKT-STD-PIT-4D',
-    name: 'Pit Access',
-    slug: 'pit-access',
+    sku: 'TKT-PIT-FRI',
+    name: 'Pit Access - Friday',
+    slug: 'pit-access-fri',
     type: 'pit',
     category: 'standard',
-    duration: '4-day',
+    duration: '1-day',
+    day: '2025-12-19',
     price: 250000,
     badge: 'FRONT ROW',
     features: [
@@ -44,12 +49,13 @@ const seeds: TicketSeed[] = [
     featured: true,
   },
   {
-    sku: 'TKT-STD-GA-4D',
-    name: 'General Admission',
-    slug: 'general-admission',
+    sku: 'TKT-GA-FRI',
+    name: 'General Admission - Friday',
+    slug: 'general-admission-fri',
     type: 'general',
     category: 'standard',
-    duration: '4-day',
+    duration: '1-day',
+    day: '2025-12-19',
     price: 75000,
     originalPrice: 95000,
     badge: 'MOST POPULAR',
@@ -62,12 +68,13 @@ const seeds: TicketSeed[] = [
     featured: true,
   },
   {
-    sku: 'TKT-STD-VIP-4D',
-    name: 'VIP',
-    slug: 'vip',
+    sku: 'TKT-VIP-SAT',
+    name: 'VIP - Saturday',
+    slug: 'vip-sat',
     type: 'vip',
     category: 'standard',
-    duration: '4-day',
+    duration: '1-day',
+    day: '2025-12-20',
     price: 180000,
     originalPrice: 220000,
     badge: 'PREMIUM',
@@ -80,12 +87,13 @@ const seeds: TicketSeed[] = [
     featured: true,
   },
   {
-    sku: 'TKT-STD-VVIP-4D',
-    name: 'VVIP',
-    slug: 'vvip',
+    sku: 'TKT-VVIP-SUN',
+    name: 'VVIP - Sunday',
+    slug: 'vvip-sun',
     type: 'vvip',
     category: 'standard',
-    duration: '4-day',
+    duration: '1-day',
+    day: '2025-12-21',
     price: 400000,
     badge: 'ELITE',
     features: [
@@ -95,6 +103,24 @@ const seeds: TicketSeed[] = [
       'Best-in-venue stage viewing access',
     ],
     featured: true,
+  },
+  // Bundle example: GA Friday 4-Pack
+  {
+    sku: 'TKT-GA-FRI-4PK',
+    name: 'General Admission 4‑Pack - Friday',
+    slug: 'ga-4pack-fri',
+    type: 'general',
+    category: 'standard',
+    duration: '1-day',
+    day: '2025-12-19',
+    price: 260000, // total bundle price
+    features: [
+      '4 GA tickets for Friday',
+      'Bundle savings applied',
+    ],
+    isBundle: true,
+    unitsPerBundle: 4,
+    bundleTargetSku: 'TKT-GA-FRI',
   },
 ]
 
@@ -109,6 +135,7 @@ async function run() {
       type: t.type,
       category: t.category,
       duration: t.duration,
+      day: t.day,
       price: t.price,
       originalPrice: t.originalPrice,
       currency: 'NGN',
@@ -116,6 +143,9 @@ async function run() {
       available: true,
       soldOut: false,
       bundleSize: 1,
+      isBundle: t.isBundle || false,
+      unitsPerBundle: t.unitsPerBundle,
+      bundleTargetSku: t.bundleTargetSku,
       featured: t.featured ?? false,
       badge: t.badge,
       order: 0,

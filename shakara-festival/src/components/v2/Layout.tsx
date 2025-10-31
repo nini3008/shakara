@@ -27,6 +27,7 @@ const navigationItems = [
   { title: 'About', url: '/about' },
   { title: 'Lineup', url: '/lineup' },
   { title: 'Schedule', url: '/schedule' },
+  { title: 'Blog', url: '/blog' },
   { title: 'Tickets', url: '/tickets' },
   { title: 'Vendors', url: '/vendors' },
   { title: 'Stay Updated', url: '#newsletter' },
