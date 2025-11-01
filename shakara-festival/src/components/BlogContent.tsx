@@ -9,6 +9,10 @@ type BlogContentProps = {
   value: BlogPortableText
 }
 
+type ListPortableTextBlock = PortableTextBlock & {
+  listItem?: 'bullet' | 'number'
+}
+
 type PortableTextMarkDef = Record<string, unknown> & {
   _key?: string
   _type?: string
@@ -147,12 +151,12 @@ export default function BlogContent({ value }: BlogContentProps) {
       return
     }
 
-    const textBlock = block as PortableTextBlock
+    const textBlock = block as ListPortableTextBlock
     if (textBlock._type !== 'block') {
       return
     }
 
-    const listItem = (textBlock as Record<string, unknown>).listItem as 'bullet' | 'number' | undefined
+    const listItem = (textBlock as ListPortableTextBlock).listItem
     const key = textBlock._key || `block-${index}`
 
     if (listItem) {

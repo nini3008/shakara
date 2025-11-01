@@ -17,8 +17,8 @@ export const revalidate = 120
 
 const PAGE_REVALIDATE_SECONDS = revalidate
 
-type PageParams = {
-  params: { slug: string }
+type BlogPageProps = {
+  params: Promise<{ slug: string }>
 }
 
 const formatDate = (isoDate: string) => {
@@ -94,8 +94,8 @@ const buildCanonicalUrl = (slug: string) => {
   return `${baseUrl.replace(/\/$/, '')}/blog/${slug}`
 }
 
-export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
-  const { slug } = params
+export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
+  const { slug } = await params
   const post = await getBlogPost(slug)
 
   if (!post) {
@@ -148,8 +148,8 @@ const SOCIAL_LABELS: Record<string, string> = {
   website: 'Website',
 }
 
-export default async function BlogArticlePage({ params }: PageParams) {
-  const { slug } = params
+export default async function BlogArticlePage({ params }: BlogPageProps) {
+  const { slug } = await params
   const post = await getBlogPost(slug)
 
   if (!post) {
