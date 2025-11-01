@@ -1,10 +1,9 @@
 // components/sections/TicketsSectionClient.tsx
 'use client';
 
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent, useEffect, useMemo } from 'react';
 import { TicketType } from '@/types';
 import { SanityTicket } from '@/types/sanity-adapters';
-import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
 import { CART_ENABLED } from '@/lib/featureFlags';
 import styles from './TicketsSection.module.scss';
@@ -12,6 +11,27 @@ import styles from './TicketsSection.module.scss';
 interface TicketsSectionClientProps {
   initialTickets: TicketType[];
   initialSanityTickets: SanityTicket[];
+}
+
+const durationToDays = (duration?: string | null) => {
+  if (!duration) return 1
+  const parsed = parseInt(duration, 10)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1
+}
+
+const formatDateLabel = (dates: string[]): string => {
+  if (!dates || dates.length === 0) return ''
+  const sorted = [...dates].sort()
+  if (sorted.length === 1) {
+    return ` - ${new Date(sorted[0]).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`
+  }
+  if (sorted.length === 2) {
+    const [first, second] = sorted
+    return ` - ${new Date(first).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} & ${new Date(second).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`
+  }
+  const first = new Date(sorted[0]).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+  const last = new Date(sorted[sorted.length - 1]).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+  return ` - ${first} to ${last}`
 }
 
 export default function TicketsSectionClient({ initialTickets, initialSanityTickets }: TicketsSectionClientProps) {
@@ -22,6 +42,45 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
   const [error, setError] = useState('');
   const [isLightTheme, setIsLightTheme] = useState(false);
   const { addItem } = useCart();
+  const idToTicket = new Map(initialTickets.map((t) => [t.id, t]));
+  const bundlesByTarget = new Map(
+     (initialSanityTickets || [])
+      .filter((t) => t.isBundle && t.bundle?.targetSku)
+      .map((t) => [t.bundle?.targetSku as string, t])
+  );
+
+  // Day selector - now supports multiple selection
+  // Always show all festival days
+  const allFestivalDays = ['2025-12-18', '2025-12-19', '2025-12-20', '2025-12-21'];
+  const [selectedDays, setSelectedDays] = useState<Set<string>>(new Set([allFestivalDays[0]]));
+
+  // Filter tickets based on selected days and duration
+  const filteredTickets = useMemo(() => {
+    const numDaysSelected = selectedDays.size;
+    
+    return (initialSanityTickets || [])
+      .filter(st => st.type !== 'addon')
+      .filter(st => {
+        const duration = durationToDays(st.duration);
+        
+        if (st.day) {
+          return selectedDays.has(st.day);
+        }
+        
+        if (!st.day && duration > 1) {
+          return duration === numDaysSelected;
+        }
+        
+        return numDaysSelected === 1;
+      });
+  }, [initialSanityTickets, selectedDays]);
+
+  const sortedSelectedDays = useMemo(() => Array.from(selectedDays).sort(), [selectedDays])
+  const visibleBundleSkus = useMemo(() => new Set(
+    filteredTickets
+      .filter(st => st.isBundle && st.sku)
+      .map(st => String(st.sku))
+  ), [filteredTickets])
 
   // Detect current theme
   useEffect(() => {
@@ -145,6 +204,20 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
     },
   ]
 
+  // Toggle day selection
+  const toggleDay = (day: string) => {
+    const newSelectedDays = new Set(selectedDays);
+    if (newSelectedDays.has(day)) {
+      // Don't allow deselecting the last day
+      if (newSelectedDays.size > 1) {
+        newSelectedDays.delete(day);
+      }
+    } else {
+      newSelectedDays.add(day);
+    }
+    setSelectedDays(newSelectedDays);
+  };
+
   return (
     <section id="tickets" className={styles.ticketsSection}>
       <div className={styles.container}>
@@ -154,23 +227,150 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
         
         {(!showCurated && initialTickets.length > 0) ? (
           <>
+            {/* Date Selection */}
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.75rem', 
+              marginBottom: '2rem',
+              flexWrap: 'wrap' 
+            }}>
+              <span style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
+                Select dates:
+              </span>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {allFestivalDays.map((day) => {
+                  const isSelected = selectedDays.has(day);
+                  return (
+                    <button
+                      key={day}
+                      onClick={() => toggleDay(day)}
+                      aria-pressed={isSelected}
+                      className={styles.dateToggle + ' clickable'}
+                      style={{
+                        background: isSelected 
+                          ? 'linear-gradient(135deg, rgb(217, 119, 6), rgb(180, 83, 9))'
+                          : isLightTheme 
+                            ? 'rgba(255, 255, 255, 0.8)' 
+                            : 'rgba(0, 0, 0, 0.5)',
+                        color: isSelected 
+                          ? '#ffffff'
+                          : isLightTheme 
+                            ? 'rgba(17, 24, 39, 0.7)' 
+                            : 'rgba(255, 255, 255, 0.7)',
+                        border: isSelected
+                          ? '1px solid rgb(217, 119, 6)'
+                          : '1px solid rgba(217, 119, 6, 0.3)',
+                        padding: '0.75rem 1.25rem',
+                        borderRadius: '0.75rem',
+                        fontSize: '0.85rem',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isSelected) {
+                          e.currentTarget.style.background = isLightTheme 
+                            ? 'rgba(217, 119, 6, 0.1)' 
+                            : 'rgba(217, 119, 6, 0.2)';
+                          e.currentTarget.style.borderColor = 'rgba(217, 119, 6, 0.5)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isSelected) {
+                          e.currentTarget.style.background = isLightTheme 
+                            ? 'rgba(255, 255, 255, 0.8)' 
+                            : 'rgba(0, 0, 0, 0.5)';
+                          e.currentTarget.style.borderColor = 'rgba(217, 119, 6, 0.3)';
+                        }
+                      }}
+                    >
+                      {new Date(day).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Tickets Grid */}
             <div className={styles.ticketsGrid}>
-              {initialTickets.map((ticket) => {
-                const sanityTicket = initialSanityTickets.find(st => st._id === ticket.id);
-                
-                if (!sanityTicket) {
-                  console.warn(`No sanity ticket found for ticket ID: ${ticket.id}`);
+              {filteredTickets.length === 0 ? (
+                <div className={styles.emptyState} style={{ gridColumn: '1 / -1' }}>
+                  <div className={styles.emptyIcon} role="img" aria-label="Calendar emoji">📅</div>
+                  <h3 className={styles.emptyTitle}>No tickets available for {selectedDays.size} day{selectedDays.size > 1 ? 's' : ''}</h3>
+                  <p className={styles.emptyDescription}>
+                    {selectedDays.size === 1 
+                      ? 'Tickets for this date combination are not yet available. Try selecting multiple days to see bundle options.'
+                      : `No ${selectedDays.size}-day tickets are currently available. Try selecting different date combinations.`
+                    }
+                  </p>
+                  <div className={styles.emptyHint}>
+                    💡 Tip: Select exactly 3 days to see our popular 3-day passes!
+                  </div>
+                </div>
+              ) : (
+                filteredTickets.map((sanityTicket) => {
+                const ticket = idToTicket.get(sanityTicket._id);
+                if (!sanityTicket) return null;
+                if (!ticket) {
+                  console.warn(`No app ticket found for sanity _id: ${sanityTicket._id}`);
                   return null;
                 }
                 
+                const isBundleTicket = Boolean(sanityTicket.isBundle)
+                const associatedBundle = !isBundleTicket ? bundlesByTarget.get(sanityTicket.sku) : undefined
+                const bundleDayCountRaw = associatedBundle?.bundle?.dayCount ?? 0
+                const bundleDayCount = bundleDayCountRaw > 0 ? bundleDayCountRaw : 0
+                const bundlePer = associatedBundle && bundleDayCount > 0 ? Math.round(associatedBundle.price / bundleDayCount) : 0
+
+                const themeClass = styles['theme_' + (ticket.type || 'general')]
+                const durationDays = durationToDays(ticket.duration)
+                const bundleConfiguredDayCount = sanityTicket.bundle?.dayCount ?? 0
+                const expectedDayCount = sanityTicket.day
+                  ? 1
+                  : bundleConfiguredDayCount > 0
+                    ? bundleConfiguredDayCount
+                    : durationDays
+                const requiresMultiDaySelection = expectedDayCount > 1
+                const ticketSelectedDates = sanityTicket.day
+                  ? [sanityTicket.day]
+                  : requiresMultiDaySelection
+                    ? sortedSelectedDays
+                    : sortedSelectedDays.length > 0
+                      ? sortedSelectedDays
+                      : []
+                const ticketHasRequiredDates = sanityTicket.day
+                  ? true
+                  : requiresMultiDaySelection
+                    ? ticketSelectedDates.length === expectedDayCount
+                    : ticketSelectedDates.length > 0
+                const ticketSelectionHint = !ticketHasRequiredDates
+                  ? `Select ${expectedDayCount} unique ${expectedDayCount === 1 ? 'day' : 'days'} for this ticket.`
+                  : null
+                const bundleSelectedDates = sortedSelectedDays
+                const bundleHasRequiredDates = associatedBundle
+                  ? bundleDayCount > 0
+                    ? bundleSelectedDates.length === bundleDayCount
+                    : bundleSelectedDates.length > 0
+                  : true
+                const formattedTicketLabel = formatDateLabel(ticketSelectedDates)
+                const formattedBundleLabel = formatDateLabel(bundleSelectedDates)
                 return (
                   <div key={ticket.id} className={styles.ticketCardWrapper}>
-                    <div className={styles.ticketCard}>
+                    <div className={`${styles.ticketCard} ${themeClass || ''}`}>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
                       {sanityTicket.badge && (
                         <div className={styles.badge}>
                           {sanityTicket.badge}
                         </div>
                       )}
+                        {isBundleTicket && (
+                          <div className={styles.badge}>Bundle</div>
+                        )}
+                        {!isBundleTicket && associatedBundle && !visibleBundleSkus.has(String(associatedBundle.sku)) && (
+                          <div className={styles.badgeSecondary}>Multi-day bundle available</div>
+                        )}
+                      </div>
                       
                       <div className={styles.cardContent}>
                         <h3 className={styles.ticketName}>{ticket.name}</h3>
@@ -187,6 +387,12 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                             </span>
                           </div>
                         </div>
+                        {!isBundleTicket && associatedBundle && bundleDayCount > 0 && (
+                          <div className={styles.bundleSummaryPill}>
+                            <span className={styles.bundleSummaryTitle}>{bundleDayCount}-day bundle</span>
+                            <span className={styles.bundleSummaryPrice}>₦{associatedBundle.price.toLocaleString()} total · ₦{bundlePer.toLocaleString()} per day</span>
+                          </div>
+                        )}
                         
                         {ticket.description && (
                           <p className={styles.description}>{ticket.description}</p>
@@ -232,11 +438,29 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                           >
                             Sold Out
                           </button>
+                        ) : !ticketHasRequiredDates ? (
+                          <button 
+                            disabled 
+                            className={styles.unavailableButton}
+                            aria-label={`Select required dates for ${ticket.name}`}
+                          >
+                            Select Dates
+                          </button>
                         ) : ticket.available ? (
                           <button
                             onClick={() => {
-                              addItem({ id: sanityTicket.sku, name: ticket.name, price: ticket.price, quantity: 1, category: 'ticket' })
-                              window.dispatchEvent(new Event('cart:add'))
+                              const selectedDates = ticketSelectedDates
+                              if (selectedDates.length === 0) return
+                              addItem({ 
+                                id: sanityTicket.sku, 
+                                name: ticket.name + formattedTicketLabel, 
+                                price: ticket.price, 
+                                quantity: 1, 
+                                category: 'ticket', 
+                                selectedDates,
+                                selectedDate: selectedDates.length === 1 ? selectedDates[0] : undefined
+                              });
+                              window.dispatchEvent(new Event('cart:add'));
                             }}
                             className={styles.buyButton + ' clickable'}
                             aria-label={`Add ${ticket.name} to basket`}
@@ -252,20 +476,81 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                             Coming Soon
                           </button>
                         )}
+                        {CART_ENABLED && isBundleTicket ? (
+                          <>
+                            {ticketSelectionHint && (
+                              <div className={styles.bundleHintPill}>{ticketSelectionHint}</div>
+                            )}
+                            <button
+                              onClick={() => {
+                                if (!CART_ENABLED) {
+                                  return
+                                }
+
+                                addItem({
+                                  id: sanityTicket._id,
+                                  name: ticket.name,
+                                  price: ticket.price,
+                                  quantity: 1,
+                                  category: 'bundle',
+                                  selectedDates: ticketSelectedDates,
+                                })
+                              }}
+                              className={styles.bundleButton + ' clickable'}
+                              aria-label={`Add ${bundleDayCount}-day bundle for ${ticket.name}`}
+                              disabled={!bundleHasRequiredDates || isSubmitting}
+                            >
+                              Add bundle
+                            </button>
+                          </>
+                        ) : associatedBundle ? (
+                          <div className={styles.bundleActionRow}>
+                            <div className={styles.bundleHintPill} aria-live="polite">
+                              {bundleHasRequiredDates && bundleDayCount > 0
+                                ? 'Bundle ready'
+                                : `Select ${bundleDayCount || 2} unique ${(bundleDayCount || 2) === 1 ? 'day' : 'days'} to unlock`}
+                            </div>
+                            <button
+                              onClick={() => {
+                                if (!bundleHasRequiredDates) return
+                                const selectedDates = bundleSelectedDates
+                                if (selectedDates.length === 0) return
+                                addItem({ 
+                                  id: associatedBundle.sku, 
+                                  name: `${associatedBundle.name || ticket.name} ${formattedBundleLabel}`, 
+                                  price: associatedBundle.price, 
+                                  quantity: 1, 
+                                  category: 'ticket', 
+                                  selectedDates,
+                                  selectedDate: selectedDates.length === 1 ? selectedDates[0] : undefined
+                                });
+                                window.dispatchEvent(new Event('cart:add'));
+                              }}
+                              className={styles.bundleButton + ' clickable'}
+                              aria-label={`Add multi-day bundle for ${ticket.name}`}
+                              disabled={!bundleHasRequiredDates}
+                            >
+                              Add bundle
+                            </button>
+                          </div>
+                        ) : null}
                       </div>
+                      {ticketSelectionHint && (
+                        <div className={styles.selectionHint}>{ticketSelectionHint}</div>
+                      )}
                     </div>
                   </div>
                 );
-              })}
+                })
+              )}
             </div>
-            
           </>
         ) : showCurated ? (
           <>
             <div className={styles.ticketsGrid}>
               {curatedTiers.map((t) => (
                 <div key={t.id} className={styles.ticketCardWrapper}>
-                  <div className={`${styles.ticketCard} ${styles[`theme_${t.theme}`]}`}>
+                  <div className={`${styles.ticketCard} ${styles['theme_' + t.theme]}`}>
                     {t.badge && <div className={styles.badge}>{t.badge}</div>}
                     <div className={styles.cardContent}>
                       <h3 className={styles.ticketName}>{t.name}</h3>

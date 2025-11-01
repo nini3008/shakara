@@ -38,7 +38,6 @@ async function run() {
       description: a.description,
       available: true,
       soldOut: false,
-      bundleSize: 1,
       featured: false,
       order: 100,
     },

@@ -8,7 +8,7 @@ import { motion } from 'framer-motion'
 import { CheckCircle2, Home, Ticket } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
- 
+
 
 function SuccessContent() {
   const searchParams = useSearchParams()

@@ -25,24 +25,50 @@ export default function CartDropdown({ open }: { open: boolean }) {
               <div className="text-center text-gray-500 py-8">Your basket is empty.</div>
             ) : (
               <div className="space-y-3">
-                {items.map((it) => (
-                  <div key={it.id} className="flex items-center justify-between gap-3">
+                {items.map((it) => {
+                  const formattedDates = (() => {
+                    if (Array.isArray(it.selectedDates) && it.selectedDates.length > 0) {
+                      return it.selectedDates
+                        .map((d) => new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }))
+                        .join(', ')
+                    }
+                    if (typeof it.selectedDate === 'string' && it.selectedDate.length > 0) {
+                      return it.selectedDate
+                        .split(',')
+                        .map((d) => d.trim())
+                        .filter(Boolean)
+                        .map((d) => new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }))
+                        .join(', ')
+                    }
+                    return null
+                  })()
+
+                  return (
+                    <div key={it.uid || it.id} className="flex flex-col gap-1">
+                      <div className="flex items-center justify-between gap-3">
                     <div>
                       <div className="font-medium text-sm">{it.name}</div>
                       <div className="text-xs text-gray-500">₦{it.price.toLocaleString()} × </div>
+                          {formattedDates && (
+                            <div className="text-xs text-gray-400 mt-0.5">
+                              {`Dates: ${formattedDates}`}
+                            </div>
+                          )}
                     </div>
                     <div className="flex items-center gap-2">
                       <input
                         type="number"
                         min={1}
                         value={it.quantity}
-                        onChange={(e) => updateQty(it.id, parseInt(e.target.value || '1', 10))}
+                          onChange={(e) => updateQty(it.uid || it.id, parseInt(e.target.value || '1', 10))}
                         className="w-14 h-8 rounded-md border border-input bg-transparent px-2 text-sm"
                       />
-                      <button onClick={() => removeItem(it.id)} className="text-xs text-red-500">Remove</button>
+                          <button onClick={() => removeItem(it.uid || it.id)} className="text-xs text-red-500">Remove</button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )}
           </div>

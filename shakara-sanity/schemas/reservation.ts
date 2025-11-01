@@ -15,7 +15,7 @@ export default defineType({
         fields: [
           { name: 'sku', title: 'SKU', type: 'string' },
           { name: 'quantity', title: 'Quantity', type: 'number' },
-          { name: 'units', title: 'Units (quantity x bundleSize)', type: 'number' },
+          { name: 'units', title: 'Units (quantity per reserved day)', type: 'number' },
           { name: 'unitPrice', title: 'Unit Price', type: 'number' },
           { name: 'name', title: 'Name', type: 'string' },
         ]

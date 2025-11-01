@@ -13,10 +13,65 @@ export default defineType({
       validation: (Rule) => Rule.required().regex(/^[A-Z0-9\-]+$/, {name: 'SKU'}),
     }),
     defineField({
+      name: 'day',
+      title: 'Festival Day',
+      type: 'string',
+      description: 'Which festival day this ticket applies to (leave blank for multi-day bundles)',
+      options: {
+        list: [
+          {title: 'Day 1 (Thu, Dec 18)', value: '2025-12-18'},
+          {title: 'Day 2 (Fri, Dec 19)', value: '2025-12-19'},
+          {title: 'Day 3 (Sat, Dec 20)', value: '2025-12-20'},
+          {title: 'Day 4 (Sun, Dec 21)', value: '2025-12-21'},
+        ]
+      },
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const isBundle = (context?.parent as {isBundle?: boolean})?.isBundle
+          if (isBundle) {
+            return true
+          }
+          if (!value) {
+            return 'Select a festival day for single-day tickets'
+          }
+          return true
+        })
+    }),
+    defineField({
       name: 'name',
       title: 'Ticket Name',
       type: 'string',
       validation: (Rule) => Rule.required()
+    }),
+    // Bundle controls (explicit bundle products)
+    defineField({
+      name: 'isBundle',
+      title: 'Bundle Product',
+      type: 'boolean',
+      description: 'Mark this ticket as a bundle (e.g., 4‑Pack).'
+    }),
+    defineField({
+      name: 'bundle',
+      title: 'Bundle Settings',
+      type: 'object',
+      hidden: ({parent}) => !parent?.isBundle,
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({
+          name: 'dayCount',
+          title: 'Number of Days',
+          type: 'number',
+          description: 'How many unique festival days this bundle spans.',
+          validation: Rule => Rule.required().min(2).max(4),
+        }),
+        defineField({
+          name: 'targetSku',
+          title: 'Target Ticket SKU',
+          type: 'string',
+          description: 'SKU of the base single-day ticket this bundle reserves inventory from.',
+          validation: Rule => Rule.required(),
+        }),
+      ],
     }),
     defineField({
       name: 'slug',
@@ -128,14 +183,6 @@ export default defineType({
         ]
       },
       validation: (Rule) => Rule.required()
-    }),
-    defineField({
-      name: 'bundleSize',
-      title: 'Bundle Size',
-      type: 'number',
-      description: 'Units per ticket (e.g., 2/3/4 for family bundles)',
-      initialValue: 1,
-      validation: (Rule) => Rule.min(1)
     }),
     defineField({
       name: 'packageType',

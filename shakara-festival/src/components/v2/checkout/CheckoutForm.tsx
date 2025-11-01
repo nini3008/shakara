@@ -104,7 +104,12 @@ export default function CheckoutForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email,
-          lines: validItems.map((item) => ({ sku: item.id, quantity: item.quantity })),
+          lines: validItems.map((item) => ({ 
+            sku: item.id, 
+            quantity: item.quantity,
+            selectedDate: item.selectedDate,
+            selectedDates: item.selectedDates
+          })),
         }),
       })
       if (!prepareRes.ok) {
@@ -117,6 +122,15 @@ export default function CheckoutForm() {
 
       // Build safe meta data (strings only) to avoid SDK sanitization errors
       type PreparedLine = { sku: string; name: string; unitPrice: number; quantity: number }
+      const dateMetaEntries = Object.entries(prepared?.dateMetadata || {}).reduce<Record<string, string>>((acc, [key, value]) => {
+        if (Array.isArray(value)) {
+          acc[key] = JSON.stringify(value)
+        } else if (value !== undefined && value !== null) {
+          acc[key] = String(value)
+        }
+        return acc
+      }, {})
+
       const meta = {
         items: JSON.stringify((prepared?.lines || []).map((l: PreparedLine) => ({
           sku: String(l.sku),
@@ -126,6 +140,7 @@ export default function CheckoutForm() {
         }))),
         totalItems: String(count),
         serverAmount: String(prepared.amount),
+        ...dateMetaEntries
       }
 
       // Configure Flutterwave Inline with server-prepared values

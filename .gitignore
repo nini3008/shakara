@@ -32,3 +32,6 @@ Thumbs.db
 # IDE files
 .vscode/
 .idea/
+
+# Local experiments
+tickets-dashboard/

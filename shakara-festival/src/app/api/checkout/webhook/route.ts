@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     if (isSuccessful) {
       try {
         const reservation = await writeClient.fetch(
-          `*[_type == "reservation" && tx_ref == $tx_ref][0]{ _id, amount, currency, lines[] { sku, units } }`,
+          `*[_type == "reservation" && tx_ref == $tx_ref][0]{ _id, amount, currency, lines[] { sku, units, selectedDate } }`,
           { tx_ref: txRef }
         )
         if (reservation && Number(verification?.data?.amount) === Number(reservation.amount)) {

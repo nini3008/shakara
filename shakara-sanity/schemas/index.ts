@@ -12,6 +12,8 @@ import footer from './footer'
 import faq from './faq'
 import reservation from './reservation'
 import order from './order'
+import blogAuthor from './blogAuthor'
+import blogPost from './blogPost'
 
 export const schema: {types: SchemaTypeDefinition[]} = {
   types: [
@@ -28,6 +30,8 @@ export const schema: {types: SchemaTypeDefinition[]} = {
     faq,
     reservation,
     order,
+    blogAuthor,
+    blogPost,
   ],
 }
 
