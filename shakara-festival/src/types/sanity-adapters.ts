@@ -49,11 +49,12 @@ export interface SanityTicket {
   type?: string;
   day?: string;
   isBundle?: boolean;
-  unitsPerBundle?: number;
-  bundleTargetSku?: string;
+  bundle?: {
+    dayCount?: number;
+    targetSku?: string;
+  };
   discount?: number;
   category?: string;
-  bundleSize?: number;
   packageType?: string;
   inventory?: number;
   sold?: number;
@@ -198,7 +199,13 @@ export function adaptSanityTicket(sanityTicket: SanityTicket): TicketType {
     sku: sanityTicket.sku,
     testPrice: sanityTicket.testPrice,
     category: categoryMap[sanityTicket.category?.toLowerCase() || ''],
-    bundleSize: sanityTicket.bundleSize ?? 1,
+    isBundle: sanityTicket.isBundle ?? false,
+    bundle: sanityTicket.bundle
+      ? {
+          dayCount: sanityTicket.bundle.dayCount,
+          targetSku: sanityTicket.bundle.targetSku,
+        }
+      : undefined,
     packageType: packageTypeMap[sanityTicket.packageType?.toLowerCase() || ''],
     inventory: sanityTicket.inventory,
     sold: sanityTicket.sold ?? 0,
@@ -756,7 +763,7 @@ export interface SanityBlogPost {
   title: string;
   slug?: {
     current: string;
-  };
+  } | string;
   excerpt?: string;
   content?: Array<PortableTextBlock | SanityBlogPortableImage>;
   featured?: boolean;
@@ -869,7 +876,10 @@ export function adaptSanityBlogPost(sanityPost: SanityBlogPost): BlogPost {
   return {
     id: sanityPost._id,
     title: sanityPost.title,
-    slug: sanityPost.slug?.current || '',
+    slug:
+      typeof sanityPost.slug === 'string'
+        ? sanityPost.slug
+        : sanityPost.slug?.current || '',
     excerpt: sanityPost.excerpt || '',
     content,
     featured: sanityPost.featured ?? false,

@@ -43,6 +43,15 @@ export default defineConfig({
                   .filter('_type == "ticket"')
               ),
             
+            // Orders section
+            S.listItem()
+              .title('Orders')
+              .child(
+                S.documentTypeList('order')
+                  .title('Orders')
+                  .filter('_type == "order"')
+              ),
+
             // Merchandise section
             S.listItem()
               .title('Merchandise')
@@ -91,6 +100,7 @@ export default defineConfig({
                   'faq',
                   'blogPost',
                   'blogAuthor',
+                  'order',
                 ].includes(listItem.getId()!)
             ),
           ]),

@@ -44,9 +44,9 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
   const { addItem } = useCart();
   const idToTicket = new Map(initialTickets.map((t) => [t.id, t]));
   const bundlesByTarget = new Map(
-    (initialSanityTickets || [])
-      .filter((t) => t.isBundle && t.bundleTargetSku)
-      .map((t) => [t.bundleTargetSku as string, t])
+     (initialSanityTickets || [])
+      .filter((t) => t.isBundle && t.bundle?.targetSku)
+      .map((t) => [t.bundle?.targetSku as string, t])
   );
 
   // Day selector - now supports multiple selection
@@ -319,12 +319,19 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                 
                 const isBundleTicket = Boolean(sanityTicket.isBundle)
                 const associatedBundle = !isBundleTicket ? bundlesByTarget.get(sanityTicket.sku) : undefined
-                const bundleUnits = associatedBundle ? Math.max(1, associatedBundle.unitsPerBundle || 1) : 0
-                const bundlePer = associatedBundle && bundleUnits > 0 ? Math.round(associatedBundle.price / bundleUnits) : 0
+                const bundleDayCountRaw = associatedBundle?.bundle?.dayCount ?? 0
+                const bundleDayCount = bundleDayCountRaw > 0 ? bundleDayCountRaw : 0
+                const bundlePer = associatedBundle && bundleDayCount > 0 ? Math.round(associatedBundle.price / bundleDayCount) : 0
 
                 const themeClass = styles['theme_' + (ticket.type || 'general')]
                 const durationDays = durationToDays(ticket.duration)
-                const requiresMultiDaySelection = !sanityTicket.day && durationDays > 1
+                const bundleConfiguredDayCount = sanityTicket.bundle?.dayCount ?? 0
+                const expectedDayCount = sanityTicket.day
+                  ? 1
+                  : bundleConfiguredDayCount > 0
+                    ? bundleConfiguredDayCount
+                    : durationDays
+                const requiresMultiDaySelection = expectedDayCount > 1
                 const ticketSelectedDates = sanityTicket.day
                   ? [sanityTicket.day]
                   : requiresMultiDaySelection
@@ -335,15 +342,15 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                 const ticketHasRequiredDates = sanityTicket.day
                   ? true
                   : requiresMultiDaySelection
-                    ? ticketSelectedDates.length === durationDays
+                    ? ticketSelectedDates.length === expectedDayCount
                     : ticketSelectedDates.length > 0
                 const ticketSelectionHint = !ticketHasRequiredDates
-                  ? `Select ${durationDays} unique ${durationDays === 1 ? 'day' : 'days'} for this ticket.`
+                  ? `Select ${expectedDayCount} unique ${expectedDayCount === 1 ? 'day' : 'days'} for this ticket.`
                   : null
                 const bundleSelectedDates = sortedSelectedDays
                 const bundleHasRequiredDates = associatedBundle
-                  ? bundleUnits > 0
-                    ? bundleSelectedDates.length === bundleUnits
+                  ? bundleDayCount > 0
+                    ? bundleSelectedDates.length === bundleDayCount
                     : bundleSelectedDates.length > 0
                   : true
                 const formattedTicketLabel = formatDateLabel(ticketSelectedDates)
@@ -352,16 +359,16 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                   <div key={ticket.id} className={styles.ticketCardWrapper}>
                     <div className={`${styles.ticketCard} ${themeClass || ''}`}>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        {sanityTicket.badge && (
-                          <div className={styles.badge}>
-                            {sanityTicket.badge}
-                          </div>
-                        )}
+                      {sanityTicket.badge && (
+                        <div className={styles.badge}>
+                          {sanityTicket.badge}
+                        </div>
+                      )}
                         {isBundleTicket && (
                           <div className={styles.badge}>Bundle</div>
                         )}
                         {!isBundleTicket && associatedBundle && !visibleBundleSkus.has(String(associatedBundle.sku)) && (
-                          <div className={styles.badgeSecondary}>Bundle available</div>
+                          <div className={styles.badgeSecondary}>Multi-day bundle available</div>
                         )}
                       </div>
                       
@@ -380,10 +387,10 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                             </span>
                           </div>
                         </div>
-                        {!isBundleTicket && associatedBundle && (
+                        {!isBundleTicket && associatedBundle && bundleDayCount > 0 && (
                           <div className={styles.bundleSummaryPill}>
-                            <span className={styles.bundleSummaryTitle}>{bundleUnits}-pack</span>
-                            <span className={styles.bundleSummaryPrice}>₦{associatedBundle.price.toLocaleString()} total · ₦{bundlePer.toLocaleString()} each</span>
+                            <span className={styles.bundleSummaryTitle}>{bundleDayCount}-day bundle</span>
+                            <span className={styles.bundleSummaryPrice}>₦{associatedBundle.price.toLocaleString()} total · ₦{bundlePer.toLocaleString()} per day</span>
                           </div>
                         )}
                         
@@ -469,10 +476,39 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                             Coming Soon
                           </button>
                         )}
-                        {CART_ENABLED && !isBundleTicket && associatedBundle && (
+                        {CART_ENABLED && isBundleTicket ? (
+                          <>
+                            {ticketSelectionHint && (
+                              <div className={styles.bundleHintPill}>{ticketSelectionHint}</div>
+                            )}
+                            <button
+                              onClick={() => {
+                                if (!CART_ENABLED) {
+                                  return
+                                }
+
+                                addItem({
+                                  id: sanityTicket._id,
+                                  name: ticket.name,
+                                  price: ticket.price,
+                                  quantity: 1,
+                                  category: 'bundle',
+                                  selectedDates: ticketSelectedDates,
+                                })
+                              }}
+                              className={styles.bundleButton + ' clickable'}
+                              aria-label={`Add ${bundleDayCount}-day bundle for ${ticket.name}`}
+                              disabled={!bundleHasRequiredDates || isSubmitting}
+                            >
+                              Add bundle
+                            </button>
+                          </>
+                        ) : associatedBundle ? (
                           <div className={styles.bundleActionRow}>
                             <div className={styles.bundleHintPill} aria-live="polite">
-                              {bundleHasRequiredDates ? 'Bundle ready' : `Select ${bundleUnits} unique ${bundleUnits === 1 ? 'day' : 'days'} to unlock`}
+                              {bundleHasRequiredDates && bundleDayCount > 0
+                                ? 'Bundle ready'
+                                : `Select ${bundleDayCount || 2} unique ${(bundleDayCount || 2) === 1 ? 'day' : 'days'} to unlock`}
                             </div>
                             <button
                               onClick={() => {
@@ -481,7 +517,7 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                                 if (selectedDates.length === 0) return
                                 addItem({ 
                                   id: associatedBundle.sku, 
-                                  name: (associatedBundle.name || (ticket.name + ' ' + bundleUnits + '-Pack')) + formattedBundleLabel, 
+                                  name: `${associatedBundle.name || ticket.name} ${formattedBundleLabel}`, 
                                   price: associatedBundle.price, 
                                   quantity: 1, 
                                   category: 'ticket', 
@@ -491,13 +527,13 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                                 window.dispatchEvent(new Event('cart:add'));
                               }}
                               className={styles.bundleButton + ' clickable'}
-                              aria-label={`Add ${bundleUnits}-pack bundle for ${ticket.name}`}
+                              aria-label={`Add multi-day bundle for ${ticket.name}`}
                               disabled={!bundleHasRequiredDates}
                             >
                               Add bundle
                             </button>
                           </div>
-                        )}
+                        ) : null}
                       </div>
                       {ticketSelectionHint && (
                         <div className={styles.selectionHint}>{ticketSelectionHint}</div>

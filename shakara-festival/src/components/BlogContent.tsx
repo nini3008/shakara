@@ -48,7 +48,7 @@ const wrapWithMark = (
           >
             {content}
           </a>
-        )
+)
       }
       return content
     }
@@ -90,30 +90,30 @@ const renderBlockElement = (block: PortableTextBlock): ReactNode => {
 
 const renderImageBlock = (imageValue: BlogPortableImage, key: string): ReactNode => {
   if (!imageValue?.asset?._ref) {
-    return null
-  }
+        return null
+      }
 
-  const width = imageValue.width ?? 1600
-  const height = imageValue.height ?? Math.round(width * 0.6)
-  const imageUrl = urlFor(imageValue).width(width).height(height).quality(85).url()
-  const wrapperClass = imageValue.isFullWidth ? styles.fullWidthImage : styles.inlineImage
+      const width = imageValue.width ?? 1600
+      const height = imageValue.height ?? Math.round(width * 0.6)
+      const imageUrl = urlFor(imageValue).width(width).height(height).quality(85).url()
+      const wrapperClass = imageValue.isFullWidth ? styles.fullWidthImage : styles.inlineImage
 
-  return (
+      return (
     <div className={wrapperClass} key={key}>
-      <figure>
-        <Image
-          src={imageUrl}
-          alt={imageValue.alt ?? 'Blog visual'}
-          width={width}
-          height={height}
-          sizes={imageValue.isFullWidth ? '100vw' : '(max-width: 768px) 100vw, 720px'}
-          placeholder={imageValue.lqip ? 'blur' : 'empty'}
-          blurDataURL={imageValue.lqip}
-        />
-        {imageValue.caption && <figcaption className={styles.imageCaption}>{imageValue.caption}</figcaption>}
-      </figure>
-    </div>
-  )
+          <figure>
+            <Image
+              src={imageUrl}
+              alt={imageValue.alt ?? 'Blog visual'}
+              width={width}
+              height={height}
+              sizes={imageValue.isFullWidth ? '100vw' : '(max-width: 768px) 100vw, 720px'}
+              placeholder={imageValue.lqip ? 'blur' : 'empty'}
+              blurDataURL={imageValue.lqip}
+            />
+            {imageValue.caption && <figcaption className={styles.imageCaption}>{imageValue.caption}</figcaption>}
+          </figure>
+        </div>
+      )
 }
 
 export default function BlogContent({ value }: BlogContentProps) {

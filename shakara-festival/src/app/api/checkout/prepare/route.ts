@@ -13,12 +13,13 @@ type TicketDoc = {
   currency: string
   available: boolean
   soldOut?: boolean
-  bundleSize?: number
   // new fields for per-day + bundles
   day?: string
   isBundle?: boolean
-  unitsPerBundle?: number
-  bundleTargetSku?: string
+  bundle?: {
+    dayCount?: number
+    targetSku?: string
+  }
   type?: string
   inventory?: number
   sold?: number
@@ -56,7 +57,7 @@ export async function POST(req: NextRequest) {
     // Primary lookup by sku field, with a resilient fallback by document _id
     let docs: TicketDoc[] = await reader.fetch(
       `*[_type == "ticket" && (sku in $skus || _id in $ids)]{
-        _id,_rev,name,sku,price,testPrice,currency,available,soldOut,bundleSize,day,isBundle,unitsPerBundle,bundleTargetSku,type,inventory,sold,reserved,allowOversell,live
+        _id,_rev,name,sku,price,testPrice,currency,available,soldOut,day,isBundle,bundle{dayCount,targetSku},type,inventory,sold,reserved,allowOversell,live
       }`,
       { skus, ids }
     )
@@ -74,14 +75,19 @@ export async function POST(req: NextRequest) {
 
     // Ensure bundle target tickets are loaded in memory
     const missingTargets = Array.from(new Set(
-      (docs || [])
-        .filter(d => d.isBundle && d.bundleTargetSku && !skuToDoc.has(d.bundleTargetSku))
-        .map(d => String(d.bundleTargetSku))
+      (docs || []).reduce<string[]>((acc, d) => {
+        if (!d.isBundle) return acc
+        const target = d.bundle?.targetSku
+        if (target && !skuToDoc.has(target)) {
+          acc.push(String(target))
+        }
+        return acc
+      }, [])
     ))
     if (missingTargets.length > 0) {
       const extra: TicketDoc[] = await reader.fetch(
         `*[_type == "ticket" && sku in $targets]{
-          _id,_rev,name,sku,price,testPrice,currency,available,soldOut,bundleSize,day,isBundle,unitsPerBundle,bundleTargetSku,type,inventory,sold,reserved,allowOversell,live
+          _id,_rev,name,sku,price,testPrice,currency,available,soldOut,day,isBundle,bundle{dayCount,targetSku},type,inventory,sold,reserved,allowOversell,live
         }`,
         { targets: missingTargets }
       )
@@ -109,7 +115,7 @@ export async function POST(req: NextRequest) {
 
       const fetched: TicketDoc | null = await reader.fetch(
         `*[_type == "ticket" && type == $type && day == $day && (!defined(isBundle) || isBundle == false)][0]{
-          _id,_rev,name,sku,price,testPrice,currency,available,soldOut,bundleSize,day,isBundle,unitsPerBundle,bundleTargetSku,type,inventory,sold,reserved,allowOversell,live
+          _id,_rev,name,sku,price,testPrice,currency,available,soldOut,day,isBundle,bundle{dayCount,targetSku},type,inventory,sold,reserved,allowOversell,live
         }`,
         { type, day: date }
       )
@@ -138,20 +144,17 @@ export async function POST(req: NextRequest) {
         : (d.testPrice ?? d.price)
 
       if (doc.isBundle) {
-        const targetSku = doc.bundleTargetSku
+        const bundleConfig = doc.bundle || {}
+        const targetSku = bundleConfig.targetSku
         const target = targetSku ? skuToDoc.get(targetSku) : undefined
         if (!target) return NextResponse.json({ error: `Bundle target unavailable for ${line.sku}` }, { status: 400 })
         if (!target.available || target.soldOut) return NextResponse.json({ error: `Target ticket not available for ${line.sku}` }, { status: 400 })
 
-        const unitsPerBundle = Math.max(1, doc.unitsPerBundle ?? (selectedDatesFromLine.length || 1))
-        const selectedDates = selectedDatesFromLine.length > 0
-          ? selectedDatesFromLine
-          : target.day
-            ? [target.day]
-            : []
+        const expectedDayCount = Math.max(2, bundleConfig.dayCount ?? (selectedDatesFromLine.length || 0))
+        const selectedDates = selectedDatesFromLine
 
-        if (selectedDates.length !== unitsPerBundle) {
-          return NextResponse.json({ error: `Bundle ${line.sku} requires selecting ${unitsPerBundle} unique ${unitsPerBundle === 1 ? 'day' : 'days'}` }, { status: 400 })
+        if (selectedDates.length !== expectedDayCount) {
+          return NextResponse.json({ error: `Bundle ${line.sku} requires selecting ${expectedDayCount} unique days` }, { status: 400 })
         }
 
         const typeForBundle = target.type ?? doc.type
@@ -200,8 +203,7 @@ export async function POST(req: NextRequest) {
           }
         })
       } else {
-      const bundleSize = Math.max(1, doc.bundleSize ?? 1)
-        const units = bundleSize * qty
+        const units = qty
       const inv = doc.inventory ?? Number.POSITIVE_INFINITY
       const sold = doc.sold ?? 0
       const reserved = doc.reserved ?? 0

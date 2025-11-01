@@ -26,7 +26,17 @@ export default defineType({
     defineField({ name: 'email', title: 'Customer Email', type: 'string' }),
     defineField({ name: 'gateway', title: 'Gateway', type: 'string', initialValue: 'flutterwave' }),
     defineField({ name: 'status', title: 'Status', type: 'string', options: { list: ['paid', 'refunded', 'failed'] }, initialValue: 'paid' }),
-    defineField({ name: 'verification', title: 'Verification Snapshot', type: 'object', options: { collapsible: true, collapsed: true } }),
+    defineField({
+      name: 'verification',
+      title: 'Verification Snapshot',
+      type: 'object',
+      options: { collapsible: true, collapsed: true },
+      fields: [
+        defineField({ name: 'id', title: 'Gateway ID', type: 'string' }),
+        defineField({ name: 'tx_ref', title: 'Gateway Tx Ref', type: 'string' }),
+        defineField({ name: 'gateway_amount', title: 'Gateway Amount', type: 'number' }),
+      ],
+    }),
     defineField({ name: 'createdAt', title: 'Created At', type: 'datetime', initialValue: () => new Date().toISOString() }),
   ],
 })

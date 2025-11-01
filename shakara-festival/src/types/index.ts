@@ -45,7 +45,11 @@ export interface TicketType {
   sku?: string;
   testPrice?: number;
   category?: 'early-bird' | 'standard';
-  bundleSize?: number;
+  isBundle?: boolean;
+  bundle?: {
+    dayCount?: number;
+    targetSku?: string;
+  };
   packageType?: 'standard' | 'table';
   inventory?: number;
   sold?: number;

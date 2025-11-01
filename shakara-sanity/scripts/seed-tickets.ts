@@ -18,15 +18,17 @@ type TicketSeed = {
   type: 'general' | 'pit' | 'vip' | 'vvip'
   category: 'standard' | 'early-bird'
   duration: '1-day' | '2-day' | '3-day' | '4-day'
-  day: '2025-12-18' | '2025-12-19' | '2025-12-20' | '2025-12-21'
+  day?: '2025-12-18' | '2025-12-19' | '2025-12-20' | '2025-12-21'
   price: number
   originalPrice?: number
   badge?: string
   features: string[]
   featured?: boolean
   isBundle?: boolean
-  unitsPerBundle?: number
-  bundleTargetSku?: string
+  bundle?: {
+    dayCount: number
+    targetSku: string
+  }
 }
 
 const seeds: TicketSeed[] = [
@@ -111,16 +113,17 @@ const seeds: TicketSeed[] = [
     slug: 'ga-4pack-fri',
     type: 'general',
     category: 'standard',
-    duration: '1-day',
-    day: '2025-12-19',
+    duration: '3-day',
     price: 260000, // total bundle price
     features: [
-      '4 GA tickets for Friday',
+      'Access to three festival days',
       'Bundle savings applied',
     ],
     isBundle: true,
-    unitsPerBundle: 4,
-    bundleTargetSku: 'TKT-GA-FRI',
+    bundle: {
+      dayCount: 3,
+      targetSku: 'TKT-GA-FRI',
+    },
   },
 ]
 
@@ -142,10 +145,8 @@ async function run() {
       features: t.features,
       available: true,
       soldOut: false,
-      bundleSize: 1,
       isBundle: t.isBundle || false,
-      unitsPerBundle: t.unitsPerBundle,
-      bundleTargetSku: t.bundleTargetSku,
+      bundle: t.bundle,
       featured: t.featured ?? false,
       badge: t.badge,
       order: 0,

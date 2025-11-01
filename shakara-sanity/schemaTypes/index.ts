@@ -12,6 +12,8 @@ import footer from '../schemas/footer'
 import faq from '../schemas/faq'
 import blogAuthor from '../schemas/blogAuthor'
 import blogPost from '../schemas/blogPost'
+import reservation from '../schemas/reservation'
+import order from '../schemas/order'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   hero,
@@ -26,4 +28,6 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   faq,
   blogAuthor,
   blogPost,
+  reservation,
+  order,
 ]
