@@ -3,7 +3,7 @@ import ThemedContent from '@/components/ThemedContent'
 import CheckoutForm from '@/components/v2/checkout/CheckoutForm'
 import { CHECKOUT_ENABLED } from '@/lib/featureFlags'
 import { notFound } from 'next/navigation'
-import AddonsSection from '@/components/v2/checkout/AddonsSection'
+import AddonsCarousel from '@/components/v2/checkout/AddonsCarousel'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -18,8 +18,7 @@ export default function CheckoutPage() {
   return (
     <V2Layout currentPageName="Checkout">
       <ThemedContent transparent>
-        <AddonsSection />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24">
           <h2 className="text-center font-bold mb-6" style={{
             fontFamily: 'Space Grotesk, system-ui, sans-serif',
             fontSize: 'clamp(2rem, 4vw, 3rem)',
@@ -32,6 +31,8 @@ export default function CheckoutPage() {
           }}>Checkout</h2>
         </div>
         <CheckoutForm />
+        {/* Add-ons carousel positioned after the checkout for better focus */}
+        <AddonsCarousel />
       </ThemedContent>
     </V2Layout>
   )

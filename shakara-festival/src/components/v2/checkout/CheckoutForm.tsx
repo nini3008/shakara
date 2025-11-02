@@ -7,6 +7,12 @@ import { Button } from '@/components/ui/Button'
 import { useCart } from '@/contexts/CartContext'
 import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { checkoutCustomerSchema, type CheckoutCustomerInput, type CheckoutCustomer } from '@/lib/validation/checkout'
+import { cn } from '@/lib/utils'
+import { PhoneInput } from 'react-international-phone'
+import 'react-international-phone/style.css'
 
 declare global {
   interface Window {
@@ -38,24 +44,28 @@ function loadFlutterwave(): Promise<void> {
   })
 }
 
-// Generate transaction reference
-function generateTxRef(): string {
-  const timestamp = Date.now().toString(36)
-  const random = Math.random().toString(36).substring(2, 15)
-  return `shakara-${timestamp}-${random}`
-}
+type CheckoutFormInput = CheckoutCustomerInput
+type CheckoutFormValues = CheckoutCustomer
 
 export default function CheckoutForm() {
   const router = useRouter()
   const { items, total, clear, count } = useCart()
-  
-  const [email, setEmail] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [phone, setPhone] = useState('')
+
   const [loading, setLoading] = useState(false)
   const [paymentError, setPaymentError] = useState<string | null>(null)
   const [scriptLoaded, setScriptLoaded] = useState(false)
+
+  const form = useForm<CheckoutFormInput, undefined, CheckoutFormValues>({
+    resolver: zodResolver(checkoutCustomerSchema),
+    mode: 'onChange',
+    reValidateMode: 'onBlur',
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: undefined,
+    },
+  })
 
   // Load Flutterwave script on mount
   useEffect(() => {
@@ -68,7 +78,7 @@ export default function CheckoutForm() {
   }, [])
 
   // Handle payment with Flutterwave Inline
-  async function handlePayment() {
+  const handlePayment = async (values: CheckoutFormValues) => {
     if (!scriptLoaded || !window.FlutterwaveCheckout) {
       setPaymentError('Payment system not ready. Please try again.')
       return
@@ -103,13 +113,28 @@ export default function CheckoutForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email,
-          lines: validItems.map((item) => ({ sku: item.id, quantity: item.quantity })),
+          customer: values,
+          lines: validItems.map((item) => ({ 
+            sku: item.id, 
+            quantity: item.quantity,
+            selectedDate: item.selectedDate,
+            selectedDates: item.selectedDates
+          })),
         }),
       })
       if (!prepareRes.ok) {
-        const err = await prepareRes.json().catch(() => ({}))
-        setPaymentError(err.error || 'Could not prepare checkout')
+        const err = await prepareRes.json().catch(() => ({} as { error?: string }))
+        const fieldErrors = (err as { fieldErrors?: Record<string, string[]> }).fieldErrors
+        const firstFieldError = fieldErrors
+          ? Object.values(fieldErrors).flat().find(Boolean)
+          : undefined
+        let message = firstFieldError || err?.error || 'Could not prepare checkout.'
+        if (prepareRes.status === 409) {
+          message = err?.error || 'Those tickets were just snapped up. Please adjust your selection and try again.'
+        } else if (prepareRes.status === 503) {
+          message = err?.error || 'Checkout is temporarily unavailable. Please try again in a few minutes.'
+        }
+        setPaymentError(message)
         setLoading(false)
         return
       }
@@ -117,6 +142,15 @@ export default function CheckoutForm() {
 
       // Build safe meta data (strings only) to avoid SDK sanitization errors
       type PreparedLine = { sku: string; name: string; unitPrice: number; quantity: number }
+      const dateMetaEntries = Object.entries(prepared?.dateMetadata || {}).reduce<Record<string, string>>((acc, [key, value]) => {
+        if (Array.isArray(value)) {
+          acc[key] = JSON.stringify(value)
+        } else if (value !== undefined && value !== null) {
+          acc[key] = String(value)
+        }
+        return acc
+      }, {})
+
       const meta = {
         items: JSON.stringify((prepared?.lines || []).map((l: PreparedLine) => ({
           sku: String(l.sku),
@@ -126,9 +160,16 @@ export default function CheckoutForm() {
         }))),
         totalItems: String(count),
         serverAmount: String(prepared.amount),
+        customerEmail: values.email,
+        customerFirstName: values.firstName,
+        customerLastName: values.lastName,
+        customerPhone: values.phone ?? '',
+        ...dateMetaEntries
       }
 
       // Configure Flutterwave Inline with server-prepared values
+      const customerName = `${values.firstName} ${values.lastName}`.trim()
+
       const config = {
         public_key: String(publicKey),
         tx_ref: String(prepared.tx_ref),
@@ -136,9 +177,9 @@ export default function CheckoutForm() {
         currency: 'NGN',
         payment_options: 'card,mobilemoney,ussd',
         customer: {
-          email: String(email || ''),
-          phone_number: String(phone || ''),
-          name: String(`${firstName} ${lastName}`.trim() || ''),
+          email: values.email ?? '',
+          phone_number: values.phone ?? '',
+          name: customerName || values.email,
         },
         customizations: {
           title: 'Shakara Festival',
@@ -167,7 +208,7 @@ export default function CheckoutForm() {
             
             if (result.ok) {
               // Save email for success page
-              try { localStorage.setItem('checkout-email', email) } catch {}
+            try { localStorage.setItem('checkout-email', values.email) } catch {}
               // Clear cart
               clear()
               // Force a full page navigation so the Flutterwave modal is torn down
@@ -273,25 +314,29 @@ export default function CheckoutForm() {
             <div>
               <h3 className="text-lg font-semibold mb-4">Customer Details</h3>
               
-              <div className="space-y-4">
+              <form className="space-y-4" onSubmit={form.handleSubmit(handlePayment)} noValidate>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm mb-2">First Name</label>
                     <Input
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      placeholder="John"
-                      required
+                      aria-invalid={form.formState.errors.firstName ? 'true' : 'false'}
+                      placeholder="First Name"
+                      {...form.register('firstName')}
                     />
+                    {form.formState.errors.firstName && (
+                      <p className="mt-1 text-xs text-red-500">{form.formState.errors.firstName.message}</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm mb-2">Last Name</label>
                     <Input
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      placeholder="Doe"
-                      required
+                      aria-invalid={form.formState.errors.lastName ? 'true' : 'false'}
+                      placeholder="Last Name"
+                      {...form.register('lastName')}
                     />
+                    {form.formState.errors.lastName && (
+                      <p className="mt-1 text-xs text-red-500">{form.formState.errors.lastName.message}</p>
+                    )}
                   </div>
                 </div>
 
@@ -299,22 +344,64 @@ export default function CheckoutForm() {
                   <label className="block text-sm mb-2">Email</label>
                   <Input
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="john@example.com"
-                    required
+                    aria-invalid={form.formState.errors.email ? 'true' : 'false'}
+                    placeholder="Email"
+                    {...form.register('email')}
                   />
+                  {form.formState.errors.email && (
+                    <p className="mt-1 text-xs text-red-500">{form.formState.errors.email.message}</p>
+                  )}
                 </div>
 
                 <div>
                   <label className="block text-sm mb-2">Phone Number</label>
-                  <Input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="08012345678"
-                    required
+                  <Controller
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <PhoneInput
+                        defaultCountry="ng"
+                        aria-invalid={form.formState.errors.phone ? 'true' : 'false'}
+                        placeholder="Phone Number"
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        className={cn(
+                          'phone-input-wrapper flex h-9 w-full items-stretch rounded-md border transition-[color,box-shadow] focus-within:ring-[3px]',
+                          form.formState.errors.phone
+                            ? 'border-destructive focus-within:border-destructive focus-within:ring-destructive/40'
+                            : 'border-input focus-within:border-ring focus-within:ring-ring/50'
+                        )}
+                        countrySelectorStyleProps={{
+                          className: 'phone-input-country-selector',
+                          buttonStyle: {
+                            background: 'transparent',
+                            border: 'none',
+                            borderRight: '1px solid rgba(148, 163, 184, 0.25)',
+                            padding: '0 0.75rem',
+                            color: 'inherit',
+                          },
+                          dropdownStyleProps: {
+                            style: {
+                              backgroundColor: '#0f172a',
+                              color: '#f8fafc',
+                            },
+                          },
+                        }}
+                        inputStyle={{
+                          backgroundColor: 'transparent',
+                          color: 'inherit',
+                          border: 'none',
+                          flex: 1,
+                          padding: '0.45rem 0.75rem 0.45rem 0.5rem',
+                          fontSize: '0.875rem',
+                        }}
+                      />
+                    )}
                   />
+                  {form.formState.errors.phone && (
+                    <p className="mt-1 text-xs text-red-500">{form.formState.errors.phone.message}</p>
+                  )}
                 </div>
 
                 {paymentError && (
@@ -322,8 +409,8 @@ export default function CheckoutForm() {
                 )}
 
                 <Button
-                  onClick={handlePayment}
-                  disabled={loading || !email || !firstName || !lastName || !phone || !scriptLoaded}
+                  type="submit"
+                  disabled={loading || !scriptLoaded || !form.formState.isValid || form.formState.isSubmitting}
                   className="w-full gradient-bg text-white"
                 >
                   {loading ? (
@@ -339,7 +426,7 @@ export default function CheckoutForm() {
                 <p className="text-xs text-gray-500 text-center">
                   Secured by Flutterwave. Your payment information is encrypted.
                 </p>
-              </div>
+              </form>
             </div>
           </div>
         </motion.div>

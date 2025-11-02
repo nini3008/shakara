@@ -1,5 +1,20 @@
 import { ReactNode } from "react";
 
+export type PortableTextSpan = {
+  _type?: string;
+  _key?: string;
+  text?: string;
+  marks?: string[];
+};
+
+export interface PortableTextBlock {
+  _type: 'block';
+  _key?: string;
+  style?: string;
+  markDefs?: Array<Record<string, unknown>>;
+  children?: PortableTextSpan[];
+}
+
 export interface Artist {
   id: string;
   name: string;
@@ -30,7 +45,11 @@ export interface TicketType {
   sku?: string;
   testPrice?: number;
   category?: 'early-bird' | 'standard';
-  bundleSize?: number;
+  isBundle?: boolean;
+  bundle?: {
+    dayCount?: number;
+    targetSku?: string;
+  };
   packageType?: 'standard' | 'table';
   inventory?: number;
   sold?: number;
@@ -267,6 +286,77 @@ export interface LineupSectionData {
   featuredArtistCount: number;
   active: boolean;
   order: number;
+}
+
+export interface BlogAuthorSocialLinks {
+  instagram?: string;
+  twitter?: string;
+  facebook?: string;
+  youtube?: string;
+  linkedin?: string;
+  website?: string;
+}
+
+export interface BlogAuthor {
+  id: string;
+  name: string;
+  slug: string;
+  bio?: string;
+  profileImage?: {
+    url: string;
+    alt?: string;
+    width?: number;
+    height?: number;
+    lqip?: string;
+  };
+  socialLinks: BlogAuthorSocialLinks;
+  active: boolean;
+}
+
+export interface BlogImage {
+  url: string;
+  alt: string;
+  caption?: string;
+  width?: number;
+  height?: number;
+  lqip?: string;
+}
+
+export interface BlogPortableImage {
+  _type: 'image';
+  _key?: string;
+  asset: {
+    _ref: string;
+    _type: 'reference';
+  };
+  alt?: string;
+  caption?: string;
+  isFullWidth?: boolean;
+  width?: number;
+  height?: number;
+  lqip?: string;
+}
+
+export type BlogPortableText = Array<PortableTextBlock | BlogPortableImage>;
+
+export interface BlogPostSeo {
+  title?: string;
+  description?: string;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: BlogPortableText;
+  featured: boolean;
+  status: 'draft' | 'published';
+  publishedAt: string;
+  estimatedReadTime?: number;
+  featuredImage?: BlogImage;
+  author: BlogAuthor;
+  seo?: BlogPostSeo;
 }
 
 // Footer Types

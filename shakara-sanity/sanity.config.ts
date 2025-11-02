@@ -43,6 +43,15 @@ export default defineConfig({
                   .filter('_type == "ticket"')
               ),
             
+            // Orders section
+            S.listItem()
+              .title('Orders')
+              .child(
+                S.documentTypeList('order')
+                  .title('Orders')
+                  .filter('_type == "order"')
+              ),
+
             // Merchandise section
             S.listItem()
               .title('Merchandise')
@@ -61,12 +70,38 @@ export default defineConfig({
                   .filter('_type == "faq"')
               ),
 
+            // Blog section
+            S.listItem()
+              .title('Blog Posts')
+              .child(
+                S.documentTypeList('blogPost')
+                  .title('Blog Posts')
+                  .filter('_type == "blogPost"')
+              ),
+            S.listItem()
+              .title('Blog Authors')
+              .child(
+                S.documentTypeList('blogAuthor')
+                  .title('Blog Authors')
+                  .filter('_type == "blogAuthor"')
+              ),
+
             // Divider
             S.divider(),
 
             // All documents
             ...S.documentTypeListItems().filter(
-              (listItem) => !['artist', 'ticket', 'scheduleEvent', 'merchItem', 'faq'].includes(listItem.getId()!)
+              (listItem) =>
+                ![
+                  'artist',
+                  'ticket',
+                  'scheduleEvent',
+                  'merchItem',
+                  'faq',
+                  'blogPost',
+                  'blogAuthor',
+                  'order',
+                ].includes(listItem.getId()!)
             ),
           ]),
     }),

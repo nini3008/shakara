@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
-import { Menu, X, Ticket, Calendar, Music, ShoppingBag, Users, Handshake, LucideIcon } from 'lucide-react'
+import { Menu, X, Ticket, Calendar, Music, ShoppingBag, Users, Handshake, LucideIcon, BookOpen } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -40,6 +40,7 @@ const Navigation = () => {
     { href: '#lineup', label: 'Lineup', icon: Music, type: 'anchor' },
     { href: '#tickets', label: 'Tickets', icon: Ticket, type: 'anchor' },
     { href: '#schedule', label: 'Schedule', icon: Calendar, type: 'anchor' },
+    { href: '/blog', label: 'Blog', icon: BookOpen, type: 'route' },
     { href: '#partners', label: 'Partners', icon: Handshake, type: 'anchor' },
     // { href: '#merch', label: 'Merch', icon: ShoppingBag, type: 'anchor' },
   ] : [
@@ -47,6 +48,7 @@ const Navigation = () => {
     { href: '/#lineup', label: 'Lineup', icon: Music, type: 'route' },
     { href: '/#artists', label: 'Artists', icon: Users, type: 'route' },
     { href: '/#tickets', label: 'Tickets', icon: Ticket, type: 'route' },
+    { href: '/blog', label: 'Blog', icon: BookOpen, type: 'route' },
   ]
 
   const handleLinkClick = (href: string, type: string) => {

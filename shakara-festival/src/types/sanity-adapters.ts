@@ -1,7 +1,7 @@
 // types/sanity-adapters.ts
 
 import { urlFor } from '@/lib/sanity';
-import { Artist, TicketType, ScheduleEvent, MerchItem, Partner, AboutEssentialInfo, AboutHighlight, AboutSectionData, LineupSectionData, FooterSectionData, FooterLink, FooterBrandSection, FooterSocialLinks } from './index';
+import { Artist, TicketType, ScheduleEvent, MerchItem, Partner, AboutEssentialInfo, AboutHighlight, AboutSectionData, LineupSectionData, FooterSectionData, FooterLink, FooterBrandSection, FooterSocialLinks, BlogAuthor, BlogPost, BlogImage, BlogAuthorSocialLinks, BlogPortableImage, BlogPortableText, PortableTextBlock } from './index';
 
 // Sanity raw data interfaces
 export interface SanityArtist {
@@ -47,9 +47,14 @@ export interface SanityTicket {
   available: boolean;
   duration?: string;
   type?: string;
+  day?: string;
+  isBundle?: boolean;
+  bundle?: {
+    dayCount?: number;
+    targetSku?: string;
+  };
   discount?: number;
   category?: string;
-  bundleSize?: number;
   packageType?: string;
   inventory?: number;
   sold?: number;
@@ -194,7 +199,13 @@ export function adaptSanityTicket(sanityTicket: SanityTicket): TicketType {
     sku: sanityTicket.sku,
     testPrice: sanityTicket.testPrice,
     category: categoryMap[sanityTicket.category?.toLowerCase() || ''],
-    bundleSize: sanityTicket.bundleSize ?? 1,
+    isBundle: sanityTicket.isBundle ?? false,
+    bundle: sanityTicket.bundle
+      ? {
+          dayCount: sanityTicket.bundle.dayCount,
+          targetSku: sanityTicket.bundle.targetSku,
+        }
+      : undefined,
     packageType: packageTypeMap[sanityTicket.packageType?.toLowerCase() || ''],
     inventory: sanityTicket.inventory,
     sold: sanityTicket.sold ?? 0,
@@ -700,6 +711,183 @@ export function adaptSanityLineupSection(sanityLineup: SanityLineupSection): Lin
     featuredArtistCount: sanityLineup.featuredArtistCount || 8,
     active: sanityLineup.active ?? true,
     order: sanityLineup.order || 100
+  };
+}
+
+interface SanityImageReference {
+  _ref?: string;
+  _type?: string;
+}
+
+interface SanityImageMeta {
+  _id?: string;
+  url?: string;
+  metadata?: {
+    dimensions?: {
+      width?: number;
+      height?: number;
+    };
+    lqip?: string;
+  };
+}
+
+export interface SanityBlogAuthor {
+  _id: string;
+  name: string;
+  slug?: {
+    current: string;
+  };
+  bio?: string;
+  profileImage?: {
+    asset?: SanityImageReference;
+    assetMeta?: SanityImageMeta;
+    alt?: string;
+  };
+  socialLinks?: BlogAuthorSocialLinks;
+  active?: boolean;
+}
+
+export interface SanityBlogPortableImage {
+  _type: 'image';
+  _key?: string;
+  asset?: SanityImageReference;
+  assetMeta?: SanityImageMeta;
+  alt?: string;
+  caption?: string;
+  isFullWidth?: boolean;
+}
+
+export interface SanityBlogPost {
+  _id: string;
+  _createdAt?: string;
+  title: string;
+  slug?: {
+    current: string;
+  } | string;
+  excerpt?: string;
+  content?: Array<PortableTextBlock | SanityBlogPortableImage>;
+  featured?: boolean;
+  status?: 'draft' | 'published';
+  publishedAt?: string;
+  featuredImage?: {
+    asset?: SanityImageReference;
+    assetMeta?: SanityImageMeta;
+    alt?: string;
+    caption?: string;
+  };
+  author?: SanityBlogAuthor;
+  seo?: {
+    seoTitle?: string;
+    seoDescription?: string;
+  };
+}
+
+const FALLBACK_BLOG_AUTHOR: BlogAuthor = {
+  id: 'shakara-festival',
+  name: 'Shakara Festival Team',
+  slug: 'shakara-festival',
+  socialLinks: {},
+  active: true,
+};
+
+export function adaptSanityBlogAuthor(sanityAuthor: SanityBlogAuthor | undefined): BlogAuthor {
+  if (!sanityAuthor) {
+    return FALLBACK_BLOG_AUTHOR;
+  }
+
+  const profileImageSource = sanityAuthor.profileImage;
+  const profileImage = profileImageSource?.asset?._ref
+    ? {
+        url:
+          profileImageSource.assetMeta?.url ||
+          urlFor(profileImageSource).width(400).height(400).fit('crop').url(),
+        alt: profileImageSource.alt || `${sanityAuthor.name} portrait`,
+        width: profileImageSource.assetMeta?.metadata?.dimensions?.width,
+        height: profileImageSource.assetMeta?.metadata?.dimensions?.height,
+        lqip: profileImageSource.assetMeta?.metadata?.lqip,
+      }
+    : undefined;
+
+  return {
+    id: sanityAuthor._id,
+    name: sanityAuthor.name,
+    slug: sanityAuthor.slug?.current || FALLBACK_BLOG_AUTHOR.slug,
+    bio: sanityAuthor.bio,
+    profileImage,
+    socialLinks: sanityAuthor.socialLinks || {},
+    active: sanityAuthor.active ?? true,
+  };
+}
+
+export function adaptSanityBlogPost(sanityPost: SanityBlogPost): BlogPost {
+  const author = adaptSanityBlogAuthor(sanityPost.author);
+
+  const featuredImageSource = sanityPost.featuredImage;
+  const featuredImage: BlogImage | undefined = featuredImageSource?.asset?._ref
+    ? {
+        url:
+          featuredImageSource.assetMeta?.url ||
+          urlFor(featuredImageSource).width(1600).height(900).fit('crop').url(),
+        alt: featuredImageSource.alt || `${sanityPost.title} featured image`,
+        caption: featuredImageSource.caption,
+        width: featuredImageSource.assetMeta?.metadata?.dimensions?.width,
+        height: featuredImageSource.assetMeta?.metadata?.dimensions?.height,
+        lqip: featuredImageSource.assetMeta?.metadata?.lqip,
+      }
+    : undefined;
+
+  const content = (sanityPost.content ?? []).map((block) => {
+    if (block && (block as SanityBlogPortableImage)._type === 'image') {
+      const imageBlock = block as SanityBlogPortableImage;
+      if (!imageBlock.asset?._ref) {
+        return block as PortableTextBlock;
+      }
+      const { assetMeta, asset, ...rest } = imageBlock;
+      return {
+        ...rest,
+        isFullWidth: Boolean(imageBlock.isFullWidth),
+        width: assetMeta?.metadata?.dimensions?.width,
+        height: assetMeta?.metadata?.dimensions?.height,
+        lqip: assetMeta?.metadata?.lqip,
+        asset: {
+          _ref: asset._ref!,
+          _type: 'reference' as const,
+        },
+      } satisfies BlogPortableImage;
+    }
+
+    return block as PortableTextBlock;
+  }) as BlogPortableText;
+
+  const status = sanityPost.status === 'published'
+    ? 'published'
+    : 'draft';
+
+  const publishedAt =
+    sanityPost.publishedAt || sanityPost._createdAt || new Date().toISOString();
+
+  const seo = sanityPost.seo
+    ? {
+        title: sanityPost.seo.seoTitle,
+        description: sanityPost.seo.seoDescription,
+      }
+    : undefined;
+
+  return {
+    id: sanityPost._id,
+    title: sanityPost.title,
+    slug:
+      typeof sanityPost.slug === 'string'
+        ? sanityPost.slug
+        : sanityPost.slug?.current || '',
+    excerpt: sanityPost.excerpt || '',
+    content,
+    featured: sanityPost.featured ?? false,
+    status,
+    publishedAt,
+    featuredImage,
+    author,
+    seo,
   };
 }
 

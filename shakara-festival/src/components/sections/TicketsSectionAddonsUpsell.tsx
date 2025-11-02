@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import styles from './TicketsSection.module.scss'
 import { useCart } from '@/contexts/CartContext'
+import { CART_ENABLED } from '@/lib/featureFlags'
 
 type Addon = { _id: string; name: string; sku: string; price: number; description?: string; badge?: string }
 
@@ -11,13 +12,15 @@ export default function TicketsSectionAddonsUpsell() {
   const [addons, setAddons] = useState<Addon[]>([])
 
   useEffect(() => {
+    if (!CART_ENABLED) return
+
     fetch('/api/checkout/addons')
       .then(r => r.json())
       .then(d => setAddons(d?.addons || []))
       .catch(() => {})
   }, [])
 
-  if (!addons.length) return null
+  if (!CART_ENABLED || !addons.length) return null
 
   return (
     <section className={styles.ticketsSection}>

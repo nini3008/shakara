@@ -34,18 +34,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const { client } = await import('@/lib/sanity')
-    const artistSlugs: string[] = await client.fetch(
-      "*[_type == 'artist' && defined(slug.current)][].slug.current"
-    )
+  const artistSlugs: string[] = await client.fetch(
+    "*[_type == 'artist' && defined(slug.current)][].slug.current"
+  )
 
-    const artistEntries: MetadataRoute.Sitemap = (artistSlugs || []).map((slug) => ({
-      url: `${base}/artists/${slug}`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.6,
-    }))
+  const artistEntries: MetadataRoute.Sitemap = (artistSlugs || []).map((slug) => ({
+    url: `${base}/artists/${slug}`,
+    lastModified: now,
+    changeFrequency: 'weekly',
+    priority: 0.6,
+  }))
 
-    return [...staticEntries, ...artistEntries]
+  return [...staticEntries, ...artistEntries]
   } catch {
     // If Sanity is unreachable or misconfigured, fall back to static entries
     return [...staticEntries]
