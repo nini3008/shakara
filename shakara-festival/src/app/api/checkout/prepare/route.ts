@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { client, writeClient } from '@/lib/sanity'
+import { randomUUID } from 'crypto'
+import type { SanityClient } from '@sanity/client'
+import { checkoutPreparePayloadSchema } from '@/lib/validation/checkout'
 
 type PrepareLine = { sku: string; quantity: number; selectedDate?: string; selectedDates?: string[] }
 
@@ -42,17 +45,90 @@ const normalizeSelectedDates = (value?: string[] | string): string[] => {
   return unique
 }
 
+const EXPIRE_BATCH_LIMIT = 20
+
+type StaleReservation = {
+  _id: string
+  lines?: Array<{ sku?: string; units?: number; quantity?: number }>
+}
+
+async function expireStaleReservations(writer: SanityClient, nowIso: string) {
+  try {
+    const staleReservations = await writer.fetch<StaleReservation[]>(
+      `*[_type == "reservation" && status == "held" && holdApplied == true && defined(expiresAt) && expiresAt < $now][0...$limit]{ _id, lines[]{ sku, units, quantity } }`,
+      { now: nowIso, limit: EXPIRE_BATCH_LIMIT }
+    )
+
+    for (const reservation of staleReservations || []) {
+      const normalizedLines = (reservation.lines || []).map((line) => ({
+        sku: String(line?.sku || ''),
+        units: typeof line?.units === 'number' ? line.units : (typeof line?.quantity === 'number' ? line.quantity : 0),
+      })).filter((line) => line.sku && line.units > 0)
+
+      const skus = normalizedLines.map((line) => line.sku)
+      const tickets = skus.length > 0
+        ? await writer.fetch<Array<{ _id: string; _rev?: string; sku: string }>>(
+            `*[_type == "ticket" && sku in $skus]{ _id, _rev, sku }`,
+            { skus }
+          )
+        : []
+      const ticketBySku = new Map(tickets.map((ticket) => [ticket.sku, ticket]))
+
+      let tx = writer.transaction()
+      for (const line of normalizedLines) {
+        const ticketRef = ticketBySku.get(line.sku)
+        if (ticketRef && ticketRef._id) {
+          tx = tx.patch(ticketRef._id, (patch) => {
+            let next = patch.setIfMissing({ reserved: 0 })
+            if (ticketRef._rev) {
+              next = next.ifRevisionId(ticketRef._rev)
+            }
+            return next.inc({ reserved: -line.units })
+          })
+        }
+      }
+      tx = tx.patch(reservation._id, (patch) => patch.set({ status: 'expired', holdApplied: false }))
+      await tx.commit({ autoGenerateArrayKeys: true })
+    }
+  } catch (err) {
+    console.error('Failed to expire stale reservations', err)
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const { lines, email }: { lines: PrepareLine[]; email?: string } = await req.json()
-    if (!Array.isArray(lines) || lines.length === 0) {
+    const body = await req.json()
+    const parsed = checkoutPreparePayloadSchema.safeParse(body)
+    if (!parsed.success) {
+      const { fieldErrors } = parsed.error.flatten()
+      return NextResponse.json(
+        {
+          error: 'Validation failed',
+          fieldErrors,
+        },
+        { status: 400 }
+      )
+    }
+
+    const { lines, customer } = parsed.data
+    const parsedLines = lines as unknown as PrepareLine[]
+    const { email, firstName, lastName, phone } = customer
+
+    if (!Array.isArray(parsedLines) || parsedLines.length === 0) {
       return NextResponse.json({ error: 'No lines provided' }, { status: 400 })
     }
 
-    const skus = [...new Set(lines.map(l => String(l.sku || '').trim()))]
+    if (!process.env.SANITY_WRITE_TOKEN || !writeClient) {
+      return NextResponse.json({ error: 'Checkout holds require SANITY_WRITE_TOKEN on the server.' }, { status: 503 })
+    }
+
+    const skus = [...new Set(parsedLines.map(l => String(l.sku || '').trim()))]
     const ids = skus.map(s => `ticket.${s}`)
 
-    const reader = writeClient || client
+    const writer = writeClient
+    const reader = writer || client
+
+    await expireStaleReservations(writer, new Date().toISOString())
 
     // Primary lookup by sku field, with a resilient fallback by document _id
     let docs: TicketDoc[] = await reader.fetch(
@@ -102,9 +178,19 @@ export async function POST(req: NextRequest) {
 
     let amount = 0
     const currency = 'NGN'
-    type ResolvedLine = { sku: string; quantity: number; units: number; unitPrice: number; name: string; selectedDate?: string }
+    type ResolvedLine = { _key: string; sku: string; quantity: number; units: number; unitPrice: number; name: string; selectedDate?: string }
     const resolvedLines: ResolvedLine[] = []
     const dateMetadata: Record<string, string[]> = {}
+    const holdMap = new Map<string, { units: number; rev?: string }>()
+
+    const addHoldUnits = (doc: TicketDoc | undefined, units: number) => {
+      if (!doc || !doc._id) return
+      const existing = holdMap.get(doc._id)
+      holdMap.set(doc._id, {
+        units: (existing?.units ?? 0) + units,
+        rev: existing?.rev ?? doc._rev,
+      })
+    }
 
     const ensureBaseTicketForDate = async (type: string | undefined, date: string): Promise<TicketDoc | undefined> => {
       if (!type) return undefined
@@ -132,23 +218,27 @@ export async function POST(req: NextRequest) {
       return undefined
     }
 
-    for (const line of lines) {
+    for (const line of parsedLines) {
       const selectedDatesFromLine = normalizeSelectedDates(line.selectedDates ?? line.selectedDate)
       const doc = skuToDoc.get(line.sku) || idToDoc.get(`ticket.${line.sku}`)
       if (!doc) return NextResponse.json({ error: `Unknown SKU ${line.sku}` }, { status: 400 })
       if (!doc.available || doc.soldOut) return NextResponse.json({ error: `SKU not available ${line.sku}` }, { status: 400 })
 
       const qty = Math.max(1, line.quantity)
-      const priceFor = (d: TicketDoc) => (d.live ?? true)
-        ? (process.env.NODE_ENV === 'production' ? d.price : (d.testPrice ?? d.price))
-        : (d.testPrice ?? d.price)
+      const priceFor = (d: TicketDoc) => {
+        if (d.live === false && typeof d.testPrice === 'number') {
+          return d.testPrice
+        }
+        return d.price
+      }
 
       if (doc.isBundle) {
         const bundleConfig = doc.bundle || {}
         const targetSku = bundleConfig.targetSku
         const target = targetSku ? skuToDoc.get(targetSku) : undefined
-        if (!target) return NextResponse.json({ error: `Bundle target unavailable for ${line.sku}` }, { status: 400 })
-        if (!target.available || target.soldOut) return NextResponse.json({ error: `Target ticket not available for ${line.sku}` }, { status: 400 })
+        if (target && (!target.available || target.soldOut)) {
+          return NextResponse.json({ error: `Target ticket not available for ${line.sku}` }, { status: 400 })
+        }
 
         const expectedDayCount = Math.max(2, bundleConfig.dayCount ?? (selectedDatesFromLine.length || 0))
         const selectedDates = selectedDatesFromLine
@@ -157,19 +247,23 @@ export async function POST(req: NextRequest) {
           return NextResponse.json({ error: `Bundle ${line.sku} requires selecting ${expectedDayCount} unique days` }, { status: 400 })
         }
 
-        const typeForBundle = target.type ?? doc.type
+        const typeForBundle = target?.type ?? doc.type
+        if (!typeForBundle) {
+          return NextResponse.json({ error: `Bundle ${line.sku} is missing a ticket type to resolve inventory` }, { status: 400 })
+        }
+
         const baseDocs: TicketDoc[] = []
 
         for (const date of selectedDates) {
           let baseDoc: TicketDoc | undefined
-          if (target.day === date) {
+          if (target?.day === date) {
             baseDoc = target
           } else {
             baseDoc = await ensureBaseTicketForDate(typeForBundle, date)
           }
 
           if (!baseDoc) {
-            return NextResponse.json({ error: `No base ticket available for ${typeForBundle ?? 'bundle'} on ${date}` }, { status: 400 })
+            return NextResponse.json({ error: `No base ticket available for ${typeForBundle} on ${date}` }, { status: 400 })
           }
 
           const inv = baseDoc.inventory ?? Number.POSITIVE_INFINITY
@@ -190,7 +284,9 @@ export async function POST(req: NextRequest) {
 
         baseDocs.forEach((base, index) => {
           const date = selectedDates[index]
+          const lineKey = randomUUID()
           resolvedLines.push({
+            _key: lineKey,
             sku: base.sku,
             quantity: qty,
             units: qty,
@@ -201,6 +297,8 @@ export async function POST(req: NextRequest) {
           if (date) {
             dateMetadata[`ticket_${resolvedLines.length - 1}`] = [date]
           }
+
+          addHoldUnits(base, qty)
         })
       } else {
         const units = qty
@@ -219,32 +317,52 @@ export async function POST(req: NextRequest) {
           selectedDates = [doc.day]
         }
         const selectedDate = selectedDates[0]
-        resolvedLines.push({ sku: doc.sku, quantity: qty, units, unitPrice, name: doc.name, selectedDate })
+        const lineKey = randomUUID()
+        resolvedLines.push({ _key: lineKey, sku: doc.sku, quantity: qty, units, unitPrice, name: doc.name, selectedDate })
         if (selectedDates.length > 0) {
           dateMetadata[`ticket_${resolvedLines.length - 1}`] = selectedDates
         }
+
+        addHoldUnits(doc, units)
       }
     }
 
     const tx_ref = generateTxRef()
 
-    // Create reservation document (no counter increments here; Sanity write tokens are not available on edge)
-    // In a real production setup, move this to a server with a Sanity write token to atomically inc reserved using transactions.
+    const reservationDoc = {
+      _type: 'reservation',
+      tx_ref,
+      lines: resolvedLines,
+      amount,
+      currency,
+      email,
+      firstName,
+      lastName,
+      phone,
+      customer,
+      status: 'held',
+      holdApplied: true,
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+      createdAt: new Date().toISOString(),
+    }
+
     try {
-      await reader.create({
-        _type: 'reservation',
-        tx_ref,
-        lines: resolvedLines,
-        amount,
-        currency,
-        email,
-        status: 'held',
-        expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
-        createdAt: new Date().toISOString(),
-      })
+      let tx = writer.transaction()
+      for (const [docId, entry] of holdMap.entries()) {
+        tx = tx.patch(docId, p => {
+          let patch = p.setIfMissing({ reserved: 0 })
+          if (entry.rev) {
+            patch = patch.ifRevisionId(entry.rev)
+          }
+          return patch.inc({ reserved: entry.units })
+        })
+      }
+      tx = tx.create(reservationDoc)
+      await tx.commit({ autoGenerateArrayKeys: true })
     } catch (err) {
-      // Log but do not fail checkout; reservation is optional in dev
-      console.error('Reservation create failed', err)
+      console.error('Reservation hold transaction failed', err)
+      const message = err instanceof Error ? err.message : 'unknown'
+      return NextResponse.json({ error: `Unable to reserve tickets: ${message}` }, { status: 409 })
     }
 
     return NextResponse.json({ tx_ref, amount, currency, lines: resolvedLines, dateMetadata })

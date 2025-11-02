@@ -18,12 +18,16 @@ export default defineType({
           { name: 'units', title: 'Units', type: 'number' },
           { name: 'unitPrice', title: 'Unit Price', type: 'number' },
           { name: 'name', title: 'Name', type: 'string' },
+          { name: 'selectedDate', title: 'Selected Date', type: 'string' },
         ]
       }]
     }),
     defineField({ name: 'amount', title: 'Amount (NGN)', type: 'number' }),
     defineField({ name: 'currency', title: 'Currency', type: 'string', initialValue: 'NGN' }),
     defineField({ name: 'email', title: 'Customer Email', type: 'string' }),
+    defineField({ name: 'firstName', title: 'First Name', type: 'string' }),
+    defineField({ name: 'lastName', title: 'Last Name', type: 'string' }),
+    defineField({ name: 'phone', title: 'Phone Number', type: 'string' }),
     defineField({ name: 'gateway', title: 'Gateway', type: 'string', initialValue: 'flutterwave' }),
     defineField({ name: 'status', title: 'Status', type: 'string', options: { list: ['paid', 'refunded', 'failed'] }, initialValue: 'paid' }),
     defineField({

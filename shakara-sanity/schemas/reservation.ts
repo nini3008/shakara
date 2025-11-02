@@ -18,15 +18,20 @@ export default defineType({
           { name: 'units', title: 'Units (quantity per reserved day)', type: 'number' },
           { name: 'unitPrice', title: 'Unit Price', type: 'number' },
           { name: 'name', title: 'Name', type: 'string' },
+          { name: 'selectedDate', title: 'Selected Date', type: 'string' },
         ]
       }]
     }),
     defineField({ name: 'amount', title: 'Amount (NGN)', type: 'number' }),
     defineField({ name: 'currency', title: 'Currency', type: 'string', initialValue: 'NGN' }),
     defineField({ name: 'email', title: 'Customer Email', type: 'string' }),
+    defineField({ name: 'firstName', title: 'First Name', type: 'string' }),
+    defineField({ name: 'lastName', title: 'Last Name', type: 'string' }),
+    defineField({ name: 'phone', title: 'Phone Number', type: 'string' }),
     defineField({ name: 'status', title: 'Status', type: 'string', options: { list: ['held', 'confirmed', 'expired', 'canceled'] }, initialValue: 'held' }),
     defineField({ name: 'expiresAt', title: 'Expires At', type: 'datetime' }),
     defineField({ name: 'createdAt', title: 'Created At', type: 'datetime', initialValue: () => new Date().toISOString() }),
+    defineField({ name: 'holdApplied', title: 'Hold Applied', type: 'boolean', initialValue: true }),
   ],
 })
 
