@@ -24,6 +24,26 @@ export type CreateMetadataOptions = {
 
 const trimTrailingSlash = (value: string) => value.replace(/\/+$/, '')
 
+const resolveTitle = (title: Metadata['title']): string => {
+  if (!title) {
+    return 'Shakara Festival'
+  }
+
+  if (typeof title === 'string') {
+    return title
+  }
+
+  if ('absolute' in title && title.absolute) {
+    return title.absolute
+  }
+
+  if ('default' in title && title.default) {
+    return title.default
+  }
+
+  return 'Shakara Festival'
+}
+
 export const getSiteUrl = (): string => {
   const envValue = process.env.NEXT_PUBLIC_SITE_URL?.trim()
   if (!envValue) {
@@ -79,7 +99,7 @@ export const createPageMetadata = ({
   twitter,
   extra,
 }: CreateMetadataOptions): Metadata => {
-  const resolvedTitle = typeof title === 'string' ? title : title?.default ?? 'Shakara Festival'
+  const resolvedTitle = resolveTitle(title)
   const canonical = buildCanonicalUrl(path)
   const metadataBase = new URL(getSiteUrl() + '/')
   const imageList = (images ?? (image ? [image] : [DEFAULT_IMAGE])).map((item) => ({
