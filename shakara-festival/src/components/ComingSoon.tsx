@@ -28,7 +28,7 @@ export default function ComingSoon() {
         
         {/* Location */}
         <p className="text-lg md:text-xl text-gray-400">
-          Victoria Island, Lagos 🇳🇬
+          Lekki Peninsula, Lagos 🇳🇬
         </p>
       </div>
     </div>

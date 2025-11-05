@@ -400,7 +400,7 @@ export function adaptSanityHeroSection(sanityHero: SanityHeroSection): HeroSecti
   };
 
   const defaultLocation = {
-    venue: 'Victoria Island',
+    venue: 'Lekki Peninsula',
     city: 'Lagos',
     country: 'Nigeria'
   };
@@ -578,7 +578,7 @@ export function adaptSanityAboutSection(sanityAbout: SanityAboutSection): AboutS
   const defaultEssentialInfo: AboutEssentialInfo[] = [
     {
       title: 'When & Where',
-      content: 'December 18-21, 2025\nVictoria Island, Lagos'
+      content: 'December 18-21, 2025\nLekki Peninsula, Lagos'
     },
     {
       title: 'Experience',
@@ -931,7 +931,7 @@ export function adaptSanityFooterSection(sanityFooter: SanityFooterSection): Foo
   const defaultBrandSection: FooterBrandSection = {
     festivalName: 'SHAKARA FESTIVAL',
     tagline: "Africa's premier music festival",
-    location: 'Victoria Island, Lagos • December 2025'
+    location: 'Lekki Peninsula, Lagos • December 2025'
   };
 
   const defaultQuickLinks: FooterLink[] = [

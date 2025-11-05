@@ -3,42 +3,21 @@
 import HeroSection from '@/components/sections/HeroSection'
 import ParallaxHero from '@/components/v2/ParallaxHero'
 import LayoutWrapper from '@/components/v2/LayoutWrapper'
-import type { Metadata } from 'next'
+import { createPageMetadata, getSiteUrl } from '@/lib/metadata-utils'
 
-export const metadata: Metadata = {
-  title: 'Shakara Festival 2025 | Lagos, Nigeria',
+export const metadata = createPageMetadata({
+  title: 'Shakara Festival 2025 | Lagos Music Festival | Dec 18-21, 2025',
   description:
-    "4 Days Celebrating the Best Music of African Origin. December 18-21, 2025 at Victoria Island, Lagos.",
-  openGraph: {
-    title: 'Shakara Festival 2025 | Lagos, Nigeria',
-    description:
-      "4 Days Celebrating the Best Music of African Origin. December 18-21, 2025 at Victoria Island, Lagos.",
-    url: (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shakarafestival.com') + '/',
-    siteName: 'Shakara Festival',
-    images: [
-      {
-        url: '/images/SHAKARAGradient.png',
-        width: 1200,
-        height: 630,
-        alt: 'Shakara Festival',
-      },
-    ],
-    type: 'website',
-    locale: 'en_US',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Shakara Festival 2025 | Lagos, Nigeria',
-    description:
-      "4 Days Celebrating the Best Music of African Origin. December 18-21, 2025 at Victoria Island, Lagos.",
-    images: ['/images/SHAKARAGradient.png'],
-  },
-}
+    "4 Days Celebrating the Best Music of African Origin. December 18-21, 2025 at Lekki Peninsula, Lagos.",
+  path: '/',
+})
 
 // Lineup section hidden
 // Sponsors section hidden
 
 export default async function Home() {
+  const siteUrl = getSiteUrl()
+
   return (
     <LayoutWrapper>
       <script
@@ -54,10 +33,10 @@ export default async function Home() {
             endDate: '2025-12-21',
             eventStatus: 'https://schema.org/EventScheduled',
             eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-            url: (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shakarafestival.com') + '/',
+            url: `${siteUrl}/`,
             location: {
               '@type': 'Place',
-              name: 'Victoria Island',
+              name: 'Lekki Peninsula',
               address: {
                 '@type': 'PostalAddress',
                 addressLocality: 'Lagos',
@@ -65,12 +44,12 @@ export default async function Home() {
               },
             },
             image: [
-              (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shakarafestival.com') + '/images/SHAKARAGradient.png',
+              `${siteUrl}/images/SHAKARAGradient.png`,
             ],
             organizer: {
               '@type': 'Organization',
               name: 'Shakara Festival',
-              url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shakarafestival.com',
+              url: siteUrl,
             },
           }),
         }}

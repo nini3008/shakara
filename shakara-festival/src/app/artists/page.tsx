@@ -7,6 +7,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import V2Layout from '@/components/v2/Layout';
 import ThemedContent from '@/components/ThemedContent';
+import { createPageMetadata } from '@/lib/metadata-utils';
+
+export const metadata = createPageMetadata({
+  title: 'Artists at Shakara Festival Dec 18 | Lekki Peninsula, Lagos',
+  description: 'Meet the artists bringing Afrobeats, amapiano, and more to the Shakara Festival stages in Lagos.',
+  path: '/artists',
+})
 
 async function getArtists(): Promise<{ artists: Artist[], sanityArtists: SanityArtist[] }> {
   try {

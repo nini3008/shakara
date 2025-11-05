@@ -8,6 +8,8 @@ import Link from 'next/link';
 import V2Layout from '@/components/v2/Layout';
 import { notFound } from 'next/navigation';
 import styles from '@/components/styles/ArtistDetail.module.scss';
+import type { Metadata } from 'next';
+import { createPageMetadata } from '@/lib/metadata-utils';
 
 const ARTIST_BY_SLUG_QUERY = `*[_type == "artist" && slug.current == $slug][0] {
   _id,
@@ -38,6 +40,49 @@ async function getArtist(
     console.error('Error fetching artist:', error);
     return { artist: null, sanityArtist: null };
   }
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const { artist, sanityArtist } = await getArtist(slug)
+
+  if (!artist || !sanityArtist) {
+    return createPageMetadata({
+      title: 'Artist Not Found | Shakara Festival',
+      description: 'The artist you are looking for could not be found.',
+      path: `/artists/${slug}`,
+    })
+  }
+
+  const descriptionSource = artist.bio?.split('\n').join(' ') ?? ''
+  const description = descriptionSource
+    ? `${descriptionSource.slice(0, 155)}${descriptionSource.length > 155 ? '…' : ''}`
+    : `Discover ${artist.name} performing live at Shakara Festival 2025 in Lagos, Nigeria.`
+
+  const image = sanityArtist.image
+    ? {
+        url: urlFor(sanityArtist.image).width(1200).height(630).url(),
+        width: 1200,
+        height: 630,
+        alt: `${artist.name} performing at Shakara Festival`,
+      }
+    : undefined
+
+  return createPageMetadata({
+    title: `${artist.name} | Shakara Festival 2025`,
+    description,
+    path: `/artists/${sanityArtist.slug.current}`,
+    image,
+    openGraph: {
+      type: 'profile',
+      firstName: artist.name?.split(' ')[0],
+      lastName: artist.name?.split(' ').slice(1).join(' ') || undefined,
+    },
+  })
 }
 
 export default async function ArtistDetailPage({

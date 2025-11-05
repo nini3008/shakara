@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next'
+import { getSiteUrl } from '@/lib/metadata-utils'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shakarafestival.com'
+  const base = getSiteUrl()
   const now = new Date()
 
   const staticPaths = [

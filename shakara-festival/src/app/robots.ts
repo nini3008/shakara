@@ -1,7 +1,16 @@
 import type { MetadataRoute } from 'next'
+import { getSiteUrl } from '@/lib/metadata-utils'
 
 export default function robots(): MetadataRoute.Robots {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shakarafestival.com'
+  const base = getSiteUrl()
+  const host = (() => {
+    try {
+      return new URL(base).hostname
+    } catch {
+      return 'shakarafestival.com'
+    }
+  })()
+
   return {
     rules: [
       {
@@ -11,7 +20,7 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: `${base}/sitemap.xml`,
-    host: 'shakarafestival.com',
+    host,
   }
 }
 

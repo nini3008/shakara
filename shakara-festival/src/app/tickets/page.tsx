@@ -1,36 +1,17 @@
 import V2Layout from '@/components/v2/Layout'
 import ThemedContent from '@/components/ThemedContent'
 import TicketsSection from '@/components/sections/TicketsSection'
-import type { Metadata } from 'next'
+import { createPageMetadata, getSiteUrl } from '@/lib/metadata-utils'
 
-export const metadata: Metadata = {
-  title: 'Tickets | Shakara Festival 2025',
+export const metadata = createPageMetadata({
+  title: 'Shakara Festival Tickets | Buy Early Bird & VIP Passes',
   description: 'Get tickets for Shakara Festival 2025 in Lagos. Choose GA, VIP and more.',
-  openGraph: {
-    title: 'Tickets | Shakara Festival 2025',
-    description: 'Get tickets for Shakara Festival 2025 in Lagos. Choose GA, VIP and more.',
-    url: (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shakarafestival.com') + '/tickets',
-    siteName: 'Shakara Festival',
-    images: [
-      {
-        url: '/images/SHAKARAGradient.png',
-        width: 1200,
-        height: 630,
-        alt: 'Shakara Festival Tickets',
-      },
-    ],
-    type: 'website',
-    locale: 'en_US',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Tickets | Shakara Festival 2025',
-    description: 'Get tickets for Shakara Festival 2025 in Lagos. Choose GA, VIP and more.',
-    images: ['/images/SHAKARAGradient.png'],
-  },
-}
+  path: '/tickets',
+})
 
 export default function TicketsPage() {
+  const siteUrl = getSiteUrl()
+
   return (
     <V2Layout currentPageName="Tickets">
       <ThemedContent transparent>
@@ -46,10 +27,10 @@ export default function TicketsPage() {
               endDate: '2025-12-21',
               eventStatus: 'https://schema.org/EventScheduled',
               eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-              url: (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shakarafestival.com') + '/tickets',
+              url: `${siteUrl}/tickets`,
               location: {
                 '@type': 'Place',
-                name: 'Victoria Island',
+                name: 'Lekki Peninsula',
                 address: {
                   '@type': 'PostalAddress',
                   addressLocality: 'Lagos',
@@ -57,12 +38,12 @@ export default function TicketsPage() {
                 },
               },
               image: [
-                (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shakarafestival.com') + '/images/SHAKARAGradient.png',
+                `${siteUrl}/images/SHAKARAGradient.png`,
               ],
               organizer: {
                 '@type': 'Organization',
                 name: 'Shakara Festival',
-                url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shakarafestival.com',
+                url: siteUrl,
               },
             }),
           }}

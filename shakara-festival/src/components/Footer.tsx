@@ -48,7 +48,7 @@ export default async function Footer() {
     brandSection: {
       festivalName: 'SHAKARA FESTIVAL',
       tagline: "Africa's premier music festival",
-      location: 'Victoria Island, Lagos • December 2025'
+      location: 'Lekki Peninsula, Lagos • December 2025'
     },
     quickLinks: [
       { label: 'About', href: '#about' },

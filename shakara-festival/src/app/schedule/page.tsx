@@ -7,8 +7,15 @@ import { ScheduleEvent } from '@/types'
 import { SanityScheduleEvent, adaptSanityScheduleEvent } from '@/types/sanity-adapters'
 import ScheduleContent from '@/components/schedule/scheduleContext'
 import styles from '@/components/schedule/schedule.module.scss'
-import PaperSection from '@/components/v2/PaperSection'
 import Reveal from '@/components/v2/Reveal'
+import { createPageMetadata } from '@/lib/metadata-utils'
+
+export const metadata = createPageMetadata({
+  title: 'Shakara Festival Schedule | Shakara Festival | Dec 18-21, 2025',
+  description:
+    'Review the daily schedule for Shakara Festival 2025 and plan your experience across four unforgettable days.',
+  path: '/schedule',
+})
 
 // Server component to fetch initial data
 export default async function SchedulePage() {

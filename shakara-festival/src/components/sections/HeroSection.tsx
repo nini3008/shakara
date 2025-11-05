@@ -37,7 +37,7 @@ export default async function HeroSection() {
       end: '2025-12-21'
     },
     location: {
-      venue: 'Victoria Island',
+      venue: 'Lekki Peninsula',
       city: 'Lagos',
       country: 'Nigeria'
     },
