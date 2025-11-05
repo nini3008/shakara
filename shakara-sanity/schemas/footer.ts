@@ -51,7 +51,7 @@ export default defineType({
           name: 'location',
           title: 'Location & Date',
           type: 'string',
-          initialValue: 'Victoria Island, Lagos • December 2025',
+          initialValue: 'Lekki Peninsula, Lagos • December 2025',
         }),
       ],
     }),

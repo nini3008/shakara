@@ -4,7 +4,7 @@ A modern, dynamic website for Shakara Festival - Africa's premier music festival
 
 ## 🎵 About Shakara Festival
 
-Shakara Festival is a vibrant music celebration taking place December 18-21, 2025, in Victoria Island, Lagos, Nigeria. The festival showcases the best of African music and culture, featuring world-class artists, immersive experiences, and unforgettable performances.
+Shakara Festival is a vibrant music celebration taking place December 18-21, 2025, in Lekki Peninsula, Lagos, Nigeria. The festival showcases the best of African music and culture, featuring world-class artists, immersive experiences, and unforgettable performances.
 
 ## 🚀 Tech Stack
 
@@ -185,4 +185,4 @@ For questions about the festival: [contact@shakarafestival.com](mailto:contact@s
 
 ---
 
-**Shakara Festival 2025** • December 18-21 • Victoria Island, Lagos 🇳🇬
+**Shakara Festival 2025** • December 18-21 • Lekki Peninsula, Lagos 🇳🇬

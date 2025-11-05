@@ -6,6 +6,10 @@ import type { Metadata } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import React from 'react'
 import { BackgroundWrapper } from '@/components/BackgroundWrapper'
+import {
+  createPageMetadata,
+  toAbsoluteUrl,
+} from '@/lib/metadata-utils'
 
 // Fonts
 const inter = Inter({
@@ -20,26 +24,30 @@ const spaceGrotesk = Space_Grotesk({
   display: 'swap',
 })
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: {
     default: 'Shakara Festival 2025 | Lagos, Nigeria',
     template: '%s | Shakara Festival 2025',
   },
   description:
-    "4 Days Celebrating the Best Music of African Origin. December 18-21, 2025 at Victoria Island, Lagos. Join Africa's most electric fusion of sound, culture, and soul.",
+    "4 Days Celebrating the Best Music of African Origin. December 18-21, 2025 at Lekki Peninsula, Lagos. Join Africa's most electric fusion of sound, culture, and soul.",
+  path: '/',
+  image: {
+    url: '/images/og-image.jpg',
+    width: 1200,
+    height: 630,
+    alt: 'Shakara Festival 2025 - Lagos, Nigeria',
+  },
   keywords: [
     'Shakara Festival',
     'Lagos Music Festival',
     'Nigerian Festival',
     'Afrobeats',
-    'Victoria Island',
+    'Lekki Peninsula',
     'African Music',
     'Music Festival 2025',
     'Nigeria Events',
   ],
-  authors: [{ name: 'Shakara Festival', url: 'https://shakarafestival.com' }],
-  creator: 'Shakara Festival',
-  publisher: 'Shakara Festival',
   robots: {
     index: true,
     follow: true,
@@ -51,53 +59,38 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: 'https://shakarafestival.com',
-    siteName: 'Shakara Festival',
-    title: 'Shakara Festival 2025 | Lagos, Nigeria',
-    description: '4 Days Celebrating the Best Music of African Origin',
-    images: [
-      {
-        url: '/images/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Shakara Festival 2025 - Lagos, Nigeria',
-      },
-    ],
-  },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Shakara Festival 2025 | Lagos, Nigeria',
-    description: '4 Days Celebrating the Best Music of African Origin',
-    images: ['/images/twitter-image.jpg'],
     creator: '@shakarafestival',
     site: '@shakarafestival',
+    images: [toAbsoluteUrl('/images/twitter-image.jpg')],
   },
-  icons: {
-    icon: [
-      { url: '/favicon.ico' },
-      { url: '/icon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/icon-32x32.png', sizes: '32x32', type: 'image/png' },
-    ],
-    apple: [{ url: '/apple-touch-icon.png' }],
-    other: [
-      {
-        rel: 'mask-icon',
-        url: '/safari-pinned-tab.svg',
-        color: '#ff6b9d',
-      },
-    ],
+  extra: {
+    authors: [{ name: 'Shakara Festival', url: 'https://shakarafestival.com' }],
+    creator: 'Shakara Festival',
+    publisher: 'Shakara Festival',
+    icons: {
+      icon: [
+        { url: '/favicon.ico' },
+        { url: '/icon-16x16.png', sizes: '16x16', type: 'image/png' },
+        { url: '/icon-32x32.png', sizes: '32x32', type: 'image/png' },
+      ],
+      apple: [{ url: '/apple-touch-icon.png' }],
+      other: [
+        {
+          rel: 'mask-icon',
+          url: '/safari-pinned-tab.svg',
+          color: '#ff6b9d',
+        },
+      ],
+    },
+    category: 'entertainment',
+    classification: 'Music Festival',
+    verification: {
+      google: 'your-google-verification-code',
+      yandex: 'your-yandex-verification-code',
+    },
   },
-  // manifest: '/site.webmanifest',
-  category: 'entertainment',
-  classification: 'Music Festival',
-  verification: {
-    google: 'your-google-verification-code',
-    yandex: 'your-yandex-verification-code',
-  },
-}
+})
 
 export default function RootLayout({
   children,
@@ -148,7 +141,7 @@ export default function RootLayout({
               "endDate": "2025-12-21",
               "location": {
                 "@type": "Place",
-                "name": "Victoria Island",
+                "name": "Lekki Peninsula",
                 "address": {
                   "@type": "PostalAddress",
                   "addressLocality": "Lagos",

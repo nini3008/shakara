@@ -1,11 +1,13 @@
 import V2Layout from '@/components/v2/Layout'
 import ThemedContent from '@/components/ThemedContent'
 import PaperSection from '@/components/v2/PaperSection'
+import { createPageMetadata } from '@/lib/metadata-utils'
 
-export const metadata = {
-  title: 'Vendors - Shakara Festival',
-  description: 'Shakara Festival vendors and marketplace',
-}
+export const metadata = createPageMetadata({
+  title: 'Shakara Festival Vendors | Marketplace & Food Stalls',
+  description: 'Discover vendor opportunities and marketplace offerings at Shakara Festival 2025.',
+  path: '/vendors',
+})
 
 export default function VendorsPage() {
   return (

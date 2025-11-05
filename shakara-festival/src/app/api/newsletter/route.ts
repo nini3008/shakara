@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
           
           <p style="text-align: center; color: #888; margin-top: 30px;">
             See you in Lagos! 🇳🇬<br>
-            December 18-21, 2025 • Victoria Island
+            December 18-21, 2025 • Lekki Peninsula
           </p>
           
         </div>

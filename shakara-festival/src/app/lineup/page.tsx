@@ -7,6 +7,14 @@ import ScheduleContent from '@/components/schedule/scheduleContext'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import LineupSection from '@/components/sections/LineupSection'
 import Reveal from '@/components/v2/Reveal'
+import { createPageMetadata } from '@/lib/metadata-utils'
+
+export const metadata = createPageMetadata({
+  title: 'Shakara Festival Lagos Lineup 2025 | Artists & Headliners',
+  description:
+    'Explore the artist lineup and daily schedule for Shakara Festival 2025, featuring the best of African music.',
+  path: '/lineup',
+})
 
 export default async function LineupPage() {
   let initialEvents: ScheduleEvent[] = []

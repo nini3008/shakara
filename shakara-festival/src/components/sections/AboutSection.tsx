@@ -92,7 +92,7 @@ export default async function AboutSection() {
     essentialInfo: [
       {
         title: 'When & Where',
-        content: 'December 18-21, 2025\nVictoria Island, Lagos'
+        content: 'December 18-21, 2025\nLekki Peninsula, Lagos'
       },
       {
         title: 'Experience',

@@ -12,6 +12,7 @@ import styles from './BlogPost.module.scss'
 import { client, BLOG_POST_BY_SLUG_QUERY, BLOG_POSTS_QUERY } from '@/lib/sanity'
 import { adaptSanityBlogPost, type SanityBlogPost } from '@/types/sanity-adapters'
 import type { BlogPost } from '@/types'
+import { buildCanonicalUrl, createPageMetadata } from '@/lib/metadata-utils'
 
 export const revalidate = 120
 
@@ -89,54 +90,40 @@ async function getMorePosts(excludeId: string): Promise<BlogPost[]> {
   }
 }
 
-const buildCanonicalUrl = (slug: string) => {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shakarafestival.com'
-  return `${baseUrl.replace(/\/$/, '')}/blog/${slug}`
-}
-
 export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
   const { slug } = await params
   const post = await getBlogPost(slug)
 
   if (!post) {
-    return {
+    return createPageMetadata({
       title: 'Article not found',
       description: 'The article you are looking for does not exist.',
-    }
+      path: `/blog/${slug}`,
+    })
   }
 
-  const canonicalUrl = buildCanonicalUrl(slug)
   const title = post.seo?.title ?? post.title
   const description = post.seo?.description ?? post.excerpt
+  const image = post.featuredImage?.url
+    ? {
+        url: post.featuredImage.url,
+        width: post.featuredImage.width ?? 1200,
+        height: post.featuredImage.height ?? 630,
+        alt: post.featuredImage.alt ?? post.title,
+      }
+    : undefined
 
-  return {
+  return createPageMetadata({
     title,
     description,
+    path: `/blog/${slug}`,
+    image,
     openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
       type: 'article',
       publishedTime: post.publishedAt,
-      authors: [post.author.name],
-      images: post.featuredImage?.url
-        ? [
-            {
-              url: post.featuredImage.url,
-              width: post.featuredImage.width ?? 1200,
-              height: post.featuredImage.height ?? 630,
-              alt: post.featuredImage.alt,
-            },
-          ]
-        : undefined,
+      authors: post.author?.name ? [post.author.name] : undefined,
     },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: post.featuredImage?.url ? [post.featuredImage.url] : undefined,
-    },
-  }
+  })
 }
 
 const SOCIAL_LABELS: Record<string, string> = {
@@ -157,7 +144,7 @@ export default async function BlogArticlePage({ params }: BlogPageProps) {
   }
 
   const readTime = estimateReadTime(post)
-  const canonicalUrl = buildCanonicalUrl(slug)
+  const canonicalUrl = buildCanonicalUrl(`/blog/${slug}`)
   const morePosts = await getMorePosts(post.id)
 
   const heroWidth = post.featuredImage?.width ?? 1600

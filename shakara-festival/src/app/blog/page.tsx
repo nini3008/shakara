@@ -1,4 +1,3 @@
-import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { format } from 'date-fns'
@@ -9,40 +8,19 @@ import styles from './Blog.module.scss'
 import { client, BLOG_POSTS_QUERY } from '@/lib/sanity'
 import { adaptSanityBlogPost, type SanityBlogPost } from '@/types/sanity-adapters'
 import type { BlogPost } from '@/types'
+import { createPageMetadata } from '@/lib/metadata-utils'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 const PAGE_REVALIDATE_SECONDS = 0
 
-export const metadata: Metadata = {
-  title: 'Festival Blog',
+export const metadata = createPageMetadata({
+  title: 'Shakara Festival Blog | News, Lineup Drops & Festival Guides',
   description:
     'Stories, announcements, and behind-the-scenes notes from the Shakara Festival team. Discover artist spotlights, festival guides, and culture features.',
-  openGraph: {
-    title: 'Shakara Festival Blog',
-    description:
-      'Stories, announcements, and behind-the-scenes notes from the Shakara Festival team. Discover artist spotlights, festival guides, and culture features.',
-    url: (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shakarafestival.com') + '/blog',
-    type: 'website',
-    images: [
-      {
-        url: (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shakarafestival.com') + '/images/SHAKARAGradient.png',
-        width: 1200,
-        height: 630,
-        alt: 'Shakara Festival Blog',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Shakara Festival Blog',
-    description: 'Catch the latest Shakara Festival news and editorials.',
-    images: [
-      (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shakarafestival.com') + '/images/SHAKARAGradient.png',
-    ],
-  },
-}
+  path: '/blog',
+})
 
 async function getBlogPosts(): Promise<BlogPost[]> {
   try {

@@ -24,7 +24,7 @@ const faqData = [
     category: 'General Information',
     order: 2,
     question: 'Where is the festival located and how can I get there?',
-    answer: `The festival will be held at Eko Energy City, Victoria Island.
+    answer: `The festival will be held at Eko Energy City, Lekki Peninsula.
 
 Driving: Use Google Map to locate Eko Energy City Gate and follow signage (or ask directions) when you approach.
 
