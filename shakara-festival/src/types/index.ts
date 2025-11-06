@@ -393,3 +393,48 @@ export interface FooterSectionData {
   active: boolean;
   order: number;
 }
+
+// Vendor Types
+export interface VendorSocialLinks {
+  instagram?: string;
+  twitter?: string;
+  facebook?: string;
+  tiktok?: string;
+  linkedin?: string;
+}
+
+export interface VendorContactInfo {
+  email?: string;
+  phone?: string;
+}
+
+export interface VendorImage {
+  asset: {
+    _ref: string;
+    _type: 'reference';
+  };
+  alt?: string;
+  caption?: string;
+}
+
+export interface Vendor {
+  id: string;
+  name: string;
+  slug: string;
+  logo: VendorImage;
+  coverImage?: VendorImage;
+  category: 'food' | 'fashion' | 'arts' | 'beauty' | 'accessories' | 'lifestyle' | 'tech' | 'entertainment' | 'services' | 'other';
+  description: string;
+  highlights?: string[];
+  location?: string;
+  website?: string;
+  socialLinks?: VendorSocialLinks;
+  contactInfo?: VendorContactInfo;
+  featured: boolean;
+  active: boolean;
+  acceptsPayments: boolean;
+  order: number;
+  tags?: string[];
+  priceRange?: 'budget' | 'moderate' | 'premium' | 'luxury';
+  gallery?: VendorImage[];
+}

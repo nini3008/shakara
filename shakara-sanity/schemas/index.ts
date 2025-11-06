@@ -14,6 +14,7 @@ import reservation from './reservation'
 import order from './order'
 import blogAuthor from './blogAuthor'
 import blogPost from './blogPost'
+import vendor from './vendor'
 
 export const schema: {types: SchemaTypeDefinition[]} = {
   types: [
@@ -24,6 +25,7 @@ export const schema: {types: SchemaTypeDefinition[]} = {
     scheduleEvent,
     merchItem,
     partner,
+    vendor,
     aboutSection,
     lineupsection,
     footer,
