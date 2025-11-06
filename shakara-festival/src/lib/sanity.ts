@@ -455,6 +455,82 @@ export const FAQ_QUERY = `*[_type == "faq" && active == true] | order(category a
   order
 }`;
 
+export const VENDORS_QUERY = `*[_type == "vendor" && active == true] | order(featured desc, order asc, name asc) {
+  _id,
+  name,
+  slug,
+  logo,
+  coverImage,
+  category,
+  description,
+  highlights,
+  location,
+  website,
+  socialLinks,
+  contactInfo,
+  featured,
+  active,
+  acceptsPayments,
+  order,
+  tags,
+  priceRange,
+  gallery
+}`;
+
+export const FEATURED_VENDORS_QUERY = `*[_type == "vendor" && featured == true && active == true] | order(order asc, name asc) {
+  _id,
+  name,
+  slug,
+  logo,
+  coverImage,
+  category,
+  description,
+  highlights,
+  location,
+  website,
+  featured,
+  acceptsPayments,
+  priceRange
+}`;
+
+export const VENDORS_BY_CATEGORY_QUERY = `*[_type == "vendor" && active == true && category == $category] | order(order asc, name asc) {
+  _id,
+  name,
+  slug,
+  logo,
+  coverImage,
+  category,
+  description,
+  highlights,
+  location,
+  website,
+  featured,
+  acceptsPayments,
+  priceRange
+}`;
+
+export const ALL_VENDORS_QUERY = `*[_type == "vendor"] | order(active desc, featured desc, order asc, name asc) {
+  _id,
+  name,
+  slug,
+  logo,
+  coverImage,
+  category,
+  description,
+  highlights,
+  location,
+  website,
+  socialLinks,
+  contactInfo,
+  featured,
+  active,
+  acceptsPayments,
+  order,
+  tags,
+  priceRange,
+  gallery
+}`;
+
 const BLOG_POST_PROJECTION = `
   _id,
   _createdAt,
