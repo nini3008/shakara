@@ -34,6 +34,17 @@ const formatDateLabel = (dates: string[]): string => {
   return ` - ${first} to ${last}`
 }
 
+const formatSelectedDatesSummary = (dates: string[]): string => {
+  if (!dates || dates.length === 0) return ''
+  const formatted = [...dates]
+    .sort()
+    .map((date) => new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }))
+
+  if (formatted.length === 1) return formatted[0]
+  if (formatted.length === 2) return `${formatted[0]} & ${formatted[1]}`
+  return `${formatted[0]} - ${formatted[formatted.length - 1]}`
+}
+
 export default function TicketsSectionClient({ initialTickets, initialSanityTickets }: TicketsSectionClientProps) {
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -41,6 +52,8 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState('');
   const [isLightTheme, setIsLightTheme] = useState(false);
+  const [selectionConfirmed, setSelectionConfirmed] = useState(false);
+  const [showBundlesOnly, setShowBundlesOnly] = useState(false);
   const { addItem } = useCart();
   const idToTicket = new Map(initialTickets.map((t) => [t.id, t]));
   const bundlesByTarget = new Map(
@@ -55,32 +68,101 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
   const [selectedDays, setSelectedDays] = useState<Set<string>>(new Set([allFestivalDays[0]]));
 
   // Filter tickets based on selected days and duration
+  const sortedSelectedDays = useMemo(() => Array.from(selectedDays).sort(), [selectedDays])
+
   const filteredTickets = useMemo(() => {
     const numDaysSelected = selectedDays.size;
-    
-    return (initialSanityTickets || [])
+
+    const eligibleTickets = (initialSanityTickets || [])
       .filter(st => st.type !== 'addon')
       .filter(st => {
         const duration = durationToDays(st.duration);
-        
+
         if (st.day) {
           return selectedDays.has(st.day);
         }
-        
+
         if (!st.day && duration > 1) {
           return duration === numDaysSelected;
         }
-        
+
         return numDaysSelected === 1;
       });
-  }, [initialSanityTickets, selectedDays]);
 
-  const sortedSelectedDays = useMemo(() => Array.from(selectedDays).sort(), [selectedDays])
+    const getFirstVisibleDate = (ticket: SanityTicket): string | undefined => {
+      if (ticket.day) return ticket.day;
+      return sortedSelectedDays[0];
+    };
+
+    const getVisibleDayCount = (ticket: SanityTicket): number => {
+      if (ticket.day) return 1;
+      if (ticket.bundle?.dayCount && ticket.bundle.dayCount > 0) return ticket.bundle.dayCount;
+      return durationToDays(ticket.duration);
+    };
+
+    const getOrderValue = (ticket: SanityTicket): number => {
+      return typeof ticket.order === 'number' ? ticket.order : Number.MAX_SAFE_INTEGER;
+    };
+
+    return eligibleTickets.slice().sort((a, b) => {
+      const aIsBundle = Boolean(a.isBundle);
+      const bIsBundle = Boolean(b.isBundle);
+
+      if (aIsBundle !== bIsBundle) {
+        return aIsBundle ? -1 : 1;
+      }
+
+      const aDate = getFirstVisibleDate(a);
+      const bDate = getFirstVisibleDate(b);
+
+      if (aDate && bDate) {
+        const dateComparison = aDate.localeCompare(bDate);
+        if (dateComparison !== 0) {
+          return dateComparison;
+        }
+      } else if (aDate || bDate) {
+        return aDate ? -1 : 1;
+      }
+
+      const dayCountComparison = getVisibleDayCount(a) - getVisibleDayCount(b);
+      if (dayCountComparison !== 0) {
+        return dayCountComparison;
+      }
+
+      const orderComparison = getOrderValue(a) - getOrderValue(b);
+      if (orderComparison !== 0) {
+        return orderComparison;
+      }
+
+      return a.name.localeCompare(b.name);
+    });
+  }, [initialSanityTickets, selectedDays, sortedSelectedDays]);
+  const displayedTickets = useMemo(() => {
+    if (showBundlesOnly) {
+      return filteredTickets.filter((ticket) => ticket.isBundle)
+    }
+    return filteredTickets
+  }, [filteredTickets, showBundlesOnly])
+
   const visibleBundleSkus = useMemo(() => new Set(
-    filteredTickets
+    displayedTickets
       .filter(st => st.isBundle && st.sku)
       .map(st => String(st.sku))
-  ), [filteredTickets])
+  ), [displayedTickets])
+
+  const selectionSummary = useMemo(() => formatSelectedDatesSummary(sortedSelectedDays), [sortedSelectedDays])
+
+  const handleConfirmSelection = () => {
+    setSelectionConfirmed(true)
+  }
+
+  const handleEditSelection = () => {
+    setSelectionConfirmed(false)
+  }
+
+  const handleToggleBundlesFilter = () => {
+    setShowBundlesOnly((prev) => !prev)
+  }
 
   // Detect current theme
   useEffect(() => {
@@ -216,6 +298,8 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
       newSelectedDays.add(day);
     }
     setSelectedDays(newSelectedDays);
+    setSelectionConfirmed(false);
+    setShowBundlesOnly(false);
   };
 
   return (
@@ -227,89 +311,109 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
         
         {(!showCurated && initialTickets.length > 0) ? (
           <>
-            {/* Date Selection */}
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '0.75rem', 
-              marginBottom: '2rem',
-              flexWrap: 'wrap' 
-            }}>
-              <span style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
-                Select dates:
-              </span>
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <div className={styles.stepHeader}>
+              <span className={styles.stepBadge}>Step 1</span>
+              <div className={styles.stepHeaderContent}>
+                <h3 className={styles.stepTitle}>Select your festival days</h3>
+                <p className={styles.stepDescription}>
+                  {selectionConfirmed && selectionSummary
+                    ? `Tickets unlocked for ${selectionSummary}.`
+                    : 'Pick one or multiple days, then confirm to unlock tickets.'}
+                </p>
+              </div>
+              {selectionConfirmed && (
+                <button
+                  type="button"
+                  onClick={handleEditSelection}
+                  className={styles.editSelectionButton + ' clickable'}
+                >
+                  Change selection
+                </button>
+              )}
+            </div>
+
+            <div className={styles.dateSelectionPanel}>
+              <div className={styles.dateButtonsRow}>
                 {allFestivalDays.map((day) => {
                   const isSelected = selectedDays.has(day);
+                  const label = new Date(day).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+
                   return (
                     <button
                       key={day}
+                      type="button"
                       onClick={() => toggleDay(day)}
                       aria-pressed={isSelected}
                       className={styles.dateToggle + ' clickable'}
-                      style={{
-                        background: isSelected 
-                          ? 'linear-gradient(135deg, rgb(217, 119, 6), rgb(180, 83, 9))'
-                          : isLightTheme 
-                            ? 'rgba(255, 255, 255, 0.8)' 
-                            : 'rgba(0, 0, 0, 0.5)',
-                        color: isSelected 
-                          ? '#ffffff'
-                          : isLightTheme 
-                            ? 'rgba(17, 24, 39, 0.7)' 
-                            : 'rgba(255, 255, 255, 0.7)',
-                        border: isSelected
-                          ? '1px solid rgb(217, 119, 6)'
-                          : '1px solid rgba(217, 119, 6, 0.3)',
-                        padding: '0.75rem 1.25rem',
-                        borderRadius: '0.75rem',
-                        fontSize: '0.85rem',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isSelected) {
-                          e.currentTarget.style.background = isLightTheme 
-                            ? 'rgba(217, 119, 6, 0.1)' 
-                            : 'rgba(217, 119, 6, 0.2)';
-                          e.currentTarget.style.borderColor = 'rgba(217, 119, 6, 0.5)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isSelected) {
-                          e.currentTarget.style.background = isLightTheme 
-                            ? 'rgba(255, 255, 255, 0.8)' 
-                            : 'rgba(0, 0, 0, 0.5)';
-                          e.currentTarget.style.borderColor = 'rgba(217, 119, 6, 0.3)';
-                        }
-                      }}
+                      data-selected={isSelected ? 'true' : 'false'}
                     >
-                      {new Date(day).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                      {label}
                     </button>
                   );
                 })}
               </div>
+
+              {!selectionConfirmed ? (
+                <button
+                  type="button"
+                  onClick={handleConfirmSelection}
+                  className={styles.confirmSelectionButton + ' clickable'}
+                >
+                  Confirm dates
+                </button>
+              ) : (
+                <div className={styles.selectionSummary}>
+                  <span className={styles.selectionSummaryLabel}>Confirmed:</span>
+                  <span className={styles.selectionSummaryValue}>{selectionSummary}</span>
+                </div>
+              )}
             </div>
 
-            {/* Tickets Grid */}
-            <div className={styles.ticketsGrid}>
-              {filteredTickets.length === 0 ? (
-                <div className={styles.emptyState} style={{ gridColumn: '1 / -1' }}>
+            <div className={styles.stepHeader}>
+              <span className={styles.stepBadge}>Step 2</span>
+              <div className={styles.stepHeaderContent}>
+                <h3 className={styles.stepTitle}>Browse ticket options</h3>
+                <p className={styles.stepDescription}>
+                  {selectionConfirmed
+                    ? 'Add tickets that match your confirmed dates.'
+                    : 'Submit your dates to unlock the tickets grid.'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleToggleBundlesFilter}
+                className={styles.bundleToggle + ' clickable'}
+                aria-pressed={showBundlesOnly}
+                disabled={!selectionConfirmed}
+              >
+                {showBundlesOnly ? 'Show all tickets' : 'Show bundles only'}
+              </button>
+            </div>
+
+            <div className={styles.ticketsGridWrapper}>
+              <div className={`${styles.ticketsGrid} ${!selectionConfirmed ? styles.ticketsGridLocked : ''}`}>
+                {displayedTickets.length === 0 ? (
+                  <div className={styles.emptyState} style={{ gridColumn: '1 / -1' }}>
                   <div className={styles.emptyIcon} role="img" aria-label="Calendar emoji">📅</div>
-                  <h3 className={styles.emptyTitle}>No tickets available for {selectedDays.size} day{selectedDays.size > 1 ? 's' : ''}</h3>
+                  <h3 className={styles.emptyTitle}>
+                    {showBundlesOnly
+                      ? 'No bundles match your confirmed dates'
+                      : `No tickets available for ${selectedDays.size} day${selectedDays.size > 1 ? 's' : ''}`}
+                  </h3>
                   <p className={styles.emptyDescription}>
-                    {selectedDays.size === 1 
-                      ? 'Tickets for this date combination are not yet available. Try selecting multiple days to see bundle options.'
-                      : `No ${selectedDays.size}-day tickets are currently available. Try selecting different date combinations.`
+                    {showBundlesOnly
+                      ? 'Try showing all tickets or adjusting your dates to see more bundle options.'
+                      : selectedDays.size === 1 
+                        ? 'Tickets for this date combination are not yet available. Try selecting multiple days to see bundle options.'
+                        : `No ${selectedDays.size}-day tickets are currently available. Try selecting different date combinations.`
                     }
                   </p>
                   <div className={styles.emptyHint}>
                     💡 Tip: Select exactly 3 days to see our popular 3-day passes!
                   </div>
                 </div>
-              ) : (
-                filteredTickets.map((sanityTicket) => {
+                ) : (
+                displayedTickets.map((sanityTicket) => {
                 const ticket = idToTicket.get(sanityTicket._id);
                 if (!sanityTicket) return null;
                 if (!ticket) {
@@ -322,6 +426,15 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                 const bundleDayCountRaw = associatedBundle?.bundle?.dayCount ?? 0
                 const bundleDayCount = bundleDayCountRaw > 0 ? bundleDayCountRaw : 0
                 const bundlePer = associatedBundle && bundleDayCount > 0 ? Math.round(associatedBundle.price / bundleDayCount) : 0
+
+                const badgeEntries = [] as Array<{ label: string; variant: 'default' | 'bundle' }>
+                if (sanityTicket.badge) {
+                  badgeEntries.push({ label: sanityTicket.badge, variant: 'default' })
+                }
+                if (isBundleTicket) {
+                  badgeEntries.push({ label: 'Bundle', variant: 'bundle' })
+                }
+                const showBundleAvailableBadge = !isBundleTicket && associatedBundle && !visibleBundleSkus.has(String(associatedBundle.sku))
 
                 const themeClass = styles['theme_' + (ticket.type || 'general')]
                 const durationDays = durationToDays(ticket.duration)
@@ -355,22 +468,25 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                   : true
                 const formattedTicketLabel = formatDateLabel(ticketSelectedDates)
                 const formattedBundleLabel = formatDateLabel(bundleSelectedDates)
+                const selectionLocked = !selectionConfirmed
                 return (
                   <div key={ticket.id} className={styles.ticketCardWrapper}>
                     <div className={`${styles.ticketCard} ${themeClass || ''}`}>
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
-                      {sanityTicket.badge && (
-                        <div className={styles.badge}>
-                          {sanityTicket.badge}
+                      {(badgeEntries.length > 0 || showBundleAvailableBadge) && (
+                        <div className={styles.badgeStack}>
+                          {badgeEntries.map((badge, index) => (
+                            <div
+                              key={`${ticket.id}-${badge.label}-${index}`}
+                              className={`${styles.badge} ${badge.variant === 'bundle' ? styles.badgeBundle : ''}`}
+                            >
+                              {badge.label}
+                            </div>
+                          ))}
+                          {showBundleAvailableBadge && (
+                            <div className={styles.badgeAux}>Multi-day bundle available</div>
+                          )}
                         </div>
                       )}
-                        {isBundleTicket && (
-                          <div className={styles.badge}>Bundle</div>
-                        )}
-                        {!isBundleTicket && associatedBundle && !visibleBundleSkus.has(String(associatedBundle.sku)) && (
-                          <div className={styles.badgeSecondary}>Multi-day bundle available</div>
-                        )}
-                      </div>
                       
                       <div className={styles.cardContent}>
                         <h3 className={styles.ticketName}>{ticket.name}</h3>
@@ -438,6 +554,14 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                           >
                             Sold Out
                           </button>
+                        ) : selectionLocked ? (
+                          <button 
+                            disabled 
+                            className={styles.unavailableButton}
+                            aria-label={`Confirm your dates to unlock ${ticket.name}`}
+                          >
+                            Confirm dates to unlock
+                          </button>
                         ) : !ticketHasRequiredDates ? (
                           <button 
                             disabled 
@@ -476,62 +600,13 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                             Coming Soon
                           </button>
                         )}
-                        {CART_ENABLED && isBundleTicket ? (
-                          <>
-                            {ticketSelectionHint && (
-                              <div className={styles.bundleHintPill}>{ticketSelectionHint}</div>
-                            )}
-                            <button
-                              onClick={() => {
-                                if (!CART_ENABLED) {
-                                  return
-                                }
-
-                                addItem({
-                                  id: sanityTicket._id,
-                                  name: ticket.name,
-                                  price: ticket.price,
-                                  quantity: 1,
-                                  category: 'bundle',
-                                  selectedDates: ticketSelectedDates,
-                                })
-                              }}
-                              className={styles.bundleButton + ' clickable'}
-                              aria-label={`Add ${bundleDayCount}-day bundle for ${ticket.name}`}
-                              disabled={!bundleHasRequiredDates || isSubmitting}
-                            >
-                              Add bundle
-                            </button>
-                          </>
-                        ) : associatedBundle ? (
-                          <div className={styles.bundleActionRow}>
-                            <div className={styles.bundleHintPill} aria-live="polite">
-                              {bundleHasRequiredDates && bundleDayCount > 0
-                                ? 'Bundle ready'
-                                : `Select ${bundleDayCount || 2} unique ${(bundleDayCount || 2) === 1 ? 'day' : 'days'} to unlock`}
-                            </div>
-                            <button
-                              onClick={() => {
-                                if (!bundleHasRequiredDates) return
-                                const selectedDates = bundleSelectedDates
-                                if (selectedDates.length === 0) return
-                                addItem({ 
-                                  id: associatedBundle.sku, 
-                                  name: `${associatedBundle.name || ticket.name} ${formattedBundleLabel}`, 
-                                  price: associatedBundle.price, 
-                                  quantity: 1, 
-                                  category: 'ticket', 
-                                  selectedDates,
-                                  selectedDate: selectedDates.length === 1 ? selectedDates[0] : undefined
-                                });
-                                window.dispatchEvent(new Event('cart:add'));
-                              }}
-                              className={styles.bundleButton + ' clickable'}
-                              aria-label={`Add multi-day bundle for ${ticket.name}`}
-                              disabled={!bundleHasRequiredDates}
-                            >
-                              Add bundle
-                            </button>
+                        {CART_ENABLED && associatedBundle ? (
+                          <div className={styles.bundleHintPill} aria-live="polite">
+                            {selectionLocked
+                              ? 'Confirm your dates above to preview bundle options.'
+                              : bundleHasRequiredDates && bundleDayCount > 0
+                                ? 'Bundle ready — toggle “Show bundles only” to view.'
+                                : `Select ${bundleDayCount || 2} unique ${(bundleDayCount || 2) === 1 ? 'day' : 'days'} to unlock bundle options.`}
                           </div>
                         ) : null}
                       </div>
@@ -542,6 +617,15 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                   </div>
                 );
                 })
+              )}
+              </div>
+              {!selectionConfirmed && (
+                <div className={styles.ticketsGridOverlay} aria-hidden="true">
+                  <div className={styles.ticketsGridOverlayMessage}>
+                    <h4>Tickets locked</h4>
+                    <p>Confirm your festival dates above to browse live availability.</p>
+                  </div>
+                </div>
               )}
             </div>
           </>
