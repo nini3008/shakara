@@ -61,6 +61,15 @@ export default defineConfig({
                   .filter('_type == "merchItem"')
               ),
 
+            // Vendors section
+            S.listItem()
+              .title('Vendors')
+              .child(
+                S.documentTypeList('vendor')
+                  .title('Vendors')
+                  .filter('_type == "vendor"')
+              ),
+
             // FAQ section
             S.listItem()
               .title('FAQ')
@@ -97,6 +106,7 @@ export default defineConfig({
                   'ticket',
                   'scheduleEvent',
                   'merchItem',
+                  'vendor',
                   'faq',
                   'blogPost',
                   'blogAuthor',

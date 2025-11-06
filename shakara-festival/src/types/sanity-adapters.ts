@@ -1,7 +1,7 @@
 // types/sanity-adapters.ts
 
 import { urlFor } from '@/lib/sanity';
-import { Artist, TicketType, ScheduleEvent, MerchItem, Partner, AboutEssentialInfo, AboutHighlight, AboutSectionData, LineupSectionData, FooterSectionData, FooterLink, FooterBrandSection, FooterSocialLinks, BlogAuthor, BlogPost, BlogImage, BlogAuthorSocialLinks, BlogPortableImage, BlogPortableText, PortableTextBlock } from './index';
+import { Artist, TicketType, ScheduleEvent, MerchItem, Partner, AboutEssentialInfo, AboutHighlight, AboutSectionData, LineupSectionData, FooterSectionData, FooterLink, FooterBrandSection, FooterSocialLinks, BlogAuthor, BlogPost, BlogImage, BlogAuthorSocialLinks, BlogPortableImage, BlogPortableText, PortableTextBlock, Vendor, VendorImage, VendorSocialLinks, VendorContactInfo } from './index';
 
 // Sanity raw data interfaces
 export interface SanityArtist {
@@ -981,5 +981,82 @@ export function adaptSanityFooterSection(sanityFooter: SanityFooterSection): Foo
     copyright: sanityFooter.copyright || 'Shakara Festival. All rights reserved.',
     active: sanityFooter.active ?? true,
     order: sanityFooter.order || 100
+  };
+}
+// Vendor Sanity Types
+export interface SanityVendor {
+  _id: string;
+  name: string;
+  slug: {
+    current: string;
+  };
+  logo: {
+    asset: {
+      _ref: string;
+      _type: 'reference';
+    };
+    alt?: string;
+  };
+  coverImage?: {
+    asset: {
+      _ref: string;
+      _type: 'reference';
+    };
+    alt?: string;
+  };
+  category: 'food' | 'fashion' | 'arts' | 'beauty' | 'accessories' | 'lifestyle' | 'tech' | 'entertainment' | 'services' | 'other';
+  description: string;
+  highlights?: string[];
+  location?: string;
+  website?: string;
+  socialLinks?: {
+    instagram?: string;
+    twitter?: string;
+    facebook?: string;
+    tiktok?: string;
+    linkedin?: string;
+  };
+  contactInfo?: {
+    email?: string;
+    phone?: string;
+  };
+  featured: boolean;
+  active: boolean;
+  acceptsPayments: boolean;
+  order: number;
+  tags?: string[];
+  priceRange?: 'budget' | 'moderate' | 'premium' | 'luxury';
+  gallery?: Array<{
+    asset: {
+      _ref: string;
+      _type: 'reference';
+    };
+    alt?: string;
+    caption?: string;
+  }>;
+}
+
+// Vendor adapter function
+export function adaptSanityVendor(sanityVendor: SanityVendor): Vendor {
+  return {
+    id: sanityVendor._id,
+    name: sanityVendor.name,
+    slug: sanityVendor.slug.current,
+    logo: sanityVendor.logo,
+    coverImage: sanityVendor.coverImage,
+    category: sanityVendor.category,
+    description: sanityVendor.description,
+    highlights: sanityVendor.highlights,
+    location: sanityVendor.location,
+    website: sanityVendor.website,
+    socialLinks: sanityVendor.socialLinks,
+    contactInfo: sanityVendor.contactInfo,
+    featured: sanityVendor.featured,
+    active: sanityVendor.active,
+    acceptsPayments: sanityVendor.acceptsPayments,
+    order: sanityVendor.order,
+    tags: sanityVendor.tags,
+    priceRange: sanityVendor.priceRange,
+    gallery: sanityVendor.gallery,
   };
 }

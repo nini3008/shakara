@@ -14,6 +14,7 @@ import blogAuthor from '../schemas/blogAuthor'
 import blogPost from '../schemas/blogPost'
 import reservation from '../schemas/reservation'
 import order from '../schemas/order'
+import vendor from '../schemas/vendor'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   hero,
@@ -21,6 +22,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   ticket,
   scheduleEvent,
   merchItem,
+  vendor,
   partner,
   aboutSection,
   lineupsection,
