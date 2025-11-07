@@ -40,8 +40,8 @@ const Navigation = () => {
     { href: '#lineup', label: 'Lineup', icon: Music, type: 'anchor' },
     { href: '#tickets', label: 'Tickets', icon: Ticket, type: 'anchor' },
     { href: '#schedule', label: 'Schedule', icon: Calendar, type: 'anchor' },
-    { href: '/blog', label: 'Blog', icon: BookOpen, type: 'route' },
     { href: '#partners', label: 'Partners', icon: Handshake, type: 'anchor' },
+    { href: '/blog', label: 'Blog', icon: BookOpen, type: 'route' },
     // { href: '#merch', label: 'Merch', icon: ShoppingBag, type: 'anchor' },
   ] : [
     { href: '/', label: 'Home', icon: Music, type: 'route' },
@@ -304,17 +304,13 @@ const Navigation = () => {
                       Get Tickets Now
                     </Link>
                   )}
-                  <button
+                  <Link
+                    href="/newsletter"
+                    onClick={() => setIsOpen(false)}
                     className={`${styles.mobileSecondaryButton} ${theme === 'light' ? styles.light : ''}`}
-                    onClick={() => {
-                      setIsOpen(false)
-                      if (isHomePage) {
-                        handleLinkClick('#newsletter', 'anchor')
-                      }
-                    }}
                   >
                     Stay Updated
-                  </button>
+                  </Link>
                 </motion.div>
 
                 {/* Social Links */}

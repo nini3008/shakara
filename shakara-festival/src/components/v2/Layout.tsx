@@ -27,11 +27,11 @@ const navigationItems = [
   { title: 'About', url: '/about' },
   { title: 'Lineup', url: '/lineup' },
   { title: 'Schedule', url: '/schedule' },
-  { title: 'Blog', url: '/blog' },
   { title: 'Tickets', url: '/tickets' },
   { title: 'Vendors', url: '/vendors' },
-  { title: 'Stay Updated', url: '#newsletter' },
+  { title: 'Stay Updated', url: '/newsletter' },
   { title: 'Partnership', url: '/partnership' },
+  { title: 'Blog', url: '/blog' },
 ]
 
 function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutProps) {
@@ -41,6 +41,7 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
   const { count } = useCart()
   const [cartOpen, setCartOpen] = React.useState(false)
   const [cartPulse, setCartPulse] = React.useState(false)
+  const isNewsletterPage = pathname === '/newsletter'
 
   // Fetch footer data from CMS on client side
   React.useEffect(() => {
@@ -71,6 +72,18 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
     window.addEventListener('cart:add', onAdd as EventListener)
     return () => window.removeEventListener('cart:add', onAdd as EventListener)
   }, [])
+
+  const baseQuickLinks: Array<{ label?: string; title?: string; href?: string; url?: string }> = footerData?.quickLinks?.length
+    ? [...footerData.quickLinks]
+    : [...navigationItems]
+
+  const hasBlogQuickLink = baseQuickLinks.some((item) => {
+    const href = item.href ?? item.url
+    const label = (item.label ?? item.title ?? '').toLowerCase().trim()
+    return href === '/blog' || label === 'blog'
+  })
+
+  const quickLinks = hasBlogQuickLink ? baseQuickLinks : [...baseQuickLinks, { label: 'Blog', href: '/blog' }]
 
   return (
     <div className="relative min-h-screen texture-bg">
@@ -253,17 +266,19 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
       <footer className="text-white py-16 bg-black/40 dark:bg-black/40 backdrop-blur-md border-t border-gray-800/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Newsletter Section - Full Width */}
-          <div id="newsletter" className="mb-12">
-            <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-white mb-2">Stay in the Loop</h3>
-              <p className="text-gray-400 max-w-2xl mx-auto">
-                Get first access to tickets, lineup announcements, and exclusive festival updates delivered straight to your inbox
-              </p>
+          {!isNewsletterPage && (
+            <div id="newsletter" className="mb-12">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-white mb-2">Stay in the Loop</h3>
+                <p className="text-gray-400 max-w-2xl mx-auto">
+                  Get first access to tickets, lineup announcements, and exclusive festival updates delivered straight to your inbox
+                </p>
+              </div>
+              <div className="max-w-lg mx-auto">
+                <NewsletterSignup variant="modal" className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50" />
+              </div>
             </div>
-            <div className="max-w-lg mx-auto">
-              <NewsletterSignup variant="modal" className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50" />
-            </div>
-          </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
@@ -334,7 +349,7 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
             <div className="md:col-span-2">
               <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
               <div className="grid grid-cols-2 gap-2">
-                {(footerData?.quickLinks?.length ? footerData.quickLinks : navigationItems).map((item: { label?: string; title?: string; href?: string; url?: string }, idx: number) => {
+                {quickLinks.map((item: { label?: string; title?: string; href?: string; url?: string }, idx: number) => {
                   const label = item.label || item.title
                   const href = item.href || item.url
 
