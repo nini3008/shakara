@@ -10,6 +10,7 @@ import { Loader2 } from 'lucide-react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { checkoutCustomerSchema, type CheckoutCustomerInput, type CheckoutCustomer } from '@/lib/validation/checkout'
+import { toAbsoluteUrl } from '@/lib/metadata-utils'
 import { cn } from '@/lib/utils'
 import { PhoneInput } from 'react-international-phone'
 import 'react-international-phone/style.css'
@@ -184,7 +185,7 @@ export default function CheckoutForm() {
         customizations: {
           title: 'Shakara Festival',
           description: String(`${validItems.map(item => `${item.name} x${item.quantity}`).join(', ')}`),
-          logo: String(`${window.location.origin}/images/.png`),
+          logo: toAbsoluteUrl('/images/flutterwave-shakara.png'),
         },
         meta,
         callback: async function(data: { transaction_id: number; tx_ref: string }) {
