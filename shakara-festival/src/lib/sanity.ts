@@ -154,6 +154,12 @@ export const SCHEDULE_QUERY = `*[_type == "scheduleEvent"] | order(day asc, time
     image,
     genre
   },
+  panelists[]->{
+    name,
+    slug,
+    image,
+    genre
+  },
   stage,
   featured,
   ticketRequired,
@@ -171,6 +177,12 @@ export const SCHEDULE_BY_DAY_QUERY = `*[_type == "scheduleEvent" && day == $day]
   day,
   type,
   artist->{
+    name,
+    slug,
+    image,
+    genre
+  },
+  panelists[]->{
     name,
     slug,
     image,

@@ -61,35 +61,126 @@ export async function POST(request: NextRequest) {
       subject: 'Welcome to Shakara Festival! 🎵',
       // Resend automatically adds unsubscribe headers when using audiences
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000; color: #fff; padding: 20px; border-radius: 12px;">
-          <h1 style="color: #feca57; text-align: center;">Welcome ${firstName}! 🎉</h1>
-          
-          <p>Thanks for joining the Shakara family! You&apos;re now part of Africa&apos;s most electric music movement.</p>
-          
-          <h3 style="color: #ff6b9d;">You&apos;ll be the first to know about:</h3>
-          <ul style="list-style: none; padding: 0;">
-            <li style="padding: 8px 0;">🎤 Exclusive lineup announcements</li>
-            <li style="padding: 8px 0;">🎫 Early bird ticket access</li>
-            <li style="padding: 8px 0;">🎉 VIP experiences and behind-the-scenes content</li>
-            <li style="padding: 8px 0;">📱 Festival updates and Lagos vibes</li>
-          </ul>
-          
-          ${interests && interests.length > 0 ? `
-            <p><strong style="color: #48dbfb;">Your interests:</strong> ${interests.join(', ')}</p>
-          ` : ''}
-          
-          <div style="text-align: center; margin-top: 30px;">
-            <a href="https://shakarafestival.com" style="background: linear-gradient(135deg, #ff9a56, #ff6b9d); color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; font-weight: bold;">
-              Explore the Festival
-            </a>
-          </div>
-          
-          <p style="text-align: center; color: #888; margin-top: 30px;">
-            See you in Lagos! 🇳🇬<br>
-            December 18-21, 2025 • Lekki Peninsula
-          </p>
-          
-        </div>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Welcome to Shakara Festival</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #0a0a0a;">
+          <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #0a0a0a;">
+            <tr>
+              <td align="center" style="padding: 40px 20px;">
+                <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+
+                  <!-- Header with gradient -->
+                  <tr>
+                    <td style="background: linear-gradient(135deg, #f97316 0%, #dc2626 100%); padding: 40px 30px; text-align: center;">
+                      <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+                        SHAKARA FESTIVAL
+                      </h1>
+                      <p style="margin: 10px 0 0 0; font-size: 14px; color: rgba(255,255,255,0.9); letter-spacing: 2px; text-transform: uppercase;">
+                        Lagos • December 18-21, 2025
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- Welcome Message -->
+                  <tr>
+                    <td style="padding: 40px 30px 30px;">
+                      <h2 style="margin: 0 0 20px; font-size: 28px; font-weight: 700; color: #ffffff; text-align: center;">
+                        Welcome, ${firstName}! 🎉
+                      </h2>
+                      <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #d1d5db; text-align: center;">
+                        Thanks for joining the Shakara family! You're now part of Africa's most electric music movement.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- Benefits Grid -->
+                  <tr>
+                    <td style="padding: 0 30px 30px;">
+                      <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                          <td style="padding: 20px; background: rgba(249, 115, 22, 0.1); border-radius: 12px; border: 1px solid rgba(249, 115, 22, 0.2); margin-bottom: 12px;" valign="top">
+                            <div style="font-size: 24px; margin-bottom: 8px;">🎤</div>
+                            <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 600; color: #f97316;">Lineup Announcements</h3>
+                            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #9ca3af;">Be the first to know when we drop artist announcements</p>
+                          </td>
+                        </tr>
+                        <tr><td style="height: 12px;"></td></tr>
+                        <tr>
+                          <td style="padding: 20px; background: rgba(249, 115, 22, 0.1); border-radius: 12px; border: 1px solid rgba(249, 115, 22, 0.2);" valign="top">
+                            <div style="font-size: 24px; margin-bottom: 8px;">🎫</div>
+                            <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 600; color: #f97316;">Early Bird Access</h3>
+                            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #9ca3af;">Get exclusive early access to tickets before they sell out</p>
+                          </td>
+                        </tr>
+                        <tr><td style="height: 12px;"></td></tr>
+                        <tr>
+                          <td style="padding: 20px; background: rgba(249, 115, 22, 0.1); border-radius: 12px; border: 1px solid rgba(249, 115, 22, 0.2);" valign="top">
+                            <div style="font-size: 24px; margin-bottom: 8px;">🎉</div>
+                            <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 600; color: #f97316;">VIP Experiences</h3>
+                            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #9ca3af;">Behind-the-scenes content and exclusive meet & greets</p>
+                          </td>
+                        </tr>
+                        <tr><td style="height: 12px;"></td></tr>
+                        <tr>
+                          <td style="padding: 20px; background: rgba(249, 115, 22, 0.1); border-radius: 12px; border: 1px solid rgba(249, 115, 22, 0.2);" valign="top">
+                            <div style="font-size: 24px; margin-bottom: 8px;">📱</div>
+                            <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 600; color: #f97316;">Festival Updates</h3>
+                            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #9ca3af;">All the latest news and Lagos vibes delivered to your inbox</p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  ${interests && interests.length > 0 ? `
+                  <!-- Interests Section -->
+                  <tr>
+                    <td style="padding: 0 30px 30px;">
+                      <div style="background: rgba(59, 130, 246, 0.1); border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.2); padding: 20px;">
+                        <p style="margin: 0 0 10px; font-size: 14px; font-weight: 600; color: #60a5fa; text-transform: uppercase; letter-spacing: 0.5px;">Your Interests</p>
+                        <p style="margin: 0; font-size: 15px; color: #d1d5db; line-height: 1.6;">${interests.join(' • ')}</p>
+                      </div>
+                    </td>
+                  </tr>
+                  ` : ''}
+
+                  <!-- CTA Button -->
+                  <tr>
+                    <td style="padding: 0 30px 40px; text-align: center;">
+                      <a href="https://shakarafestival.com" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #dc2626 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 16px 40px; border-radius: 50px; box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4); transition: transform 0.2s;">
+                        Explore the Festival →
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Footer -->
+                  <tr>
+                    <td style="padding: 30px; background: #000000; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">
+                      <p style="margin: 0 0 10px; font-size: 16px; font-weight: 600; color: #ffffff;">
+                        See you in Lagos! 🇳🇬
+                      </p>
+                      <p style="margin: 0; font-size: 14px; color: #9ca3af;">
+                        Lekki Peninsula, Lagos, Nigeria
+                      </p>
+                      <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <p style="margin: 0; font-size: 12px; color: #6b7280; line-height: 1.5;">
+                          © 2025 Shakara Festival. All rights reserved.
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
       `,
     })
 

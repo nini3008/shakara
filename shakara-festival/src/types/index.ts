@@ -71,6 +71,7 @@ export interface ScheduleEvent {
   day: number;
   type: 'music' | 'panel' | 'vendors' | 'afterparty';
   artist?: Artist;
+  panelists?: Artist[];
   stage?: string;
 }
 
