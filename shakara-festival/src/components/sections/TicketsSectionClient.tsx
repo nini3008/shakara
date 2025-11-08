@@ -311,8 +311,8 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
         
         {(!showCurated && initialTickets.length > 0) ? (
           <>
-            <div className={styles.stepHeader}>
-              <span className={styles.stepBadge}>Step 1</span>
+            <div className={`${styles.stepHeader} ${selectionConfirmed ? styles.stepMuted : ''}`}>
+              <span className={styles.stepBadge} aria-label="Step 1">1</span>
               <div className={styles.stepHeaderContent}>
                 <h3 className={styles.stepTitle}>Select your festival days</h3>
                 <p className={styles.stepDescription}>
@@ -332,7 +332,7 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
               )}
             </div>
 
-            <div className={styles.dateSelectionPanel}>
+            <div className={`${styles.dateSelectionPanel} ${selectionConfirmed ? styles.stepMutedPanel : ''}`}>
               <div className={styles.dateButtonsRow}>
                 {allFestivalDays.map((day) => {
                   const isSelected = selectedDays.has(day);
@@ -370,7 +370,7 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
             </div>
 
             <div className={styles.stepHeader}>
-              <span className={styles.stepBadge}>Step 2</span>
+              <span className={styles.stepBadge} aria-label="Step 2">2</span>
               <div className={styles.stepHeaderContent}>
                 <h3 className={styles.stepTitle}>Browse ticket options</h3>
                 <p className={styles.stepDescription}>
