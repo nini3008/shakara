@@ -122,8 +122,8 @@ export default async function LineupSection() {
           </div>
         </div>
         
-        {/* Artist grid hidden - coming soon */}
-        {false && sortedArtists.length > 0 ? (
+        {/* Artist grid */}
+        {sortedArtists.length > 0 ? (
           <>
             <div className={styles.artistsGrid}>
               {sortedArtists.slice(0, lineupData.featuredArtistCount).map((artist, index) => {

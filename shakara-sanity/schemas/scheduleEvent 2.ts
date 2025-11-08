@@ -76,19 +76,7 @@ export default defineType({
       title: 'Featured Artist',
       type: 'reference',
       to: [{type: 'artist'}],
-      description: 'Link to artist if this is a musical performance',
-      hidden: ({document}) => document?.type === 'panel'
-    }),
-    defineField({
-      name: 'panelists',
-      title: 'Panel Speakers',
-      type: 'array',
-      of: [{
-        type: 'reference',
-        to: [{type: 'artist'}]
-      }],
-      description: 'Select multiple speakers for panel discussions',
-      hidden: ({document}) => document?.type !== 'panel'
+      description: 'Link to artist if this is a musical performance'
     }),
     defineField({
       name: 'stage',
