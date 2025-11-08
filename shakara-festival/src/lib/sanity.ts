@@ -39,7 +39,7 @@ export const writeClient = process.env.SANITY_WRITE_TOKEN
   : client
 
 // GROQ queries
-export const ARTIST_QUERY = `*[_type == "artist"] | order(featured desc, name asc) {
+export const ARTIST_QUERY = `*[_type == "artist" && !(_id in path("drafts.**"))] | order(featured desc, name asc) {
   _id,
   name,
   slug,
@@ -53,7 +53,7 @@ export const ARTIST_QUERY = `*[_type == "artist"] | order(featured desc, name as
   featured
 }`
 
-export const FEATURED_ARTISTS_QUERY = `*[_type == "artist" && featured == true] | order(name asc) {
+export const FEATURED_ARTISTS_QUERY = `*[_type == "artist" && featured == true && !(_id in path("drafts.**"))] | order(name asc) {
   _id,
   name,
   slug,

@@ -131,7 +131,7 @@ export default async function LineupSection() {
         {sortedArtists.length > 0 ? (
           <>
             <div className={styles.artistsGrid}>
-              {sortedArtists.slice(0, lineupData.featuredArtistCount).map((artist, index) => {
+              {sortedArtists.map((artist, index) => {
                 const sanityArtist = sortedSanityArtists[index];
                 return (
                   <div key={artist.id} className={styles.artistGroup}>
