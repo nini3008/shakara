@@ -74,8 +74,14 @@ export default async function LineupSection() {
 
   const lineupData = sectionData || fallbackData;
 
+  // Create a map of artist ID to sanity artist for reliable matching
+  const artistIdToSanityMap = new Map<string, SanityArtist>();
+  artists.forEach((artist, index) => {
+    artistIdToSanityMap.set(artist.id, sanityArtists[index]);
+  });
+
   // Sort artists by performance day (Day 1, Day 2, Day 3, etc.)
-  const sortedArtists = artists.sort((a, b) => {
+  const sortedArtists = [...artists].sort((a, b) => {
     // If both have days, sort by day number
     if (a.day && b.day) {
       return a.day - b.day;
@@ -87,10 +93,9 @@ export default async function LineupSection() {
     return 0;
   });
 
-  // Create corresponding sorted sanity artists array
+  // Create corresponding sorted sanity artists array using the map
   const sortedSanityArtists = sortedArtists.map(artist => {
-    const originalIndex = artists.findIndex(a => a.id === artist.id);
-    return sanityArtists[originalIndex];
+    return artistIdToSanityMap.get(artist.id)!;
   });
 
   return (
