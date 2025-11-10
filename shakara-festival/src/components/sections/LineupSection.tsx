@@ -1,12 +1,11 @@
 // components/sections/LineupSection.tsx - Updated to use CMS data
 
-import { client, urlFor, FEATURED_ARTISTS_QUERY, ARTIST_QUERY, LINEUP_SECTION_QUERY } from '@/lib/sanity';
+import { client, ARTIST_QUERY, LINEUP_SECTION_QUERY } from '@/lib/sanity';
 import { Artist } from '@/types';
 import { SanityArtist, SanityLineupSection, adaptSanityArtist, adaptSanityLineupSection } from '@/types/sanity-adapters';
-import Image from 'next/image';
-import Link from 'next/link';
 import styles from './LineupSection.module.scss';
-
+import LineupSectionClient from './LineupSectionClient';
+import Link from 'next/link';
 async function getAllArtists(): Promise<{ artists: Artist[], sanityArtists: SanityArtist[] }> {
   try {
     // Get all published artists
@@ -92,10 +91,11 @@ export default async function LineupSection() {
     return 0;
   });
 
-  // Create corresponding sorted sanity artists array using the map
-  const sortedSanityArtists = sortedArtists.map(artist => {
-    return artistIdToSanityMap.get(artist.id)!;
-  });
+  // Build entries pairing artist data with their Sanity references
+  const lineupEntries = sortedArtists.map((artist) => ({
+    artist,
+    sanityArtist: artistIdToSanityMap.get(artist.id) ?? null,
+  }));
 
   return (
     <section id="lineup" className={styles.lineupSection}>
@@ -127,74 +127,10 @@ export default async function LineupSection() {
         </div>
         
         {/* Artist grid */}
-        {sortedArtists.length > 0 ? (
+        {lineupEntries.length > 0 ? (
           <>
-            <div className={styles.artistsGrid}>
-              {sortedArtists.map((artist, index) => {
-                const sanityArtist = sortedSanityArtists[index];
-                return (
-                  <div key={artist.id} className={styles.artistGroup}>
-                    <Link href={`/artists/${sanityArtist.slug.current}`}>
-                      <div className={styles.artistCard}>
-                        {sanityArtist.image ? (
-                          <div className={styles.imageContainer}>
-                            <Image
-                              src={urlFor(sanityArtist.image).width(400).height(400).url()}
-                              alt={artist.name}
-                              fill
-                              className={styles.artistImage}
-                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                            />
-                            <div className={styles.imageOverlay} />
-                            {sanityArtist.featured && (
-                              <div className={styles.featuredBadge}>
-                                <span className={styles.badge}>
-                                  Featured
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          <div className={styles.placeholderImage}>
-                            <span className={styles.placeholderText}>
-                              {artist.name.charAt(0)}
-                            </span>
-                          </div>
-                        )}
-                        
-                        <div className={styles.cardContent}>
-                          <h3 className={styles.artistName}>{artist.name}</h3>
-                          
-                          {artist.genre && (
-                            <p className={styles.artistGenre}>
-                              {artist.genre}
-                            </p>
-                          )}
-                          
-                          {(artist.day || artist.stage) && (
-                            <div className={styles.artistMeta}>
-                              {artist.day && (
-                                <span>Day {artist.day}</span>
-                              )}
-                              {artist.day && artist.stage && <span> • </span>}
-                              {artist.stage && (
-                                <span>
-                                  {artist.stage === 'main' ? 'Main Stage' : 
-                                   artist.stage === 'secondary' ? 'Secondary Stage' :
-                                   artist.stage === 'club' ? 'Club Stage' :
-                                   artist.stage === 'acoustic' ? 'Acoustic Stage' : artist.stage}
-                                </span>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                );
-              })}
-            </div>
-            
+            <LineupSectionClient entries={lineupEntries} />
+
             {/* Enhanced CTA section - now from CMS */}
             <div className={styles.ctaSection}>
               <p className={styles.ctaText}>

@@ -122,6 +122,154 @@
   }
 }
 
+.datePicker {
+  margin: 0 auto 3rem;
+  max-width: 60rem;
+}
+
+.datePickerContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.75rem;
+  border-radius: 1.25rem;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  :global(.themed-content[data-theme="light"]) & {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(217, 119, 6, 0.25);
+    box-shadow: 0 12px 30px rgba(217, 119, 6, 0.15), 0 6px 18px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.datePickerEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: rgba(217, 119, 6, 0.85);
+  margin-bottom: 0.5rem;
+}
+
+.datePickerHeading {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.5rem;
+
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(17, 24, 39, 0.95);
+  }
+}
+
+.datePickerDescription {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  max-width: 30rem;
+
+  :global(.themed-content[data-theme="light"]) & {
+    color: rgba(55, 65, 81, 0.75);
+  }
+}
+
+.dateButtonsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.dateToggle {
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba(217, 119, 6, 0.6);
+    background: rgba(217, 119, 6, 0.15);
+    color: white;
+  }
+
+  &[data-selected='true'] {
+    background: linear-gradient(135deg, rgb(217, 119, 6), rgb(180, 83, 9));
+    border-color: rgb(217, 119, 6);
+    color: white;
+    box-shadow: 0 6px 18px rgba(217, 119, 6, 0.35);
+  }
+
+  :global(.themed-content[data-theme='light']) & {
+    background: rgba(255, 255, 255, 0.85);
+    color: rgba(17, 24, 39, 0.7);
+
+    &:hover {
+      background: rgba(217, 119, 6, 0.1);
+      color: rgba(146, 64, 14, 0.95);
+    }
+
+    &[data-selected='true'] {
+      color: white;
+    }
+  }
+}
+
+.noArtists {
+  margin: 0 auto 3rem;
+  max-width: 32rem;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.25rem;
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.85);
+
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: rgb(217, 119, 6);
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  :global(.themed-content[data-theme='light']) & {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(217, 119, 6, 0.25);
+    color: rgba(55, 65, 81, 0.8);
+
+    h3 {
+      color: rgb(217, 119, 6);
+    }
+
+    p {
+      color: rgba(55, 65, 81, 0.65);
+    }
+  }
+}
+
 // Improved artist grid
 .artistsGrid {
   display: grid;
