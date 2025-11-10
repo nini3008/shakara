@@ -7,17 +7,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from './LineupSection.module.scss';
 
-async function getFeaturedArtists(): Promise<{ artists: Artist[], sanityArtists: SanityArtist[] }> {
+async function getAllArtists(): Promise<{ artists: Artist[], sanityArtists: SanityArtist[] }> {
   try {
-    // First try to get featured artists
-    const featuredSanityArtists: SanityArtist[] = await client.fetch(FEATURED_ARTISTS_QUERY);
-
-    if (featuredSanityArtists.length > 0) {
-      const artists = featuredSanityArtists.map(adaptSanityArtist);
-      return { artists, sanityArtists: featuredSanityArtists };
-    }
-
-    // If no featured artists, get all artists as fallback
+    // Get all published artists
     const allSanityArtists: SanityArtist[] = await client.fetch(ARTIST_QUERY);
     const artists = allSanityArtists.map(adaptSanityArtist);
     return { artists, sanityArtists: allSanityArtists };
@@ -38,7 +30,7 @@ async function getLineupSectionData() {
 }
 
 export default async function LineupSection() {
-  const { artists, sanityArtists } = await getFeaturedArtists();
+  const { artists, sanityArtists } = await getAllArtists();
   const sectionData = await getLineupSectionData();
 
   // Fallback data if CMS fails
@@ -74,23 +66,35 @@ export default async function LineupSection() {
 
   const lineupData = sectionData || fallbackData;
 
-  // Sort artists by performance day (Day 1, Day 2, Day 3, etc.)
-  const sortedArtists = artists.sort((a, b) => {
-    // If both have days, sort by day number
+  // Create a map of artist ID to sanity artist for reliable matching
+  const artistIdToSanityMap = new Map<string, SanityArtist>();
+  artists.forEach((artist, index) => {
+    artistIdToSanityMap.set(artist.id, sanityArtists[index]);
+  });
+
+  // Sort artists: featured first, then by performance day
+  const sortedArtists = [...artists].sort((a, b) => {
+    const sanityA = artistIdToSanityMap.get(a.id)!;
+    const sanityB = artistIdToSanityMap.get(b.id)!;
+
+    // Featured artists come first
+    if (sanityA.featured && !sanityB.featured) return -1;
+    if (!sanityA.featured && sanityB.featured) return 1;
+
+    // Within same featured status, sort by performance day
     if (a.day && b.day) {
       return a.day - b.day;
     }
-    // If only one has a day, put the one with day first
     if (a.day && !b.day) return -1;
     if (!a.day && b.day) return 1;
+
     // If neither has a day, maintain original order
     return 0;
   });
 
-  // Create corresponding sorted sanity artists array
+  // Create corresponding sorted sanity artists array using the map
   const sortedSanityArtists = sortedArtists.map(artist => {
-    const originalIndex = artists.findIndex(a => a.id === artist.id);
-    return sanityArtists[originalIndex];
+    return artistIdToSanityMap.get(artist.id)!;
   });
 
   return (
@@ -122,11 +126,11 @@ export default async function LineupSection() {
           </div>
         </div>
         
-        {/* Artist grid hidden - coming soon */}
-        {false && sortedArtists.length > 0 ? (
+        {/* Artist grid */}
+        {sortedArtists.length > 0 ? (
           <>
             <div className={styles.artistsGrid}>
-              {sortedArtists.slice(0, lineupData.featuredArtistCount).map((artist, index) => {
+              {sortedArtists.map((artist, index) => {
                 const sanityArtist = sortedSanityArtists[index];
                 return (
                   <div key={artist.id} className={styles.artistGroup}>
@@ -142,7 +146,7 @@ export default async function LineupSection() {
                               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                             />
                             <div className={styles.imageOverlay} />
-                            {index < 3 && (
+                            {sanityArtist.featured && (
                               <div className={styles.featuredBadge}>
                                 <span className={styles.badge}>
                                   Featured

@@ -87,7 +87,6 @@ export interface SanityScheduleEvent {
   day: number;
   type?: string;
   artist?: SanityArtist;
-  panelists?: SanityArtist[];
   stage?: string;
   featured: boolean;
   ticketRequired?: boolean;
@@ -239,7 +238,6 @@ export function adaptSanityScheduleEvent(sanityEvent: SanityScheduleEvent): Sche
     day: sanityEvent.day,
     type: typeMap[sanityEvent.type?.toLowerCase() || ''] || 'music',
     artist: sanityEvent.artist ? adaptSanityArtist(sanityEvent.artist) : undefined,
-    panelists: sanityEvent.panelists?.map(adaptSanityArtist),
     stage: sanityEvent.stage,
   };
 }
