@@ -69,19 +69,7 @@ export const metadata: Metadata = createPageMetadata({
     creator: 'Shakara Festival',
     publisher: 'Shakara Festival',
     icons: {
-      icon: [
-        { url: '/favicon.ico' },
-        { url: '/icon-16x16.png', sizes: '16x16', type: 'image/png' },
-        { url: '/icon-32x32.png', sizes: '32x32', type: 'image/png' },
-      ],
-      apple: [{ url: '/apple-touch-icon.png' }],
-      other: [
-        {
-          rel: 'mask-icon',
-          url: '/safari-pinned-tab.svg',
-          color: '#ff6b9d',
-        },
-      ],
+      icon: [{ url: '/48.png', sizes: '48x48', type: 'image/png' }],
     },
     category: 'entertainment',
     classification: 'Music Festival',

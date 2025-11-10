@@ -1,0 +1,15 @@
+{
+  "name": "Shakara Festival",
+  "short_name": "Shakara",
+  "icons": [
+    {
+      "src": "/48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "display": "standalone"
+}
+
