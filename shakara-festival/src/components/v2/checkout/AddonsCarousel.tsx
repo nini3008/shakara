@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useCart } from '@/contexts/CartContext'
 import { cn } from '@/lib/utils'
+import { trackAddToCart } from '@/lib/analytics'
 
 type Addon = { _id: string; name: string; sku: string; price: number; description?: string; badge?: string }
 type AddonsCarouselProps = { className?: string }
@@ -270,7 +271,24 @@ export default function AddonsCarousel({ className }: AddonsCarouselProps) {
                   )}
                 </div>
                 <button
-                  onClick={() => { addItem({ id: a.sku, name: a.name, price: a.price, quantity: 1, category: 'addon' }); window.dispatchEvent(new Event('cart:add')) }}
+                  onClick={() => {
+                    const sku = a.sku
+                    trackAddToCart({
+                      items: [
+                        {
+                          item_id: sku,
+                          item_name: a.name,
+                          price: a.price,
+                          quantity: 1,
+                          item_category: 'addon',
+                        },
+                      ],
+                      currency: 'NGN',
+                      value: a.price,
+                    })
+                    addItem({ id: sku, name: a.name, price: a.price, quantity: 1, category: 'addon' })
+                    window.dispatchEvent(new Event('cart:add'))
+                  }}
                   className="mt-3 rounded-md bg-gradient-to-r from-orange-600 to-amber-500 text-white text-sm font-semibold py-2"
                 >
                   Add to Basket

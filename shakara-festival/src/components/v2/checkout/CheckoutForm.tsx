@@ -14,6 +14,7 @@ import { toAbsoluteUrl } from '@/lib/metadata-utils'
 import { cn } from '@/lib/utils'
 import { PhoneInput } from 'react-international-phone'
 import 'react-international-phone/style.css'
+import { trackBeginCheckout } from '@/lib/analytics'
 
 declare global {
   interface Window {
@@ -108,6 +109,22 @@ export default function CheckoutForm() {
         setLoading(false)
         return
       }
+
+      const ecommerceItems = validItems.map((item) => ({
+        item_id: item.id,
+        item_name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        item_category: item.category,
+        item_variant: item.selectedDates?.join('|') ?? item.selectedDate ?? undefined,
+      }))
+      const ecommerceValue = validItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+
+      trackBeginCheckout({
+        items: ecommerceItems,
+        currency: 'NGN',
+        value: ecommerceValue,
+      })
 
       // Ask the server to compute authoritative totals and create a reservation
       const prepareRes = await fetch('/api/checkout/prepare', {
@@ -209,7 +226,17 @@ export default function CheckoutForm() {
             
             if (result.ok) {
               // Save email for success page
-            try { localStorage.setItem('checkout-email', values.email) } catch {}
+            try {
+              localStorage.setItem('checkout-email', values.email)
+              const purchaseSnapshot = {
+                transactionId: data?.tx_ref || prepared.tx_ref,
+                currency: prepared?.currency || 'NGN',
+                value: Number(prepared?.amount ?? ecommerceValue),
+                tax: 0,
+                items: ecommerceItems,
+              }
+              localStorage.setItem('checkout-purchase', JSON.stringify(purchaseSnapshot))
+            } catch {}
               // Clear cart
               clear()
               // Force a full page navigation so the Flutterwave modal is torn down

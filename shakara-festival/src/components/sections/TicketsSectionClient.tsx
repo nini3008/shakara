@@ -6,6 +6,7 @@ import { TicketType } from '@/types';
 import { SanityTicket } from '@/types/sanity-adapters';
 import { useCart } from '@/contexts/CartContext';
 import { CART_ENABLED } from '@/lib/featureFlags';
+import { trackAddToCart } from '@/lib/analytics';
 import styles from './TicketsSection.module.scss';
 
 interface TicketsSectionClientProps {
@@ -575,8 +576,27 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                             onClick={() => {
                               const selectedDates = ticketSelectedDates
                               if (selectedDates.length === 0) return
+                              const sku = typeof sanityTicket.sku === 'string' && sanityTicket.sku.length > 0 ? sanityTicket.sku : ticket.id
+                              const variant =
+                                selectedDates.length > 0
+                                  ? selectedDates.join('|')
+                                  : undefined
+                              trackAddToCart({
+                                items: [
+                                  {
+                                    item_id: sku,
+                                    item_name: ticket.name,
+                                    price: ticket.price,
+                                    quantity: 1,
+                                    item_category: 'ticket',
+                                    item_variant: variant,
+                                  },
+                                ],
+                                currency: 'NGN',
+                                value: ticket.price,
+                              })
                               addItem({ 
-                                id: sanityTicket.sku, 
+                                id: sku, 
                                 name: ticket.name + formattedTicketLabel, 
                                 price: ticket.price, 
                                 quantity: 1, 
@@ -662,7 +682,26 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
                     </div>
                     <div className={styles.cardFooter}>
                       {CART_ENABLED ? (
-                        <button onClick={() => { addItem({ id: `curated-${t.id}`, name: t.name, price: t.price, quantity: 1, category: 'ticket' }); window.dispatchEvent(new Event('cart:add')) }} className={styles.buyButton + ' clickable'} aria-label={`Add ${t.name} ticket`}>
+                        <button
+                        onClick={() => {
+                          const itemId = `curated-${t.id}`
+                          trackAddToCart({
+                            items: [
+                              {
+                                item_id: itemId,
+                                item_name: t.name,
+                                price: t.price,
+                                quantity: 1,
+                                item_category: 'ticket',
+                              },
+                            ],
+                            currency: 'NGN',
+                            value: t.price,
+                          })
+                          addItem({ id: itemId, name: t.name, price: t.price, quantity: 1, category: 'ticket' })
+                          window.dispatchEvent(new Event('cart:add'))
+                        }}
+                        className={styles.buyButton + ' clickable'} aria-label={`Add ${t.name} ticket`}>
                           Add to Basket
                         </button>
                       ) : (

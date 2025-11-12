@@ -8,6 +8,7 @@ import { motion } from 'framer-motion'
 import { CheckCircle2, Home, Ticket } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
+import { trackPurchase } from '@/lib/analytics'
 
 
 function SuccessContent() {
@@ -22,6 +23,58 @@ function SuccessContent() {
     if (savedEmail) {
       setEmail(savedEmail)
       localStorage.removeItem('checkout-email')
+    }
+  }, [txRef])
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('checkout-purchase')
+      if (!raw) return
+      const parsed = JSON.parse(raw) as {
+        transactionId?: string
+        currency?: string
+        value?: number
+        tax?: number
+        items?: Array<{
+          item_id?: string
+          item_name?: string
+          price?: number
+          quantity?: number
+          item_category?: string
+          item_variant?: string
+        }>
+      }
+
+      const items = Array.isArray(parsed?.items)
+        ? parsed.items
+            .map((item) => ({
+              item_id: String(item?.item_id ?? ''),
+              item_name: String(item?.item_name ?? ''),
+              price: Number(item?.price ?? 0),
+              quantity: Number(item?.quantity ?? 1),
+              item_category: item?.item_category ? String(item.item_category) : undefined,
+              item_variant: item?.item_variant ? String(item.item_variant) : undefined,
+            }))
+            .filter((item) => item.item_id && item.item_name)
+        : []
+
+      const transactionId = parsed?.transactionId || txRef || ''
+
+      if (items.length > 0 && transactionId) {
+        trackPurchase({
+          transaction_id: transactionId,
+          currency: parsed?.currency || 'NGN',
+          value: typeof parsed?.value === 'number' ? parsed.value : undefined,
+          tax: typeof parsed?.tax === 'number' ? parsed.tax : undefined,
+          items,
+        })
+      }
+    } catch (err) {
+      console.error('Failed to push purchase event', err)
+    } finally {
+      try {
+        localStorage.removeItem('checkout-purchase')
+      } catch {}
     }
   }, [txRef])
 
