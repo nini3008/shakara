@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useCart } from '@/contexts/CartContext'
 import styles from '@/components/sections/TicketsSection.module.scss'
+import { trackAddToCart } from '@/lib/analytics'
 
 type Addon = {
   _id: string
@@ -54,7 +55,21 @@ export default function AddonsSection() {
                 <div className={styles.cardFooter}>
                   <button
                     onClick={() => {
-                      addItem({ id: a.sku, name: a.name, price: a.price, quantity: 1, category: 'addon' })
+                      const sku = a.sku
+                      trackAddToCart({
+                        items: [
+                          {
+                            item_id: sku,
+                            item_name: a.name,
+                            price: a.price,
+                            quantity: 1,
+                            item_category: 'addon',
+                          },
+                        ],
+                        currency: 'NGN',
+                        value: a.price,
+                      })
+                      addItem({ id: sku, name: a.name, price: a.price, quantity: 1, category: 'addon' })
                       window.dispatchEvent(new Event('cart:add'))
                     }}
                     className={styles.buyButton + ' clickable'}

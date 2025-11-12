@@ -7,6 +7,7 @@ import { z } from 'zod'
 import toast, { Toaster } from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
+import { trackEvent } from '@/lib/analytics'
 
 const newsletterSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -133,6 +134,7 @@ const NewsletterSignup = ({ variant = 'hero', className }: NewsletterSignupProps
             border: '1px solid #feca57',
           },
         })
+        trackEvent('movement_signup_success')
         reset()
       } else {
         throw new Error(result.error || 'Subscription failed')
