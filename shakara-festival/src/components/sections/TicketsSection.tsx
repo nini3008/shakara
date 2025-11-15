@@ -5,7 +5,6 @@ import { writeClient, client, TICKETS_QUERY } from '@/lib/sanity';
 import { TicketType } from '@/types';
 import { SanityTicket, adaptSanityTicket } from '@/types/sanity-adapters';
 import TicketsSectionClient from './TicketsSectionClient';
-import AddonsUpsell from './TicketsSectionAddonsUpsell'
 import { CART_ENABLED } from '@/lib/featureFlags'
 
 async function getFeaturedTickets(): Promise<{ tickets: TicketType[], sanityTickets: SanityTicket[] }> {
@@ -31,9 +30,8 @@ export default async function TicketsSection() {
       <TicketsSectionClient 
         initialTickets={tickets}
         initialSanityTickets={sanityTickets}
+        showAddonsUpsell={CART_ENABLED}
       />
-      {/* Add-ons upsell strip */}
-      {CART_ENABLED && <AddonsUpsell />}
     </>
   );
 }

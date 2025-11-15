@@ -1,7 +1,8 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useCart } from '@/contexts/CartContext'
+import type { CartItem } from '@/contexts/CartContext'
 import styles from '@/components/sections/TicketsSection.module.scss'
 import { trackAddToCart } from '@/lib/analytics'
 
@@ -14,9 +15,26 @@ type Addon = {
   badge?: string
 }
 
+const deriveTicketDates = (items: CartItem[]): string[] => {
+  const dates = new Set<string>()
+  for (const item of items) {
+    if (item.category === 'addon') continue
+    const selectedDates = Array.isArray(item.selectedDates) && item.selectedDates.length > 0
+      ? item.selectedDates
+      : (item.selectedDate ? [item.selectedDate] : [])
+    for (const date of selectedDates) {
+      if (typeof date === 'string' && date.length > 0) {
+        dates.add(date)
+      }
+    }
+  }
+  return Array.from(dates).sort()
+}
+
 export default function AddonsSection() {
-  const { addItem } = useCart()
+  const { addItem, items } = useCart()
   const [addons, setAddons] = useState<Addon[]>([])
+  const ticketDates = useMemo(() => deriveTicketDates(items), [items])
 
   useEffect(() => {
     async function load() {
@@ -55,6 +73,11 @@ export default function AddonsSection() {
                 <div className={styles.cardFooter}>
                   <button
                     onClick={() => {
+                      const dates = ticketDates.length > 0 ? [...ticketDates] : []
+                      if (dates.length === 0) {
+                        window.alert('Add at least one dated ticket to your basket before adding add-ons.')
+                        return
+                      }
                       const sku = a.sku
                       trackAddToCart({
                         items: [
@@ -69,7 +92,15 @@ export default function AddonsSection() {
                         currency: 'NGN',
                         value: a.price,
                       })
-                      addItem({ id: sku, name: a.name, price: a.price, quantity: 1, category: 'addon' })
+                      addItem({ 
+                        id: sku, 
+                        name: a.name, 
+                        price: a.price, 
+                        quantity: 1, 
+                        category: 'addon',
+                        selectedDates: dates,
+                        selectedDate: dates.length === 1 ? dates[0] : undefined,
+                      })
                       window.dispatchEvent(new Event('cart:add'))
                     }}
                     className={styles.buyButton + ' clickable'}

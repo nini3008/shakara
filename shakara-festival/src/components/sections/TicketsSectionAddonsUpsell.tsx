@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styles from './TicketsSection.module.scss'
 import { useCart } from '@/contexts/CartContext'
 import { CART_ENABLED } from '@/lib/featureFlags'
@@ -8,20 +8,31 @@ import { trackAddToCart } from '@/lib/analytics'
 
 type Addon = { _id: string; name: string; sku: string; price: number; description?: string; badge?: string }
 
-export default function TicketsSectionAddonsUpsell() {
+type TicketsSectionAddonsUpsellProps = {
+  selectedDates: string[]
+  enabled?: boolean
+}
+
+export default function TicketsSectionAddonsUpsell({ selectedDates, enabled = true }: TicketsSectionAddonsUpsellProps) {
   const { addItem } = useCart()
   const [addons, setAddons] = useState<Addon[]>([])
 
+  const normalizedDates = useMemo(() => {
+    const next = Array.from(new Set(selectedDates.filter(Boolean)))
+    next.sort()
+    return next
+  }, [selectedDates])
+
   useEffect(() => {
-    if (!CART_ENABLED) return
+    if (!CART_ENABLED || !enabled) return
 
     fetch('/api/checkout/addons')
       .then(r => r.json())
       .then(d => setAddons(d?.addons || []))
       .catch(() => {})
-  }, [])
+  }, [enabled])
 
-  if (!CART_ENABLED || !addons.length) return null
+  if (!CART_ENABLED || !enabled || !addons.length) return null
 
   return (
     <section className={styles.ticketsSection}>
@@ -60,7 +71,15 @@ export default function TicketsSectionAddonsUpsell() {
                         currency: 'NGN',
                         value: a.price,
                       })
-                      addItem({ id: sku, name: a.name, price: a.price, quantity: 1, category: 'addon' })
+                      addItem({ 
+                        id: sku, 
+                        name: a.name, 
+                        price: a.price, 
+                        quantity: 1, 
+                        category: 'addon', 
+                        selectedDates: normalizedDates,
+                        selectedDate: normalizedDates.length === 1 ? normalizedDates[0] : undefined,
+                      })
                       window.dispatchEvent(new Event('cart:add'))
                     }}
                     className={styles.buyButton + ' clickable'}

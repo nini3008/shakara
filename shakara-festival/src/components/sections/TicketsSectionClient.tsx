@@ -8,10 +8,12 @@ import { useCart } from '@/contexts/CartContext';
 import { CART_ENABLED } from '@/lib/featureFlags';
 import { trackAddToCart } from '@/lib/analytics';
 import styles from './TicketsSection.module.scss';
+import TicketsSectionAddonsUpsell from './TicketsSectionAddonsUpsell';
 
 interface TicketsSectionClientProps {
   initialTickets: TicketType[];
   initialSanityTickets: SanityTicket[];
+  showAddonsUpsell?: boolean;
 }
 
 const durationToDays = (duration?: string | null) => {
@@ -46,7 +48,7 @@ const formatSelectedDatesSummary = (dates: string[]): string => {
   return `${formatted[0]} - ${formatted[formatted.length - 1]}`
 }
 
-export default function TicketsSectionClient({ initialTickets, initialSanityTickets }: TicketsSectionClientProps) {
+export default function TicketsSectionClient({ initialTickets, initialSanityTickets, showAddonsUpsell = false }: TicketsSectionClientProps) {
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -304,6 +306,7 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
   };
 
   return (
+    <>
     <section id="tickets" className={styles.ticketsSection}>
       <div className={styles.container}>
         <h2 className={styles.title}>
@@ -807,5 +810,9 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
         )}
       </div>
     </section>
+    {showAddonsUpsell && CART_ENABLED && (
+      <TicketsSectionAddonsUpsell selectedDates={sortedSelectedDays} enabled={showAddonsUpsell} />
+    )}
+    </>
   );
 }
