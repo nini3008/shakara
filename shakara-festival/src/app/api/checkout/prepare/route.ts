@@ -302,25 +302,50 @@ export async function POST(req: NextRequest) {
         })
       } else {
         const units = qty
-      const inv = doc.inventory ?? Number.POSITIVE_INFINITY
-      const sold = doc.sold ?? 0
-      const reserved = doc.reserved ?? 0
-      const availableUnits = inv - sold - reserved
-      if (!doc.allowOversell && availableUnits < units) {
-        return NextResponse.json({ error: `Insufficient inventory for ${line.sku}` }, { status: 409 })
-      }
+        const inv = doc.inventory ?? Number.POSITIVE_INFINITY
+        const sold = doc.sold ?? 0
+        const reserved = doc.reserved ?? 0
+        const availableUnits = inv - sold - reserved
+        if (!doc.allowOversell && availableUnits < units) {
+          return NextResponse.json({ error: `Insufficient inventory for ${line.sku}` }, { status: 409 })
+        }
 
         const unitPrice = priceFor(doc)
-        amount += unitPrice * qty
+        const isAddon = doc.type === 'addon'
         let selectedDates = selectedDatesFromLine
         if (doc.day) {
           selectedDates = [doc.day]
         }
-        const selectedDate = selectedDates[0]
+        const normalizedSelectedDates = Array.from(new Set((selectedDates || []).filter((d): d is string => typeof d === 'string' && d.length > 0)))
+
+        if (isAddon) {
+          if (normalizedSelectedDates.length === 0) {
+            return NextResponse.json({ error: `Add-on ${line.sku} requires selecting at least one event date` }, { status: 400 })
+          }
+          for (const date of normalizedSelectedDates) {
+            amount += unitPrice * qty
+            const lineKey = randomUUID()
+            resolvedLines.push({
+              _key: lineKey,
+              sku: doc.sku,
+              quantity: qty,
+              units,
+              unitPrice,
+              name: doc.name,
+              selectedDate: date,
+            })
+            dateMetadata[`addon_${resolvedLines.length - 1}`] = [date]
+            addHoldUnits(doc, units)
+          }
+          continue
+        }
+
+        amount += unitPrice * qty
+        const selectedDate = normalizedSelectedDates[0]
         const lineKey = randomUUID()
         resolvedLines.push({ _key: lineKey, sku: doc.sku, quantity: qty, units, unitPrice, name: doc.name, selectedDate })
-        if (selectedDates.length > 0) {
-          dateMetadata[`ticket_${resolvedLines.length - 1}`] = selectedDates
+        if (normalizedSelectedDates.length > 0) {
+          dateMetadata[`ticket_${resolvedLines.length - 1}`] = normalizedSelectedDates
         }
 
         addHoldUnits(doc, units)

@@ -439,3 +439,18 @@ export interface Vendor {
   priceRange?: 'budget' | 'moderate' | 'premium' | 'luxury';
   gallery?: VendorImage[];
 }
+
+export type GuestIntegrationStatus = 'success' | 'error';
+
+export interface OrderGuestIntegration {
+  status: GuestIntegrationStatus;
+  syncedAt?: string;
+  externalId?: number;
+  uniqueCode?: string;
+  amountPaid?: string;
+  qrCodeId?: number;
+  qrCodeUrl?: string;
+  qrCodeCode?: string;
+  message?: string;
+  raw?: string;
+}
