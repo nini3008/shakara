@@ -5,7 +5,7 @@ import { useCart } from '@/contexts/CartContext'
 import type { CartItem } from '@/contexts/CartContext'
 import { cn } from '@/lib/utils'
 import { trackAddToCart } from '@/lib/analytics'
-import { TopToast } from '@/components/ui/TopToast'
+import { useToast } from '@/components/ui/useToast'
 
 type Addon = { _id: string; name: string; sku: string; price: number; description?: string; badge?: string }
 type AddonsCarouselProps = { className?: string }
@@ -30,15 +30,7 @@ export default function AddonsCarousel({ className }: AddonsCarouselProps) {
   const { addItem, items: cartItems } = useCart()
   const [addons, setAddons] = useState<Addon[]>([])
   const ticketDates = useMemo(() => deriveTicketDates(cartItems), [cartItems])
-  const [toastOpen, setToastOpen] = useState(false)
-  const [toastMessage, setToastMessage] = useState<string | null>(null)
-  const [toastId, setToastId] = useState(0)
-
-  const showToast = useCallback((msg: string) => {
-    setToastMessage(msg)
-    setToastId((id) => id + 1)
-    setToastOpen(true)
-  }, [])
+  const toast = useToast()
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [paused, setPaused] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
@@ -302,9 +294,10 @@ export default function AddonsCarousel({ className }: AddonsCarouselProps) {
                     onClick={() => {
                       const dates = ticketDates.length > 0 ? [...ticketDates] : []
                       if (dates.length === 0) {
-                        showToast('Add at least one dated ticket before choosing add-ons')
+                        toast.show('Add at least one dated ticket before choosing add-ons', { variant: 'error' })
                         return
                       }
+                      const dateCount = Math.max(1, dates.length)
                       const sku = a.sku
                       trackAddToCart({
                         items: [
@@ -312,25 +305,25 @@ export default function AddonsCarousel({ className }: AddonsCarouselProps) {
                             item_id: sku,
                             item_name: a.name,
                             price: a.price,
-                            quantity: 1,
+                            quantity: dateCount,
                             item_category: 'addon',
                           },
                         ],
                         currency: 'NGN',
-                        value: a.price,
+                        value: a.price * dateCount,
                       })
                       addItem({ 
                         id: sku, 
                         name: a.name, 
                         price: a.price, 
-                        quantity: 1, 
+                        quantity: dateCount, 
                         category: 'addon',
                         selectedDates: dates,
                         selectedDate: dates.length === 1 ? dates[0] : undefined,
                       })
                       window.dispatchEvent(new Event('cart:add'))
                     }}
-                  className="mt-3 rounded-md bg-gradient-to-r from-orange-600 to-amber-500 text-white text-sm font-semibold py-2"
+                  className="mt-3 rounded-md bg-linear-to-r from-orange-600 to-amber-500 text-white text-sm font-semibold py-2"
                 >
                   Add to Basket
                 </button>
@@ -340,12 +333,6 @@ export default function AddonsCarousel({ className }: AddonsCarouselProps) {
         </div>
         {/* Instruction removed per request */}
       </div>
-      <TopToast
-        key={toastId}
-        open={toastOpen}
-        onOpenChange={setToastOpen}
-        message={toastMessage}
-      />
     </section>
   )
 }

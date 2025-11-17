@@ -9,6 +9,7 @@ import { CartProvider, useCart } from '@/contexts/CartContext'
 import CartDropdown from './CartDropdown'
 import NewsletterSignup from '@/components/sections/NewsLetterSignup'
 import { CART_ENABLED } from '@/lib/featureFlags'
+import { ToastProvider } from '@/components/ui/useToast'
 
 type FooterData = {
   brandSection?: { tagline?: string; location?: string }
@@ -106,11 +107,11 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
         `}</style>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-[90] bg-gray-950/45 backdrop-blur-md border-b border-gray-800 overflow-visible">
+      <nav className="fixed top-0 left-0 right-0 z-90 bg-gray-950/45 backdrop-blur-md border-b border-gray-800 overflow-visible">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <Link href="/" className="flex-shrink-0">
+            <Link href="/" className="shrink-0">
               <img
                 src="/images/SHAKARABW.png"
                 alt="Shakara Festival"
@@ -405,7 +406,9 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
 export default function V2Layout({ children, footerData }: { children: React.ReactNode; currentPageName?: string; footerData?: FooterData | null }) {
   return (
     <CartProvider>
-      <InnerLayout footerData={footerData}>{children}</InnerLayout>
+      <ToastProvider>
+        <InnerLayout footerData={footerData}>{children}</InnerLayout>
+      </ToastProvider>
     </CartProvider>
   )
 }

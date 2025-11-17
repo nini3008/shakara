@@ -5,7 +5,7 @@ import { useCart } from '@/contexts/CartContext'
 import type { CartItem } from '@/contexts/CartContext'
 import styles from '@/components/sections/TicketsSection.module.scss'
 import { trackAddToCart } from '@/lib/analytics'
-import { TopToast } from '@/components/ui/TopToast'
+import { useToast } from '@/components/ui/useToast'
 
 type Addon = {
   _id: string
@@ -36,15 +36,7 @@ export default function AddonsSection() {
   const { addItem, items } = useCart()
   const [addons, setAddons] = useState<Addon[]>([])
   const ticketDates = useMemo(() => deriveTicketDates(items), [items])
-  const [toastOpen, setToastOpen] = useState(false)
-  const [toastMessage, setToastMessage] = useState<string | null>(null)
-  const [toastId, setToastId] = useState(0)
-
-  const showToast = useCallback((msg: string) => {
-    setToastMessage(msg)
-    setToastId((id) => id + 1)
-    setToastOpen(true)
-  }, [])
+  const toast = useToast()
 
   useEffect(() => {
     async function load() {
@@ -85,9 +77,10 @@ export default function AddonsSection() {
                     onClick={() => {
                       const dates = ticketDates.length > 0 ? [...ticketDates] : []
                       if (dates.length === 0) {
-                        showToast('Add at least one dated ticket before choosing add-ons')
+                        toast.show('Add at least one dated ticket before choosing add-ons', { variant: 'error' })
                         return
                       }
+                      const dateCount = Math.max(1, dates.length)
                       const sku = a.sku
                       trackAddToCart({
                         items: [
@@ -95,18 +88,18 @@ export default function AddonsSection() {
                             item_id: sku,
                             item_name: a.name,
                             price: a.price,
-                            quantity: 1,
+                            quantity: dateCount,
                             item_category: 'addon',
                           },
                         ],
                         currency: 'NGN',
-                        value: a.price,
+                        value: a.price * dateCount,
                       })
                       addItem({ 
                         id: sku, 
                         name: a.name, 
                         price: a.price, 
-                        quantity: 1, 
+                        quantity: dateCount, 
                         category: 'addon',
                         selectedDates: dates,
                         selectedDate: dates.length === 1 ? dates[0] : undefined,
@@ -124,12 +117,6 @@ export default function AddonsSection() {
           ))}
         </div>
       </div>
-      <TopToast
-        key={toastId}
-        open={toastOpen}
-        onOpenChange={setToastOpen}
-        message={toastMessage}
-      />
     </section>
   )
 }

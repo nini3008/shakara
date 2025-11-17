@@ -94,7 +94,7 @@ function ArtistCard({ artist, sanityArtist }: { artist: Artist, sanityArtist: Sa
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
           </div>
         ) : (
-          <div className="aspect-square bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
+          <div className="aspect-square bg-linear-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
             <span className="text-2xl font-bold text-black font-space-grotesk">
               {artist.name.charAt(0)}
             </span>

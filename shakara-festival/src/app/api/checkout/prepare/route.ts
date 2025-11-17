@@ -341,21 +341,29 @@ export async function POST(req: NextRequest) {
           if (normalizedSelectedDates.length === 0) {
             return NextResponse.json({ error: `Add-on ${line.sku} requires selecting at least one event date` }, { status: 400 })
           }
-          for (const date of normalizedSelectedDates) {
-            subtotal += unitPrice * qty
+          const datesToUse = doc.day ? [doc.day] : normalizedSelectedDates
+          let remainingUnits = units
+          const baseUnits = Math.max(1, Math.floor(units / datesToUse.length))
+          datesToUse.forEach((date, index) => {
+            const unitsForDate = index === datesToUse.length - 1 ? remainingUnits : Math.min(baseUnits, remainingUnits)
+            remainingUnits -= unitsForDate
+            const quantityForDate = Math.max(1, unitsForDate)
+            subtotal += unitPrice * quantityForDate
             const lineKey = randomUUID()
             resolvedLines.push({
               _key: lineKey,
               sku: doc.sku,
-              quantity: qty,
-              units,
+              quantity: quantityForDate,
+              units: quantityForDate,
               unitPrice,
               name: doc.name,
               selectedDate: date,
             })
-            dateMetadata[`addon_${resolvedLines.length - 1}`] = [date]
-            addHoldUnits(doc, units)
-          }
+            if (date) {
+              dateMetadata[`addon_${resolvedLines.length - 1}`] = [date]
+            }
+            addHoldUnits(doc, quantityForDate)
+          })
           continue
         }
 

@@ -195,7 +195,7 @@ function VendorCard({ vendor, featured = false }: { vendor: Vendor; featured?: b
       )}
 
       {/* Cover Image or Logo */}
-      <div className="relative h-48 bg-gradient-to-br from-gray-700 to-gray-800 overflow-hidden">
+      <div className="relative h-48 bg-linear-to-br from-gray-700 to-gray-800 overflow-hidden">
         {coverUrl ? (
           <Image
             src={coverUrl}

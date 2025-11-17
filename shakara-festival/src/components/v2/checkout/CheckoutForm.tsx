@@ -341,7 +341,7 @@ export default function CheckoutForm() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-          className="rounded-2xl border border-gray-800/40 text-white p-6 md:p-10 text-center shadow-2xl bg-gradient-to-br from-[#1a0f1f] via-[#0b0b0e] to-[#1f0d09]"
+          className="rounded-2xl border border-gray-800/40 text-white p-6 md:p-10 text-center shadow-2xl bg-[linear-gradient(135deg,#1a0f1f,#0b0b0e,#1f0d09)]"
           >
             <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
@@ -366,7 +366,7 @@ export default function CheckoutForm() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="rounded-2xl border border-gray-800/40 text-white p-6 md:p-10 shadow-2xl bg-gradient-to-br from-[#1a0f1f] via-[#0b0b0e] to-[#1f0d09]"
+          className="rounded-2xl border border-gray-800/40 text-white p-6 md:p-10 shadow-2xl bg-[linear-gradient(135deg,#1a0f1f,#0b0b0e,#1f0d09)]"
         >
           <div className="grid md:grid-cols-2 gap-8">
             {/* Order Summary */}
@@ -375,14 +375,38 @@ export default function CheckoutForm() {
               
               {/* Cart Items */}
               <div className="space-y-3 mb-6">
-                {items.map((item) => (
-                  <div key={item.id} className="flex justify-between text-sm">
-                    <span>
-                      {item.name} x {item.quantity}
-                    </span>
-                    <span>₦{(item.price * item.quantity).toLocaleString()}</span>
-                  </div>
-                ))}
+                {items.map((item) => {
+                  const formattedDates = (() => {
+                    if (Array.isArray(item.selectedDates) && item.selectedDates.length > 0) {
+                      return item.selectedDates
+                        .map((d) => new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }))
+                        .join(', ')
+                    }
+                    if (typeof item.selectedDate === 'string' && item.selectedDate.length > 0) {
+                      return item.selectedDate
+                        .split(',')
+                        .map((d) => d.trim())
+                        .filter(Boolean)
+                        .map((d) => new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }))
+                        .join(', ')
+                    }
+                    return null
+                  })()
+
+                  return (
+                    <div key={item.id} className="flex flex-col text-sm">
+                      <div className="flex justify-between">
+                        <span>
+                          {item.name} x {item.quantity}
+                        </span>
+                        <span>₦{(item.price * item.quantity).toLocaleString()}</span>
+                      </div>
+                      {formattedDates && (
+                        <span className="text-xs text-gray-400 mt-0.5">{`Dates: ${formattedDates}`}</span>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
 
               {/* Totals */}
