@@ -251,7 +251,12 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
           </div>
         )}
         {/* Cart dropdown mounted globally so it works on mobile and desktop */}
-        {CART_ENABLED && <CartDropdown open={cartOpen} />}
+        {CART_ENABLED && (
+          <CartDropdown
+            open={cartOpen}
+            onClose={() => setCartOpen(false)}
+          />
+        )}
       </nav>
 
       {/* Torn paper overlay at page top over base texture */}

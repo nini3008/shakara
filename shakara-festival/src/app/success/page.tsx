@@ -9,12 +9,23 @@ import { CheckCircle2, Home, Ticket } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 import { trackPurchase } from '@/lib/analytics'
+import type { OrderGuestIntegration } from '@/types'
+
+type OrderLookupResponse = {
+  tx_ref: string
+  amount: number | null
+  currency: string
+  guestIntegration: OrderGuestIntegration | null
+}
 
 
 function SuccessContent() {
   const searchParams = useSearchParams()
   const txRef = searchParams.get('tx_ref')
   const [email, setEmail] = useState('')
+  const [guestIntegration, setGuestIntegration] = useState<OrderGuestIntegration | null>(null)
+  const [integrationLoading, setIntegrationLoading] = useState(false)
+  const [integrationError, setIntegrationError] = useState<string | null>(null)
 
   useEffect(() => {
     // You could fetch order details here using tx_ref
@@ -78,6 +89,65 @@ function SuccessContent() {
     }
   }, [txRef])
 
+  useEffect(() => {
+    if (!txRef) return
+    const txRefValue: string = txRef
+    const controller = new AbortController()
+
+    async function loadGuestIntegration() {
+      setIntegrationLoading(true)
+      setIntegrationError(null)
+      try {
+        const response = await fetch(`/api/orders/${encodeURIComponent(txRefValue)}`, {
+          signal: controller.signal,
+        })
+
+        if (!response.ok) {
+          const payload = await response.json().catch(() => null)
+          if (controller.signal.aborted) return
+          const message =
+            (payload && (payload.error || payload.message)) ||
+            (response.status === 404
+              ? 'We could not find your ticket details yet. Please check back shortly.'
+              : 'Unable to load your ticket details right now. Please try again in a moment.')
+          if (response.status >= 500) {
+            console.error('Order lookup failed', response.status, payload)
+          }
+          setGuestIntegration(null)
+          setIntegrationError(message)
+          return
+        }
+
+        const data: OrderLookupResponse = await response.json()
+        if (controller.signal.aborted) return
+        setGuestIntegration(data?.guestIntegration ?? null)
+      } catch (err) {
+        if (controller.signal.aborted) return
+        console.error('Failed to fetch guest integration', err)
+        setGuestIntegration(null)
+        setIntegrationError('Failed to load your ticket details. Please refresh the page shortly.')
+      } finally {
+        if (!controller.signal.aborted) {
+          setIntegrationLoading(false)
+        }
+      }
+    }
+
+    loadGuestIntegration()
+    return () => controller.abort()
+  }, [txRef])
+
+  const guestIntegrationStatus = guestIntegration?.status
+  const isIntegrationSuccess = guestIntegrationStatus === 'success'
+  const isIntegrationError = guestIntegrationStatus === 'error'
+  const formattedAmountPaid = guestIntegration?.amountPaid
+    ? (() => {
+        const value = Number.parseFloat(guestIntegration.amountPaid as string)
+        if (Number.isNaN(value)) return guestIntegration.amountPaid
+        return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      })()
+    : null
+
   return (
     <section className="min-h-[60vh] flex items-center justify-center py-20">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -117,6 +187,55 @@ function SuccessContent() {
               A confirmation email will be sent to <strong>{email}</strong> shortly with your ticket details.
             </p>
           )}
+
+          <div className="max-w-md mx-auto mb-10">
+            {integrationLoading && (
+              <div className="rounded-xl border border-gray-800/60 bg-gray-900/40 px-4 py-5 text-gray-300">
+                Fetching your QR code…
+              </div>
+            )}
+
+            {!integrationLoading && integrationError && (
+              <div className="rounded-xl border border-yellow-700/60 bg-yellow-900/20 px-4 py-5 text-sm text-yellow-200">
+                {integrationError}
+              </div>
+            )}
+
+            {!integrationLoading && isIntegrationSuccess && guestIntegration && (
+              <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-6 shadow-lg">
+                <p className="text-sm uppercase tracking-widest text-emerald-200 mb-4">Your Festival Access</p>
+                {guestIntegration.qrCodeUrl && (
+                  <div className="flex justify-center mb-4">
+                    <img
+                      src={guestIntegration.qrCodeUrl}
+                      alt="Your festival QR code"
+                      className="h-48 w-48 rounded-lg border border-emerald-400/40 bg-white p-2"
+                    />
+                  </div>
+                )}
+                {guestIntegration.uniqueCode && (
+                  <p className="text-gray-100">
+                    Present code{' '}
+                    <code className="bg-black/60 px-2 py-1 rounded text-lg tracking-[0.2em]">
+                      {guestIntegration.uniqueCode}
+                    </code>{' '}
+                    at the gate.
+                  </p>
+                )}
+                {formattedAmountPaid && (
+                  <p className="mt-2 text-sm text-emerald-200/80">
+                    Amount confirmed: ₦{formattedAmountPaid}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {!integrationLoading && isIntegrationError && guestIntegration?.message && (
+              <div className="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-5 text-sm text-red-200">
+                We&apos;re finalizing your QR code. {guestIntegration.message}
+              </div>
+            )}
+          </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/">

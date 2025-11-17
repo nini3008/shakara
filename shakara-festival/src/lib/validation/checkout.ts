@@ -62,6 +62,7 @@ export const checkoutPreparePayloadSchema = z.object({
   lines: z
     .array(checkoutLineSchema)
     .min(1, 'At least one line item is required'),
+  discountCode: z.string().trim().optional(),
 })
 
 export type CheckoutLineInput = z.input<typeof checkoutLineSchema>

@@ -3,6 +3,8 @@ import { client, writeClient } from '@/lib/sanity'
 import { randomUUID } from 'crypto'
 import type { SanityClient } from '@sanity/client'
 import { checkoutPreparePayloadSchema } from '@/lib/validation/checkout'
+import { validateDiscountCode, checkEmailUsage } from '@/lib/discounts'
+import type { ResolvedDiscount } from '@/types'
 
 type PrepareLine = { sku: string; quantity: number; selectedDate?: string; selectedDates?: string[] }
 
@@ -44,6 +46,13 @@ const normalizeSelectedDates = (value?: string[] | string): string[] => {
   unique.sort()
   return unique
 }
+
+const toMinorUnits = (value: number): number => {
+  if (!Number.isFinite(value)) return 0
+  return Math.round(value * 100)
+}
+
+const fromMinorUnits = (value: number): number => Number((value / 100).toFixed(2))
 
 const EXPIRE_BATCH_LIMIT = 20
 
@@ -110,7 +119,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const { lines, customer } = parsed.data
+    const { lines, customer, discountCode } = parsed.data
     const parsedLines = lines as unknown as PrepareLine[]
     const { email, firstName, lastName, phone } = customer
 
@@ -176,9 +185,19 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    let amount = 0
+    let subtotal = 0
     const currency = 'NGN'
-    type ResolvedLine = { _key: string; sku: string; quantity: number; units: number; unitPrice: number; name: string; selectedDate?: string }
+    type ResolvedLine = {
+      _key: string
+      sku: string
+      quantity: number
+      units: number
+      unitPrice: number
+      name: string
+      selectedDate?: string
+      netUnitPrice?: number
+      netLineTotal?: number
+    }
     const resolvedLines: ResolvedLine[] = []
     const dateMetadata: Record<string, string[]> = {}
     const holdMap = new Map<string, { units: number; rev?: string }>()
@@ -280,7 +299,7 @@ export async function POST(req: NextRequest) {
 
         const bundlePrice = priceFor(doc)
         const perDayUnitPrice = bundlePrice / selectedDates.length
-        amount += bundlePrice * qty
+        subtotal += bundlePrice * qty
 
         baseDocs.forEach((base, index) => {
           const date = selectedDates[index]
@@ -302,25 +321,50 @@ export async function POST(req: NextRequest) {
         })
       } else {
         const units = qty
-      const inv = doc.inventory ?? Number.POSITIVE_INFINITY
-      const sold = doc.sold ?? 0
-      const reserved = doc.reserved ?? 0
-      const availableUnits = inv - sold - reserved
-      if (!doc.allowOversell && availableUnits < units) {
-        return NextResponse.json({ error: `Insufficient inventory for ${line.sku}` }, { status: 409 })
-      }
+        const inv = doc.inventory ?? Number.POSITIVE_INFINITY
+        const sold = doc.sold ?? 0
+        const reserved = doc.reserved ?? 0
+        const availableUnits = inv - sold - reserved
+        if (!doc.allowOversell && availableUnits < units) {
+          return NextResponse.json({ error: `Insufficient inventory for ${line.sku}` }, { status: 409 })
+        }
 
         const unitPrice = priceFor(doc)
-        amount += unitPrice * qty
+        const isAddon = doc.type === 'addon'
         let selectedDates = selectedDatesFromLine
         if (doc.day) {
           selectedDates = [doc.day]
         }
-        const selectedDate = selectedDates[0]
+        const normalizedSelectedDates = Array.from(new Set((selectedDates || []).filter((d): d is string => typeof d === 'string' && d.length > 0)))
+
+        if (isAddon) {
+          if (normalizedSelectedDates.length === 0) {
+            return NextResponse.json({ error: `Add-on ${line.sku} requires selecting at least one event date` }, { status: 400 })
+          }
+          for (const date of normalizedSelectedDates) {
+            subtotal += unitPrice * qty
+            const lineKey = randomUUID()
+            resolvedLines.push({
+              _key: lineKey,
+              sku: doc.sku,
+              quantity: qty,
+              units,
+              unitPrice,
+              name: doc.name,
+              selectedDate: date,
+            })
+            dateMetadata[`addon_${resolvedLines.length - 1}`] = [date]
+            addHoldUnits(doc, units)
+          }
+          continue
+        }
+
+        subtotal += unitPrice * qty
+        const selectedDate = normalizedSelectedDates[0]
         const lineKey = randomUUID()
         resolvedLines.push({ _key: lineKey, sku: doc.sku, quantity: qty, units, unitPrice, name: doc.name, selectedDate })
-        if (selectedDates.length > 0) {
-          dateMetadata[`ticket_${resolvedLines.length - 1}`] = selectedDates
+        if (normalizedSelectedDates.length > 0) {
+          dateMetadata[`ticket_${resolvedLines.length - 1}`] = normalizedSelectedDates
         }
 
         addHoldUnits(doc, units)
@@ -329,11 +373,93 @@ export async function POST(req: NextRequest) {
 
     const tx_ref = generateTxRef()
 
+    // Validate and apply discount if provided
+    let appliedDiscount: ResolvedDiscount | undefined
+    let finalAmount = subtotal
+    
+    if (discountCode) {
+      const cartSkus = resolvedLines.map(line => line.sku)
+      const discountResult = await validateDiscountCode({
+        code: discountCode,
+        cartTotal: subtotal,
+        cartSkus,
+        customerEmail: email,
+      })
+      
+      if (!discountResult.valid) {
+        return NextResponse.json({ error: discountResult.error }, { status: 400 })
+      }
+      
+      appliedDiscount = discountResult.discount
+      
+      // Check email usage if applicable
+      if (appliedDiscount && email && discountResult.discount) {
+        const discountDoc = await client.fetch<{ _id: string; maxUsesPerEmail?: number }>(
+          `*[_type == "discountCode" && code == $code][0]{ _id, maxUsesPerEmail }`,
+          { code: appliedDiscount.code }
+        )
+        
+        if (discountDoc?.maxUsesPerEmail) {
+          const { allowed, usageCount } = await checkEmailUsage(appliedDiscount.code, email, discountDoc.maxUsesPerEmail)
+          if (!allowed) {
+            return NextResponse.json({ 
+              error: `You have already used this discount code ${usageCount} time(s). Maximum allowed: ${discountDoc.maxUsesPerEmail}` 
+            }, { status: 400 })
+          }
+        }
+      }
+      
+      // Apply discount to final amount
+      finalAmount = subtotal - (appliedDiscount?.valueApplied || 0)
+      finalAmount = Math.max(0, finalAmount) // Ensure non-negative
+    }
+
+    const subtotalMinorUnits = toMinorUnits(subtotal)
+    const finalAmountMinorUnits = toMinorUnits(finalAmount)
+    const discountMinorUnits = Math.max(0, subtotalMinorUnits - finalAmountMinorUnits)
+
+    if (resolvedLines.length > 0) {
+      if (discountMinorUnits > 0 && subtotalMinorUnits > 0) {
+        let remainingDiscountMinor = discountMinorUnits
+        resolvedLines.forEach((line, index) => {
+          const grossLineTotalMinor = toMinorUnits(line.unitPrice * line.quantity)
+          let lineDiscountMinor =
+            index === resolvedLines.length - 1
+              ? remainingDiscountMinor
+              : Math.floor((grossLineTotalMinor * discountMinorUnits) / subtotalMinorUnits)
+          lineDiscountMinor = Math.min(lineDiscountMinor, grossLineTotalMinor, remainingDiscountMinor)
+          remainingDiscountMinor -= lineDiscountMinor
+          if (remainingDiscountMinor < 0) {
+            remainingDiscountMinor = 0
+          }
+          const netLineTotalMinor = Math.max(0, grossLineTotalMinor - lineDiscountMinor)
+          const unitsForPricing =
+            Number.isFinite(line.units) && line.units > 0
+              ? line.units
+              : (Number.isFinite(line.quantity) && line.quantity > 0 ? line.quantity : 1)
+          const netUnitPriceMinor = unitsForPricing > 0 ? Math.round(netLineTotalMinor / unitsForPricing) : netLineTotalMinor
+          line.netLineTotal = fromMinorUnits(netLineTotalMinor)
+          line.netUnitPrice = fromMinorUnits(netUnitPriceMinor)
+        })
+      } else {
+        resolvedLines.forEach((line) => {
+          const grossLineTotalMinor = toMinorUnits(line.unitPrice * line.quantity)
+          const unitsForPricing =
+            Number.isFinite(line.units) && line.units > 0
+              ? line.units
+              : (Number.isFinite(line.quantity) && line.quantity > 0 ? line.quantity : 1)
+          const netUnitPriceMinor = unitsForPricing > 0 ? Math.round(grossLineTotalMinor / unitsForPricing) : grossLineTotalMinor
+          line.netLineTotal = fromMinorUnits(grossLineTotalMinor)
+          line.netUnitPrice = fromMinorUnits(netUnitPriceMinor)
+        })
+      }
+    }
+
     const reservationDoc = {
       _type: 'reservation',
       tx_ref,
       lines: resolvedLines,
-      amount,
+      amount: finalAmount,
       currency,
       email,
       firstName,
@@ -344,6 +470,7 @@ export async function POST(req: NextRequest) {
       holdApplied: true,
       expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
       createdAt: new Date().toISOString(),
+      ...(appliedDiscount && { discount: appliedDiscount }),
     }
 
     try {
@@ -365,7 +492,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: `Unable to reserve tickets: ${message}` }, { status: 409 })
     }
 
-    return NextResponse.json({ tx_ref, amount, currency, lines: resolvedLines, dateMetadata })
+    return NextResponse.json({ 
+      tx_ref, 
+      amount: finalAmount, 
+      currency, 
+      lines: resolvedLines, 
+      dateMetadata,
+      ...(appliedDiscount && { appliedDiscount }),
+    })
   } catch (e: unknown) {
     console.error('Prepare error', e)
     const message =

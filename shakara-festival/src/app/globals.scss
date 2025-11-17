@@ -101,6 +101,14 @@ button, [role="button"], a, input[type="button"], input[type="submit"], .clickab
   cursor: pointer;
 }
 
+button:disabled,
+button[aria-disabled='true'],
+[role="button"][aria-disabled='true'],
+a[aria-disabled='true'],
+.clickable[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
 button, .btn, .gradient-bg, .gradient-bg-secondary {
   transition: transform 0.15s ease, opacity 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }

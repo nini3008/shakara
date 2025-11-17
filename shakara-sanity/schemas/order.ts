@@ -42,6 +42,37 @@ export default defineType({
       ],
     }),
     defineField({ name: 'createdAt', title: 'Created At', type: 'datetime', initialValue: () => new Date().toISOString() }),
+    defineField({
+      name: 'discount',
+      title: 'Applied Discount',
+      type: 'object',
+      description: 'Discount applied to this order',
+      fields: [
+        { name: 'code', title: 'Code', type: 'string' },
+        { name: 'label', title: 'Label', type: 'string' },
+        { name: 'type', title: 'Type', type: 'string', options: { list: ['percentage', 'flat'] } },
+        { name: 'amount', title: 'Amount', type: 'number' },
+        { name: 'valueApplied', title: 'Value Applied', type: 'number' },
+      ],
+    }),
+    defineField({
+      name: 'guestIntegration',
+      title: 'Guest Integration',
+      type: 'object',
+      options: { collapsible: true, collapsed: true },
+      fields: [
+        defineField({ name: 'status', title: 'Status', type: 'string', options: { list: ['success', 'error'] } }),
+        defineField({ name: 'externalId', title: 'External ID', type: 'number' }),
+        defineField({ name: 'uniqueCode', title: 'Unique Code', type: 'string' }),
+        defineField({ name: 'amountPaid', title: 'Amount Paid', type: 'string' }),
+        defineField({ name: 'qrCodeId', title: 'QR Code ID', type: 'number' }),
+        defineField({ name: 'qrCodeCode', title: 'QR Code Reference', type: 'string' }),
+        defineField({ name: 'qrCodeUrl', title: 'QR Code URL', type: 'url' }),
+        defineField({ name: 'message', title: 'Error Message', type: 'text' }),
+        defineField({ name: 'raw', title: 'Raw Payload', type: 'text' }),
+        defineField({ name: 'syncedAt', title: 'Synced At', type: 'datetime' }),
+      ],
+    }),
   ],
 })
 

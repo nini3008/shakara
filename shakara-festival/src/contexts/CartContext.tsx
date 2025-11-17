@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import type { ResolvedDiscount } from '@/types'
 
 export type CartItem = {
   id: string
@@ -22,11 +23,15 @@ type CartContextType = {
   clear: () => void
   count: number
   total: number
+  discount: ResolvedDiscount | null
+  setDiscount: (discount: ResolvedDiscount | null) => void
+  finalTotal: number
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
 const STORAGE_KEY = 'shakara_cart_v1'
+const DISCOUNT_STORAGE_KEY = 'shakara_discount_v1'
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const normalizeDates = (value?: string[] | string): string[] => {
@@ -60,11 +65,42 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   })
 
+  const [discount, setDiscount] = useState<ResolvedDiscount | null>(() => {
+    if (typeof window === 'undefined') return null
+    try {
+      const raw = window.localStorage.getItem(DISCOUNT_STORAGE_KEY)
+      if (!raw) return null
+      return JSON.parse(raw)
+    } catch {
+      return null
+    }
+  })
+
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
     } catch {}
   }, [items])
+
+  useEffect(() => {
+    try {
+      if (discount) {
+        localStorage.setItem(DISCOUNT_STORAGE_KEY, JSON.stringify(discount))
+      } else {
+        localStorage.removeItem(DISCOUNT_STORAGE_KEY)
+      }
+    } catch {}
+  }, [discount])
+
+  // Clear discount when cart changes
+  useEffect(() => {
+    if (discount && items.length > 0) {
+      // Keep discount if cart has items
+    } else if (items.length === 0) {
+      // Clear discount if cart is empty
+      setDiscount(null)
+    }
+  }, [items.length])
 
   const computeUid = (i: CartItem) => {
     const parts = [i.category || 'ticket', i.id]
@@ -93,12 +129,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }
 
   const removeItem = (uid: string) => setItems((prev) => prev.filter((p) => p.uid !== uid))
-  const clear = () => setItems([])
+  const clear = () => {
+    setItems([])
+    setDiscount(null)
+  }
 
   const count = useMemo(() => items.reduce((n, i) => n + i.quantity, 0), [items])
   const total = useMemo(() => items.reduce((s, i) => s + i.price * i.quantity, 0), [items])
+  const finalTotal = useMemo(() => {
+    const discountValue = discount?.valueApplied || 0
+    return Math.max(0, total - discountValue)
+  }, [total, discount])
 
-  const value: CartContextType = { items, addItem, updateQty, removeItem, clear, count, total }
+  const value: CartContextType = { items, addItem, updateQty, removeItem, clear, count, total, discount, setDiscount, finalTotal }
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }
 
