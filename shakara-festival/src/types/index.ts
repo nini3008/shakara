@@ -439,3 +439,43 @@ export interface Vendor {
   priceRange?: 'budget' | 'moderate' | 'premium' | 'luxury';
   gallery?: VendorImage[];
 }
+
+export type GuestIntegrationStatus = 'success' | 'error';
+
+export interface OrderGuestIntegration {
+  status: GuestIntegrationStatus;
+  syncedAt?: string;
+  externalId?: number;
+  uniqueCode?: string;
+  amountPaid?: string;
+  qrCodeId?: number;
+  qrCodeUrl?: string;
+  qrCodeCode?: string;
+  message?: string;
+  raw?: string;
+}
+
+// Discount Code Types
+export interface DiscountCode {
+  _id: string;
+  code: string;
+  label: string;
+  type: 'percentage' | 'flat';
+  amount: number;
+  active: boolean;
+  validFrom?: string;
+  validTo?: string;
+  maxUses?: number;
+  maxUsesPerEmail?: number;
+  applicableSkus?: string[];
+  usageCount?: number;
+  notes?: string;
+}
+
+export interface ResolvedDiscount {
+  code: string;
+  label: string;
+  type: 'percentage' | 'flat';
+  amount: number;
+  valueApplied: number;
+}

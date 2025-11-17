@@ -2,15 +2,35 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useCart } from '@/contexts/CartContext'
+import type { CartItem } from '@/contexts/CartContext'
 import { cn } from '@/lib/utils'
 import { trackAddToCart } from '@/lib/analytics'
+import { useToast } from '@/components/ui/useToast'
 
 type Addon = { _id: string; name: string; sku: string; price: number; description?: string; badge?: string }
 type AddonsCarouselProps = { className?: string }
 
+const deriveTicketDates = (items: CartItem[]): string[] => {
+  const dates = new Set<string>()
+  for (const item of items) {
+    if (item.category === 'addon') continue
+    const selectedDates = Array.isArray(item.selectedDates) && item.selectedDates.length > 0
+      ? item.selectedDates
+      : (item.selectedDate ? [item.selectedDate] : [])
+    for (const date of selectedDates) {
+      if (typeof date === 'string' && date.length > 0) {
+        dates.add(date)
+      }
+    }
+  }
+  return Array.from(dates).sort()
+}
+
 export default function AddonsCarousel({ className }: AddonsCarouselProps) {
-  const { addItem } = useCart()
+  const { addItem, items: cartItems } = useCart()
   const [addons, setAddons] = useState<Addon[]>([])
+  const ticketDates = useMemo(() => deriveTicketDates(cartItems), [cartItems])
+  const toast = useToast()
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [paused, setPaused] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
@@ -270,26 +290,40 @@ export default function AddonsCarousel({ className }: AddonsCarouselProps) {
                     <p className="text-white/60 text-sm line-clamp-2">{a.description}</p>
                   )}
                 </div>
-                <button
-                  onClick={() => {
-                    const sku = a.sku
-                    trackAddToCart({
-                      items: [
-                        {
-                          item_id: sku,
-                          item_name: a.name,
-                          price: a.price,
-                          quantity: 1,
-                          item_category: 'addon',
-                        },
-                      ],
-                      currency: 'NGN',
-                      value: a.price,
-                    })
-                    addItem({ id: sku, name: a.name, price: a.price, quantity: 1, category: 'addon' })
-                    window.dispatchEvent(new Event('cart:add'))
-                  }}
-                  className="mt-3 rounded-md bg-gradient-to-r from-orange-600 to-amber-500 text-white text-sm font-semibold py-2"
+                  <button
+                    onClick={() => {
+                      const dates = ticketDates.length > 0 ? [...ticketDates] : []
+                      if (dates.length === 0) {
+                        toast.show('Add at least one dated ticket before choosing add-ons', { variant: 'error' })
+                        return
+                      }
+                      const dateCount = Math.max(1, dates.length)
+                      const sku = a.sku
+                      trackAddToCart({
+                        items: [
+                          {
+                            item_id: sku,
+                            item_name: a.name,
+                            price: a.price,
+                            quantity: dateCount,
+                            item_category: 'addon',
+                          },
+                        ],
+                        currency: 'NGN',
+                        value: a.price * dateCount,
+                      })
+                      addItem({ 
+                        id: sku, 
+                        name: a.name, 
+                        price: a.price, 
+                        quantity: dateCount, 
+                        category: 'addon',
+                        selectedDates: dates,
+                        selectedDate: dates.length === 1 ? dates[0] : undefined,
+                      })
+                      window.dispatchEvent(new Event('cart:add'))
+                    }}
+                  className="mt-3 rounded-md bg-linear-to-r from-orange-600 to-amber-500 text-white text-sm font-semibold py-2"
                 >
                   Add to Basket
                 </button>

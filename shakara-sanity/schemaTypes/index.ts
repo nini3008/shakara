@@ -15,6 +15,7 @@ import blogPost from '../schemas/blogPost'
 import reservation from '../schemas/reservation'
 import order from '../schemas/order'
 import vendor from '../schemas/vendor'
+import discountCode from '../schemas/discountCode'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   hero,
@@ -32,4 +33,5 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   blogPost,
   reservation,
   order,
+  discountCode,
 ]

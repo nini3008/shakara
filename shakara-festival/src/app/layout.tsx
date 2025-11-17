@@ -6,6 +6,7 @@ import type { Metadata } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import React from 'react'
 import { BackgroundWrapper } from '@/components/BackgroundWrapper'
+import FloatingHelpButton from '@/components/FloatingHelpButton'
 import {
   createPageMetadata,
   toAbsoluteUrl,
@@ -162,6 +163,7 @@ export default function RootLayout({
         <BackgroundWrapper>
           {children}
         </BackgroundWrapper>
+        <FloatingHelpButton />
 
         {/* All analytics are managed via GTM. Remove direct GA/other snippets. */}
       </body>

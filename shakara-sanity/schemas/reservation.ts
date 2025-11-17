@@ -32,6 +32,19 @@ export default defineType({
     defineField({ name: 'expiresAt', title: 'Expires At', type: 'datetime' }),
     defineField({ name: 'createdAt', title: 'Created At', type: 'datetime', initialValue: () => new Date().toISOString() }),
     defineField({ name: 'holdApplied', title: 'Hold Applied', type: 'boolean', initialValue: true }),
+    defineField({
+      name: 'discount',
+      title: 'Applied Discount',
+      type: 'object',
+      description: 'Discount applied to this reservation',
+      fields: [
+        { name: 'code', title: 'Code', type: 'string' },
+        { name: 'label', title: 'Label', type: 'string' },
+        { name: 'type', title: 'Type', type: 'string', options: { list: ['percentage', 'flat'] } },
+        { name: 'amount', title: 'Amount', type: 'number' },
+        { name: 'valueApplied', title: 'Value Applied', type: 'number' },
+      ],
+    }),
   ],
 })
 
