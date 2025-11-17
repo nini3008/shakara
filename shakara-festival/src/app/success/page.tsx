@@ -91,13 +91,14 @@ function SuccessContent() {
 
   useEffect(() => {
     if (!txRef) return
+    const txRefValue: string = txRef
     const controller = new AbortController()
 
     async function loadGuestIntegration() {
       setIntegrationLoading(true)
       setIntegrationError(null)
       try {
-        const response = await fetch(`/api/orders/${encodeURIComponent(txRef)}`, {
+        const response = await fetch(`/api/orders/${encodeURIComponent(txRefValue)}`, {
           signal: controller.signal,
         })
 

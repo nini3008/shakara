@@ -39,7 +39,7 @@ export default function CartDropdown({ open, onClose }: CartDropdownProps) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.15 }}
-          className="fixed right-4 top-20 w-[calc(100vw-1rem)] max-w-md rounded-xl border border-gray-200/20 dark:border-gray-800/40 text-white shadow-2xl z-[100] bg-gradient-to-br from-[#1a0f1f] via-[#0b0b0e] to-[#1f0d09]"
+          className="fixed right-4 top-20 w-[calc(100vw-1rem)] max-w-md rounded-xl border border-gray-200/20 dark:border-gray-800/40 text-white shadow-2xl z-100 bg-linear-to-br from-[#1a0f1f] via-[#0b0b0e] to-[#1f0d09]"
         >
           <div className="p-4 max-h-96 overflow-auto">
             {items.length === 0 ? (
@@ -125,7 +125,7 @@ export default function CartDropdown({ open, onClose }: CartDropdownProps) {
                 </Button>
                 {discount && (
                   <p className="text-xs text-center text-green-500 mt-2">
-                    Discount "{discount.code}" applied
+                    Discount &ldquo;{discount.code}&rdquo; applied
                   </p>
                 )}
               </>

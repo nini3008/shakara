@@ -47,6 +47,13 @@ const normalizeSelectedDates = (value?: string[] | string): string[] => {
   return unique
 }
 
+const toMinorUnits = (value: number): number => {
+  if (!Number.isFinite(value)) return 0
+  return Math.round(value * 100)
+}
+
+const fromMinorUnits = (value: number): number => Number((value / 100).toFixed(2))
+
 const EXPIRE_BATCH_LIMIT = 20
 
 type StaleReservation = {
@@ -180,7 +187,17 @@ export async function POST(req: NextRequest) {
 
     let subtotal = 0
     const currency = 'NGN'
-    type ResolvedLine = { _key: string; sku: string; quantity: number; units: number; unitPrice: number; name: string; selectedDate?: string }
+    type ResolvedLine = {
+      _key: string
+      sku: string
+      quantity: number
+      units: number
+      unitPrice: number
+      name: string
+      selectedDate?: string
+      netUnitPrice?: number
+      netLineTotal?: number
+    }
     const resolvedLines: ResolvedLine[] = []
     const dateMetadata: Record<string, string[]> = {}
     const holdMap = new Map<string, { units: number; rev?: string }>()
@@ -395,6 +412,47 @@ export async function POST(req: NextRequest) {
       // Apply discount to final amount
       finalAmount = subtotal - (appliedDiscount?.valueApplied || 0)
       finalAmount = Math.max(0, finalAmount) // Ensure non-negative
+    }
+
+    const subtotalMinorUnits = toMinorUnits(subtotal)
+    const finalAmountMinorUnits = toMinorUnits(finalAmount)
+    const discountMinorUnits = Math.max(0, subtotalMinorUnits - finalAmountMinorUnits)
+
+    if (resolvedLines.length > 0) {
+      if (discountMinorUnits > 0 && subtotalMinorUnits > 0) {
+        let remainingDiscountMinor = discountMinorUnits
+        resolvedLines.forEach((line, index) => {
+          const grossLineTotalMinor = toMinorUnits(line.unitPrice * line.quantity)
+          let lineDiscountMinor =
+            index === resolvedLines.length - 1
+              ? remainingDiscountMinor
+              : Math.floor((grossLineTotalMinor * discountMinorUnits) / subtotalMinorUnits)
+          lineDiscountMinor = Math.min(lineDiscountMinor, grossLineTotalMinor, remainingDiscountMinor)
+          remainingDiscountMinor -= lineDiscountMinor
+          if (remainingDiscountMinor < 0) {
+            remainingDiscountMinor = 0
+          }
+          const netLineTotalMinor = Math.max(0, grossLineTotalMinor - lineDiscountMinor)
+          const unitsForPricing =
+            Number.isFinite(line.units) && line.units > 0
+              ? line.units
+              : (Number.isFinite(line.quantity) && line.quantity > 0 ? line.quantity : 1)
+          const netUnitPriceMinor = unitsForPricing > 0 ? Math.round(netLineTotalMinor / unitsForPricing) : netLineTotalMinor
+          line.netLineTotal = fromMinorUnits(netLineTotalMinor)
+          line.netUnitPrice = fromMinorUnits(netUnitPriceMinor)
+        })
+      } else {
+        resolvedLines.forEach((line) => {
+          const grossLineTotalMinor = toMinorUnits(line.unitPrice * line.quantity)
+          const unitsForPricing =
+            Number.isFinite(line.units) && line.units > 0
+              ? line.units
+              : (Number.isFinite(line.quantity) && line.quantity > 0 ? line.quantity : 1)
+          const netUnitPriceMinor = unitsForPricing > 0 ? Math.round(grossLineTotalMinor / unitsForPricing) : grossLineTotalMinor
+          line.netLineTotal = fromMinorUnits(grossLineTotalMinor)
+          line.netUnitPrice = fromMinorUnits(netUnitPriceMinor)
+        })
+      }
     }
 
     const reservationDoc = {

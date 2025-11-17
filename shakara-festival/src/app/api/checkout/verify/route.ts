@@ -10,6 +10,8 @@ type ReservationLineDoc = {
   unitPrice?: number
   name?: string
   selectedDate?: string
+  netUnitPrice?: number
+  netLineTotal?: number
 }
 
 type ReservationDoc = {
@@ -24,6 +26,7 @@ type ReservationDoc = {
   lines?: ReservationLineDoc[]
   status?: string
   holdApplied?: boolean
+  discount?: ResolvedDiscount
 }
 
 type NormalizedLine = {
@@ -33,6 +36,8 @@ type NormalizedLine = {
   unitPrice: number
   name: string
   selectedDate?: string
+  netUnitPrice?: number
+  netLineTotal?: number
 }
 
 type TicketDocRef = {
@@ -99,6 +104,7 @@ async function syncGuestWithWristband({
   ticketsBySku,
   orderTxRef,
   orderAmount,
+  orderCurrency,
   writeClientInstance,
 }: {
   customer: {
@@ -111,6 +117,7 @@ async function syncGuestWithWristband({
   ticketsBySku: Map<string, TicketDocRef>
   orderTxRef: string
   orderAmount: number
+  orderCurrency?: string
   writeClientInstance: typeof writeClient
 }): Promise<GuestIntegrationResult | undefined> {
   if (!customer?.email) return undefined
@@ -133,7 +140,9 @@ async function syncGuestWithWristband({
       console.warn('Skipping line without selected date for guest sync', line)
       continue
     }
-    const price = toCurrencyString(line.unitPrice ?? 0)
+    const perUnitPrice =
+      typeof line.netUnitPrice === 'number' ? line.netUnitPrice : (typeof line.unitPrice === 'number' ? line.unitPrice : 0)
+    const price = toCurrencyString(perUnitPrice)
 
     if (!isAddon) {
       const ticket_type = resolveTicketType(ticket) ?? 'general_admission'
@@ -177,6 +186,7 @@ async function syncGuestWithWristband({
       quantity: item.quantity,
       price: item.price,
     })),
+    currency: orderCurrency || 'NGN',
   }
 
   const syncedAt = new Date().toISOString()
@@ -293,7 +303,7 @@ export async function POST(req: NextRequest) {
     let finalizeError: unknown = undefined
     try {
       const reservation = await writeClient.fetch<ReservationDoc | null>(
-        `*[_type == "reservation" && tx_ref == $tx_ref][0]{ _id, amount, currency, email, firstName, lastName, phone, holdApplied, lines[] { sku, quantity, units, unitPrice, name, selectedDate }, status, discount }`,
+        `*[_type == "reservation" && tx_ref == $tx_ref][0]{ _id, amount, currency, email, firstName, lastName, phone, holdApplied, lines[] { sku, quantity, units, unitPrice, name, selectedDate, netUnitPrice, netLineTotal }, status, discount }`,
         { tx_ref }
       )
       if (!reservation) return NextResponse.json({ ok: false, reason: 'Reservation not found' }, { status: 404 })
@@ -306,10 +316,10 @@ export async function POST(req: NextRequest) {
 
       if (ok) {
         // Finalize: move reserved -> sold; mark reservation confirmed; create order
-        const reservationEmailRaw = (reservationDoc as { email?: string }).email
-        const reservationFirstName = (reservationDoc as { firstName?: string }).firstName
-        const reservationLastName = (reservationDoc as { lastName?: string }).lastName
-        const reservationPhone = (reservationDoc as { phone?: string }).phone
+        const reservationEmailRaw = reservationDoc.email
+        const reservationFirstName = reservationDoc.firstName
+        const reservationLastName = reservationDoc.lastName
+        const reservationPhone = reservationDoc.phone
         const gatewayCustomerMetadata = (data as { customer?: { email?: string; phone_number?: string; name?: string } } | undefined)?.customer
         const gatewayCustomerEmail = typeof gatewayCustomerMetadata?.email === 'string' && gatewayCustomerMetadata.email.length > 0
           ? gatewayCustomerMetadata.email
@@ -324,7 +334,10 @@ export async function POST(req: NextRequest) {
 
         const customerFirstName = typeof reservationFirstName === 'string' ? reservationFirstName : undefined
         const customerLastName = typeof reservationLastName === 'string' ? reservationLastName : undefined
-        const customerPhone = typeof reservationPhone === 'string' ? reservationPhone : undefined
+        const customerPhone =
+          typeof reservationPhone === 'string' && reservationPhone.length > 0
+            ? reservationPhone
+            : gatewayCustomerPhone
 
         const normalizedLines: NormalizedLine[] = (reservationDoc.lines || []).map((line) => {
           const quantity = typeof line?.quantity === 'number' ? line.quantity : (typeof line?.units === 'number' ? line.units : 1)
@@ -336,6 +349,8 @@ export async function POST(req: NextRequest) {
             unitPrice: typeof line?.unitPrice === 'number' ? line.unitPrice : 0,
             name: typeof line?.name === 'string' ? line.name : '',
             selectedDate: line?.selectedDate,
+            netUnitPrice: typeof line?.netUnitPrice === 'number' ? line.netUnitPrice : undefined,
+            netLineTotal: typeof line?.netLineTotal === 'number' ? line.netLineTotal : undefined,
           }
         })
 
@@ -385,16 +400,16 @@ export async function POST(req: NextRequest) {
               gateway_amount: typeof data?.amount === 'number' ? data?.amount : Number(data?.amount ?? 0),
             },
             createdAt: new Date().toISOString(),
-            ...((reservationDoc as any).discount && { discount: (reservationDoc as any).discount }),
+            ...(reservationDoc.discount && { discount: reservationDoc.discount }),
           })
         await tx.commit({ autoGenerateArrayKeys: true })
 
         // Increment discount usage count if applicable
-        if ((reservationDoc as any).discount?.code) {
+        if (reservationDoc.discount?.code) {
           try {
             const discountDoc = await writeClient.fetch<{ _id: string }>(
               `*[_type == "discountCode" && code == $code][0]{ _id }`,
-              { code: (reservationDoc as any).discount.code }
+              { code: reservationDoc.discount.code }
             )
             if (discountDoc?._id) {
               await writeClient
@@ -420,6 +435,7 @@ export async function POST(req: NextRequest) {
             ticketsBySku: ticketBySku,
             orderTxRef: tx_ref,
             orderAmount: reservationDoc.amount,
+            orderCurrency: reservationDoc.currency ?? 'NGN',
             writeClientInstance: writeClient,
           })
         } catch (err) {
