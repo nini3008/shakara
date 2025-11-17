@@ -5,6 +5,7 @@ import { useCart } from '@/contexts/CartContext'
 import type { CartItem } from '@/contexts/CartContext'
 import { cn } from '@/lib/utils'
 import { trackAddToCart } from '@/lib/analytics'
+import { TopToast } from '@/components/ui/TopToast'
 
 type Addon = { _id: string; name: string; sku: string; price: number; description?: string; badge?: string }
 type AddonsCarouselProps = { className?: string }
@@ -26,9 +27,18 @@ const deriveTicketDates = (items: CartItem[]): string[] => {
 }
 
 export default function AddonsCarousel({ className }: AddonsCarouselProps) {
-  const { addItem, items } = useCart()
+  const { addItem, items: cartItems } = useCart()
   const [addons, setAddons] = useState<Addon[]>([])
-  const ticketDates = useMemo(() => deriveTicketDates(items), [items])
+  const ticketDates = useMemo(() => deriveTicketDates(cartItems), [cartItems])
+  const [toastOpen, setToastOpen] = useState(false)
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
+  const [toastId, setToastId] = useState(0)
+
+  const showToast = useCallback((msg: string) => {
+    setToastMessage(msg)
+    setToastId((id) => id + 1)
+    setToastOpen(true)
+  }, [])
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [paused, setPaused] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
@@ -292,7 +302,7 @@ export default function AddonsCarousel({ className }: AddonsCarouselProps) {
                     onClick={() => {
                       const dates = ticketDates.length > 0 ? [...ticketDates] : []
                       if (dates.length === 0) {
-                        window.alert('Add at least one dated ticket to your basket before adding add-ons.')
+                        showToast('Add at least one dated ticket before choosing add-ons')
                         return
                       }
                       const sku = a.sku
@@ -330,6 +340,12 @@ export default function AddonsCarousel({ className }: AddonsCarouselProps) {
         </div>
         {/* Instruction removed per request */}
       </div>
+      <TopToast
+        key={toastId}
+        open={toastOpen}
+        onOpenChange={setToastOpen}
+        message={toastMessage}
+      />
     </section>
   )
 }

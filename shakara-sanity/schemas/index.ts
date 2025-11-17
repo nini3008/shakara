@@ -15,6 +15,7 @@ import order from './order'
 import blogAuthor from './blogAuthor'
 import blogPost from './blogPost'
 import vendor from './vendor'
+import discountCode from './discountCode'
 
 export const schema: {types: SchemaTypeDefinition[]} = {
   types: [
@@ -34,6 +35,7 @@ export const schema: {types: SchemaTypeDefinition[]} = {
     order,
     blogAuthor,
     blogPost,
+    discountCode,
   ],
 }
 

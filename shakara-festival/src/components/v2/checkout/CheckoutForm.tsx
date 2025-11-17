@@ -15,6 +15,9 @@ import { cn } from '@/lib/utils'
 import { PhoneInput } from 'react-international-phone'
 import 'react-international-phone/style.css'
 import { trackBeginCheckout } from '@/lib/analytics'
+import { formatDiscountValue } from '@/lib/discounts'
+import type { ResolvedDiscount } from '@/types'
+import { Tag } from 'lucide-react'
 
 declare global {
   interface Window {
@@ -51,11 +54,14 @@ type CheckoutFormValues = CheckoutCustomer
 
 export default function CheckoutForm() {
   const router = useRouter()
-  const { items, total, clear, count } = useCart()
+  const { items, total, clear, count, discount: appliedDiscount, setDiscount: setAppliedDiscount, finalTotal } = useCart()
 
   const [loading, setLoading] = useState(false)
   const [paymentError, setPaymentError] = useState<string | null>(null)
   const [scriptLoaded, setScriptLoaded] = useState(false)
+  const [discountCode, setDiscountCode] = useState('')
+  const [discountLoading, setDiscountLoading] = useState(false)
+  const [discountError, setDiscountError] = useState<string | null>(null)
 
   const form = useForm<CheckoutFormInput, undefined, CheckoutFormValues>({
     resolver: zodResolver(checkoutCustomerSchema),
@@ -78,6 +84,61 @@ export default function CheckoutForm() {
         setPaymentError('Failed to load payment provider. Please refresh and try again.')
       })
   }, [])
+
+  // Clear discount code input when discount is removed from cart
+  useEffect(() => {
+    if (!appliedDiscount) {
+      setDiscountCode('')
+      setDiscountError(null)
+    }
+  }, [appliedDiscount])
+
+  // Apply discount code
+  const applyDiscount = async () => {
+    if (!discountCode.trim()) {
+      setDiscountError('Please enter a discount code')
+      return
+    }
+
+    setDiscountLoading(true)
+    setDiscountError(null)
+
+    try {
+      const response = await fetch('/api/discounts/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: discountCode,
+          cartTotal: total,
+          cartSkus: items.map(item => item.id),
+          customerEmail: form.getValues('email') || undefined,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok || !result.ok) {
+        setDiscountError(result.error || 'Invalid discount code')
+        setAppliedDiscount(null)
+      } else {
+        setAppliedDiscount(result.discount)
+        setDiscountError(null)
+      }
+    } catch (error) {
+      console.error('Failed to apply discount:', error)
+      setDiscountError('Failed to validate discount code')
+      setAppliedDiscount(null)
+    } finally {
+      setDiscountLoading(false)
+    }
+  }
+
+  // Remove applied discount
+  const removeDiscount = () => {
+    setAppliedDiscount(null)
+    setDiscountCode('')
+    setDiscountError(null)
+  }
 
   // Handle payment with Flutterwave Inline
   const handlePayment = async (values: CheckoutFormValues) => {
@@ -138,6 +199,7 @@ export default function CheckoutForm() {
             selectedDate: item.selectedDate,
             selectedDates: item.selectedDates
           })),
+          ...(appliedDiscount && { discountCode: appliedDiscount.code }),
         }),
       })
       if (!prepareRes.ok) {
@@ -324,17 +386,73 @@ export default function CheckoutForm() {
               </div>
 
               {/* Totals */}
-              <div className="border-t pt-4">
-                <div className="flex justify-between mb-2">
+              <div className="border-t pt-4 space-y-2">
+                <div className="flex justify-between">
                   <span className="text-sm text-gray-600 dark:text-gray-300">Items</span>
                   <span className="text-sm">{count}</span>
                 </div>
                 <div className="flex justify-between">
+                  <span className="text-sm text-gray-600 dark:text-gray-300">Subtotal</span>
+                  <span className="text-sm">₦{total.toLocaleString()}</span>
+                </div>
+                {appliedDiscount && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-green-500 flex items-center gap-2">
+                      <Tag className="h-3 w-3" />
+                      {appliedDiscount.label}
+                    </span>
+                    <span className="text-sm text-green-500">{formatDiscountValue(appliedDiscount.valueApplied)}</span>
+                  </div>
+                )}
+                <div className="border-t pt-2 flex justify-between">
                   <span className="text-lg font-semibold">Total</span>
                   <span className="text-lg font-semibold gradient-text">
-                    ₦{total.toLocaleString()}
+                    ₦{finalTotal.toLocaleString()}
                   </span>
                 </div>
+              </div>
+
+              {/* Discount Code */}
+              <div className="mt-6">
+                <h4 className="text-sm font-semibold mb-3">Discount Code</h4>
+                {!appliedDiscount ? (
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      placeholder="Enter discount code"
+                      value={discountCode}
+                      onChange={(e) => setDiscountCode(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), applyDiscount())}
+                      disabled={discountLoading}
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      onClick={applyDiscount}
+                      disabled={discountLoading || !discountCode.trim()}
+                      className="gradient-bg text-white"
+                    >
+                      {discountLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Apply'}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                    <span className="text-sm text-green-500 flex items-center gap-2">
+                      <Tag className="h-4 w-4" />
+                      {appliedDiscount.code} - {appliedDiscount.label}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={removeDiscount}
+                      className="text-sm text-gray-400 hover:text-white transition-colors"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+                {discountError && (
+                  <p className="mt-2 text-xs text-red-500">{discountError}</p>
+                )}
               </div>
             </div>
 
@@ -447,7 +565,7 @@ export default function CheckoutForm() {
                       Processing...
                     </>
                   ) : (
-                    `Pay ₦${total.toLocaleString()}`
+                    `Pay ₦${finalTotal.toLocaleString()}`
                   )}
                 </Button>
 

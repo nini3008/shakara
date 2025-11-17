@@ -1,10 +1,11 @@
 "use client"
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useCart } from '@/contexts/CartContext'
 import type { CartItem } from '@/contexts/CartContext'
 import styles from '@/components/sections/TicketsSection.module.scss'
 import { trackAddToCart } from '@/lib/analytics'
+import { TopToast } from '@/components/ui/TopToast'
 
 type Addon = {
   _id: string
@@ -35,6 +36,15 @@ export default function AddonsSection() {
   const { addItem, items } = useCart()
   const [addons, setAddons] = useState<Addon[]>([])
   const ticketDates = useMemo(() => deriveTicketDates(items), [items])
+  const [toastOpen, setToastOpen] = useState(false)
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
+  const [toastId, setToastId] = useState(0)
+
+  const showToast = useCallback((msg: string) => {
+    setToastMessage(msg)
+    setToastId((id) => id + 1)
+    setToastOpen(true)
+  }, [])
 
   useEffect(() => {
     async function load() {
@@ -75,7 +85,7 @@ export default function AddonsSection() {
                     onClick={() => {
                       const dates = ticketDates.length > 0 ? [...ticketDates] : []
                       if (dates.length === 0) {
-                        window.alert('Add at least one dated ticket to your basket before adding add-ons.')
+                        showToast('Add at least one dated ticket before choosing add-ons')
                         return
                       }
                       const sku = a.sku
@@ -114,6 +124,12 @@ export default function AddonsSection() {
           ))}
         </div>
       </div>
+      <TopToast
+        key={toastId}
+        open={toastOpen}
+        onOpenChange={setToastOpen}
+        message={toastMessage}
+      />
     </section>
   )
 }

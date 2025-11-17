@@ -1,14 +1,35 @@
 'use client'
 
 import React from 'react'
-import Link from 'next/link'
 import { CHECKOUT_ENABLED } from '@/lib/featureFlags'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCart } from '@/contexts/CartContext'
 import { Button } from '@/components/ui/Button'
+import { Tag } from 'lucide-react'
+import { formatDiscountValue } from '@/lib/discounts'
+import { useRouter, usePathname } from 'next/navigation'
 
-export default function CartDropdown({ open }: { open: boolean }) {
-  const { items, total, removeItem, updateQty } = useCart()
+type CartDropdownProps = {
+  open: boolean
+  onClose?: () => void
+}
+
+export default function CartDropdown({ open, onClose }: CartDropdownProps) {
+  const { items, total, removeItem, updateQty, discount, finalTotal } = useCart()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const handleProceedToCheckout = () => {
+    // If we're already on the checkout page, just close the dropdown
+    if (pathname === '/checkout') {
+      onClose?.()
+      return
+    }
+
+    // Otherwise navigate to checkout and close the dropdown
+    router.push('/checkout')
+    onClose?.()
+  }
 
   return (
     <AnimatePresence>
@@ -72,15 +93,42 @@ export default function CartDropdown({ open }: { open: boolean }) {
               </div>
             )}
           </div>
-          <div className="border-t border-gray-200/60 dark:border-gray-800/60 p-4 flex items-center justify-between">
-            <div className="text-sm">Total</div>
-            <div className="font-bold">₦{total.toLocaleString()}</div>
+          <div className="border-t border-gray-200/60 dark:border-gray-800/60 p-4 space-y-2">
+            {discount && (
+              <>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-400">Subtotal</div>
+                  <div className="text-sm">₦{total.toLocaleString()}</div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-green-500 flex items-center gap-2">
+                    <Tag className="h-3 w-3" />
+                    {discount.label}
+                  </div>
+                  <div className="text-sm text-green-500">{formatDiscountValue(discount.valueApplied)}</div>
+                </div>
+              </>
+            )}
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-semibold">Total</div>
+              <div className="font-bold gradient-text">₦{finalTotal.toLocaleString()}</div>
+            </div>
           </div>
           <div className="p-4 pt-0">
             {CHECKOUT_ENABLED ? (
-              <Link href="/checkout">
-                <Button className="w-full gradient-bg text-white">Proceed to checkout</Button>
-              </Link>
+              <>
+                <Button
+                  className="w-full gradient-bg text-white"
+                  onClick={handleProceedToCheckout}
+                >
+                  Proceed to checkout
+                </Button>
+                {discount && (
+                  <p className="text-xs text-center text-green-500 mt-2">
+                    Discount "{discount.code}" applied
+                  </p>
+                )}
+              </>
             ) : (
               <Button disabled className="w-full opacity-60">Checkout Unavailable</Button>
             )}

@@ -9,6 +9,7 @@ import { CART_ENABLED } from '@/lib/featureFlags';
 import { trackAddToCart } from '@/lib/analytics';
 import styles from './TicketsSection.module.scss';
 import TicketsSectionAddonsUpsell from './TicketsSectionAddonsUpsell';
+import Link from 'next/link';
 
 interface TicketsSectionClientProps {
   initialTickets: TicketType[];
@@ -312,6 +313,27 @@ export default function TicketsSectionClient({ initialTickets, initialSanityTick
         <h2 className={styles.title}>
           Tickets
         </h2>
+        <div
+          className={styles.deeplinkCallout}
+          role="complementary"
+          aria-label="Plan which tickets to buy"
+        >
+          <div className={styles.deeplinkCopy}>
+            <p className={styles.deeplinkEyebrow}>Dropped in from a link?</p>
+            <p className={styles.deeplinkBody}>
+              Preview each day&apos;s schedule and artist line up to decide which passes fit your vibe
+              before you checkout tickets.
+            </p>
+          </div>
+          <div className={styles.deeplinkActions}>
+            <Link href="/schedule" className={styles.deeplinkLink}>
+              View schedule
+            </Link>
+            <Link href="/lineup" className={styles.deeplinkLinkSecondary}>
+              See lineup
+            </Link>
+          </div>
+        </div>
         
         {(!showCurated && initialTickets.length > 0) ? (
           <>

@@ -3,6 +3,8 @@ import { client, writeClient } from '@/lib/sanity'
 import { randomUUID } from 'crypto'
 import type { SanityClient } from '@sanity/client'
 import { checkoutPreparePayloadSchema } from '@/lib/validation/checkout'
+import { validateDiscountCode, checkEmailUsage } from '@/lib/discounts'
+import type { ResolvedDiscount } from '@/types'
 
 type PrepareLine = { sku: string; quantity: number; selectedDate?: string; selectedDates?: string[] }
 
@@ -110,7 +112,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const { lines, customer } = parsed.data
+    const { lines, customer, discountCode } = parsed.data
     const parsedLines = lines as unknown as PrepareLine[]
     const { email, firstName, lastName, phone } = customer
 
@@ -176,7 +178,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    let amount = 0
+    let subtotal = 0
     const currency = 'NGN'
     type ResolvedLine = { _key: string; sku: string; quantity: number; units: number; unitPrice: number; name: string; selectedDate?: string }
     const resolvedLines: ResolvedLine[] = []
@@ -280,7 +282,7 @@ export async function POST(req: NextRequest) {
 
         const bundlePrice = priceFor(doc)
         const perDayUnitPrice = bundlePrice / selectedDates.length
-        amount += bundlePrice * qty
+        subtotal += bundlePrice * qty
 
         baseDocs.forEach((base, index) => {
           const date = selectedDates[index]
@@ -323,7 +325,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: `Add-on ${line.sku} requires selecting at least one event date` }, { status: 400 })
           }
           for (const date of normalizedSelectedDates) {
-            amount += unitPrice * qty
+            subtotal += unitPrice * qty
             const lineKey = randomUUID()
             resolvedLines.push({
               _key: lineKey,
@@ -340,7 +342,7 @@ export async function POST(req: NextRequest) {
           continue
         }
 
-        amount += unitPrice * qty
+        subtotal += unitPrice * qty
         const selectedDate = normalizedSelectedDates[0]
         const lineKey = randomUUID()
         resolvedLines.push({ _key: lineKey, sku: doc.sku, quantity: qty, units, unitPrice, name: doc.name, selectedDate })
@@ -354,11 +356,52 @@ export async function POST(req: NextRequest) {
 
     const tx_ref = generateTxRef()
 
+    // Validate and apply discount if provided
+    let appliedDiscount: ResolvedDiscount | undefined
+    let finalAmount = subtotal
+    
+    if (discountCode) {
+      const cartSkus = resolvedLines.map(line => line.sku)
+      const discountResult = await validateDiscountCode({
+        code: discountCode,
+        cartTotal: subtotal,
+        cartSkus,
+        customerEmail: email,
+      })
+      
+      if (!discountResult.valid) {
+        return NextResponse.json({ error: discountResult.error }, { status: 400 })
+      }
+      
+      appliedDiscount = discountResult.discount
+      
+      // Check email usage if applicable
+      if (appliedDiscount && email && discountResult.discount) {
+        const discountDoc = await client.fetch<{ _id: string; maxUsesPerEmail?: number }>(
+          `*[_type == "discountCode" && code == $code][0]{ _id, maxUsesPerEmail }`,
+          { code: appliedDiscount.code }
+        )
+        
+        if (discountDoc?.maxUsesPerEmail) {
+          const { allowed, usageCount } = await checkEmailUsage(appliedDiscount.code, email, discountDoc.maxUsesPerEmail)
+          if (!allowed) {
+            return NextResponse.json({ 
+              error: `You have already used this discount code ${usageCount} time(s). Maximum allowed: ${discountDoc.maxUsesPerEmail}` 
+            }, { status: 400 })
+          }
+        }
+      }
+      
+      // Apply discount to final amount
+      finalAmount = subtotal - (appliedDiscount?.valueApplied || 0)
+      finalAmount = Math.max(0, finalAmount) // Ensure non-negative
+    }
+
     const reservationDoc = {
       _type: 'reservation',
       tx_ref,
       lines: resolvedLines,
-      amount,
+      amount: finalAmount,
       currency,
       email,
       firstName,
@@ -369,6 +412,7 @@ export async function POST(req: NextRequest) {
       holdApplied: true,
       expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
       createdAt: new Date().toISOString(),
+      ...(appliedDiscount && { discount: appliedDiscount }),
     }
 
     try {
@@ -390,7 +434,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: `Unable to reserve tickets: ${message}` }, { status: 409 })
     }
 
-    return NextResponse.json({ tx_ref, amount, currency, lines: resolvedLines, dateMetadata })
+    return NextResponse.json({ 
+      tx_ref, 
+      amount: finalAmount, 
+      currency, 
+      lines: resolvedLines, 
+      dateMetadata,
+      ...(appliedDiscount && { appliedDiscount }),
+    })
   } catch (e: unknown) {
     console.error('Prepare error', e)
     const message =

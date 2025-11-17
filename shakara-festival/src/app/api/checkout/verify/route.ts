@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Flutterwave from 'flutterwave-node-v3'
 import { writeClient } from '@/lib/sanity'
+import type { ResolvedDiscount } from '@/types'
 
 type ReservationLineDoc = {
   sku: string
@@ -292,7 +293,7 @@ export async function POST(req: NextRequest) {
     let finalizeError: unknown = undefined
     try {
       const reservation = await writeClient.fetch<ReservationDoc | null>(
-        `*[_type == "reservation" && tx_ref == $tx_ref][0]{ _id, amount, currency, email, firstName, lastName, phone, holdApplied, lines[] { sku, quantity, units, unitPrice, name, selectedDate }, status }`,
+        `*[_type == "reservation" && tx_ref == $tx_ref][0]{ _id, amount, currency, email, firstName, lastName, phone, holdApplied, lines[] { sku, quantity, units, unitPrice, name, selectedDate }, status, discount }`,
         { tx_ref }
       )
       if (!reservation) return NextResponse.json({ ok: false, reason: 'Reservation not found' }, { status: 404 })
@@ -384,8 +385,28 @@ export async function POST(req: NextRequest) {
               gateway_amount: typeof data?.amount === 'number' ? data?.amount : Number(data?.amount ?? 0),
             },
             createdAt: new Date().toISOString(),
+            ...((reservationDoc as any).discount && { discount: (reservationDoc as any).discount }),
           })
         await tx.commit({ autoGenerateArrayKeys: true })
+
+        // Increment discount usage count if applicable
+        if ((reservationDoc as any).discount?.code) {
+          try {
+            const discountDoc = await writeClient.fetch<{ _id: string }>(
+              `*[_type == "discountCode" && code == $code][0]{ _id }`,
+              { code: (reservationDoc as any).discount.code }
+            )
+            if (discountDoc?._id) {
+              await writeClient
+                .patch(discountDoc._id)
+                .setIfMissing({ usageCount: 0 })
+                .inc({ usageCount: 1 })
+                .commit({ autoGenerateArrayKeys: true })
+            }
+          } catch (err) {
+            console.error('Failed to update discount usage count', err)
+          }
+        }
 
         try {
           await syncGuestWithWristband({
