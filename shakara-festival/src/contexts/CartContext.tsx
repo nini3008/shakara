@@ -44,12 +44,26 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     return unique
   }
 
+  const computeUid = (i: CartItem) => {
+    const parts = [i.category || 'ticket', i.id]
+    if (i.selectedDates?.length) {
+      parts.push(`@${i.selectedDates.join('|')}`)
+    } else if (i.selectedDate) {
+      parts.push(`@${i.selectedDate}`)
+    }
+    return parts.join(':')
+  }
+
   const normalizeItem = (item: CartItem): CartItem => {
     const selectedDates = normalizeDates(item.selectedDates ?? item.selectedDate)
-    return {
+    const normalized = {
       ...item,
       selectedDates,
       selectedDate: selectedDates.length === 1 ? selectedDates[0] : item.selectedDate,
+    }
+    return {
+      ...normalized,
+      uid: normalized.uid || computeUid(normalized),
     }
   }
 
@@ -102,15 +116,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items.length])
 
-  const computeUid = (i: CartItem) => {
-    const parts = [i.category || 'ticket', i.id]
-    if (i.selectedDates?.length) {
-      parts.push(`@${i.selectedDates.join('|')}`)
-    } else if (i.selectedDate) {
-      parts.push(`@${i.selectedDate}`)
+  // Ensure all items have uid assigned (handles legacy data)
+  useEffect(() => {
+    const needsNormalization = items.some((item) => !item.uid)
+    if (needsNormalization) {
+      setItems((prev) => prev.map((item) => (item.uid ? item : normalizeItem(item))))
     }
-    return parts.join(':')
-  }
+  }, [items])
 
   const addItem = (item: CartItem) => {
     setItems((prev) => {
@@ -125,10 +137,25 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }
 
   const updateQty = (uid: string, quantity: number) => {
-    setItems((prev) => prev.map((p) => (p.uid === uid ? { ...p, quantity: Math.max(1, quantity) } : p)))
+    setItems((prev) =>
+      prev.map((p) => {
+        const itemUid = p.uid || computeUid(p)
+        if (p.uid === uid || itemUid === uid || p.id === uid) {
+          return { ...p, quantity: Math.max(1, quantity) }
+        }
+        return p
+      })
+    )
   }
 
-  const removeItem = (uid: string) => setItems((prev) => prev.filter((p) => p.uid !== uid))
+  const removeItem = (uid: string) => {
+    setItems((prev) =>
+      prev.filter((p) => {
+        const itemUid = p.uid || computeUid(p)
+        return p.uid !== uid && itemUid !== uid && p.id !== uid
+      })
+    )
+  }
   const clear = () => {
     setItems([])
     setDiscount(null)
