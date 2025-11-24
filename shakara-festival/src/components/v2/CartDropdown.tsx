@@ -67,26 +67,51 @@ export default function CartDropdown({ open, onClose }: CartDropdownProps) {
                   return (
                     <div key={it.uid || it.id} className="flex flex-col gap-1">
                       <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <div className="font-medium text-sm">{it.name}</div>
-                      <div className="text-xs text-gray-500">
-                        ₦{it.price.toLocaleString()} × {it.quantity}
-                      </div>
+                        <div>
+                          <div className="font-medium text-sm">{it.name}</div>
+                          <div className="text-xs text-gray-500">
+                            ₦{it.price.toLocaleString()} × {it.quantity}
+                          </div>
                           {formattedDates && (
                             <div className="text-xs text-gray-400 mt-0.5">
                               {`Dates: ${formattedDates}`}
                             </div>
                           )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="number"
-                        min={1}
-                        value={it.quantity}
-                          onChange={(e) => updateQty(it.uid || it.id, parseInt(e.target.value || '1', 10))}
-                        className="w-14 h-8 rounded-md border border-input bg-transparent px-2 text-sm"
-                      />
-                          <button onClick={() => removeItem(it.uid || it.id)} className="text-xs text-red-500">Remove</button>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {/* Quantity controls - optimized for mobile tap targets */}
+                          <div className="inline-flex items-center gap-2 rounded-full border border-input px-2 py-1 text-xs bg-black/30">
+                            <button
+                              type="button"
+                              aria-label={`Decrease quantity of ${it.name}`}
+                              onClick={() =>
+                                updateQty(it.uid || it.id, Math.max(1, (it.quantity || 1) - 1))
+                              }
+                              className="h-7 w-7 flex items-center justify-center rounded-full border border-input/60 hover:bg-white/10 active:scale-95 transition"
+                            >
+                              -
+                            </button>
+                            <span className="min-w-[1.5rem] text-center font-semibold">
+                              {it.quantity}
+                            </span>
+                            <button
+                              type="button"
+                              aria-label={`Increase quantity of ${it.name}`}
+                              onClick={() =>
+                                updateQty(it.uid || it.id, (it.quantity || 1) + 1)
+                              }
+                              className="h-7 w-7 flex items-center justify-center rounded-full border border-input/60 hover:bg-white/10 active:scale-95 transition"
+                            >
+                              +
+                            </button>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeItem(it.uid || it.id)}
+                            className="text-xs text-red-500 hover:text-red-400 underline-offset-2 hover:underline"
+                          >
+                            Remove
+                          </button>
                         </div>
                       </div>
                     </div>
