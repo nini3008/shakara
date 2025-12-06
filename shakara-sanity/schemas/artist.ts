@@ -100,6 +100,41 @@ export default defineType({
       type: 'boolean',
       description: 'Featured artists appear prominently on the lineup',
       initialValue: false
+    }),
+    defineField({
+      name: 'roles',
+      title: 'Artist Roles',
+      type: 'array',
+      of: [{type: 'string'}],
+      options: {
+        list: [
+          {title: 'Live Performance', value: 'livePerformance'},
+          {title: 'DJ', value: 'dj'},
+          {title: 'Speaker', value: 'speaker'},
+          {title: 'Host/MC', value: 'host'}
+        ]
+      },
+      description: 'Select all roles this artist will perform (can select multiple)',
+      validation: (Rule) => Rule.required().min(1)
+    }),
+    defineField({
+      name: 'performanceWindow',
+      title: 'Performance Window',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Main Event', value: 'main'},
+          {title: 'Shakara After Dark', value: 'afterDark'}
+        ]
+      },
+      description: 'When does this artist perform?',
+      initialValue: 'main'
+    }),
+    defineField({
+      name: 'performanceDate',
+      title: 'Performance Date',
+      type: 'datetime',
+      description: 'Actual date and time of performance (for sorting)'
     })
   ],
   preview: {

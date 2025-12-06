@@ -39,7 +39,7 @@ export const writeClient = process.env.SANITY_WRITE_TOKEN
   : client
 
 // GROQ queries
-export const ARTIST_QUERY = `*[_type == "artist" && !(_id in path("drafts.**"))] | order(featured desc, name asc) {
+export const ARTIST_QUERY = `*[_type == "artist" && !(_id in path("drafts.**"))] | order(performanceDate asc, featured desc, name asc) {
   _id,
   name,
   slug,
@@ -49,11 +49,14 @@ export const ARTIST_QUERY = `*[_type == "artist" && !(_id in path("drafts.**"))]
   socialLinks,
   performanceDay,
   performanceTime,
+  performanceDate,
   stage,
-  featured
+  featured,
+  roles,
+  performanceWindow
 }`
 
-export const FEATURED_ARTISTS_QUERY = `*[_type == "artist" && featured == true && !(_id in path("drafts.**"))] | order(name asc) {
+export const FEATURED_ARTISTS_QUERY = `*[_type == "artist" && featured == true && !(_id in path("drafts.**"))] | order(performanceDate asc, name asc) {
   _id,
   name,
   slug,
@@ -63,7 +66,10 @@ export const FEATURED_ARTISTS_QUERY = `*[_type == "artist" && featured == true &
   socialLinks,
   performanceDay,
   performanceTime,
-  stage
+  performanceDate,
+  stage,
+  roles,
+  performanceWindow
 }`
 
 export const TICKETS_QUERY = `*[_type == "ticket"] | order(order asc, price asc) {
@@ -149,16 +155,21 @@ export const SCHEDULE_QUERY = `*[_type == "scheduleEvent"] | order(day asc, time
   day,
   type,
   artist->{
+    _id,
     name,
     slug,
     image,
-    genre
+    genre,
+    roles,
+    performanceWindow
   },
   panelists[]->{
+    _id,
     name,
     slug,
     image,
-    genre
+    genre,
+    roles
   },
   stage,
   featured,
@@ -177,16 +188,21 @@ export const SCHEDULE_BY_DAY_QUERY = `*[_type == "scheduleEvent" && day == $day]
   day,
   type,
   artist->{
+    _id,
     name,
     slug,
     image,
-    genre
+    genre,
+    roles,
+    performanceWindow
   },
   panelists[]->{
+    _id,
     name,
     slug,
     image,
-    genre
+    genre,
+    roles
   },
   stage,
   featured,

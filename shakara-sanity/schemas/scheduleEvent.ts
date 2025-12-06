@@ -59,10 +59,11 @@ export default defineType({
       type: 'string',
       options: {
         list: [
-          {title: 'Musical Performance', value: 'music'},
-          {title: 'Panel Discussion', value: 'panel'},
+          {title: 'Live Performance', value: 'livePerformance'},
+          {title: 'DJ Set', value: 'dj'},
+          {title: 'Speaker/Panel', value: 'speaker'},
+          {title: 'Shakara After Dark', value: 'afterDark'},
           {title: 'Vendors/Market', value: 'vendors'},
-          {title: 'After Party', value: 'afterparty'},
           {title: 'Workshop', value: 'workshop'},
           {title: 'Food & Drinks', value: 'food'},
           {title: 'Art Installation', value: 'art'},

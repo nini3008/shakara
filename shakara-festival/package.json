@@ -31,7 +31,7 @@
     "libphonenumber-js": "^1.12.25",
     "lucide-react": "^0.536.0",
     "motion": "^12.23.22",
-    "next": "15.4.5",
+    "next": "15.4.8",
     "next-optimized-images": "^2.6.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -42,18 +42,19 @@
     "resend": "^4.8.0",
     "sass": "^1.90.0",
     "tailwind-merge": "^3.3.1",
+    "tailwindcss-animate": "^1.0.7",
     "zod": "^4.0.15"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "4.1.11",
     "@types/mailchimp__mailchimp_marketing": "^3.0.21",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.4.5",
-    "tailwindcss": "^4",
+    "tailwindcss": "4.1.11",
     "tw-animate-css": "^1.3.6",
     "typescript": "^5"
   }

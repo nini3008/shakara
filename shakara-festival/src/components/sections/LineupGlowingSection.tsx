@@ -1,56 +1,97 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { GlowingEffect } from "@/components/ui/glowing-effect";
+import { Artist } from "@/types";
+import { SanityArtist } from "@/types/sanity-adapters";
+import { urlFor } from "@/lib/sanity";
+import Image from "next/image";
+import Link from "next/link";
 
-export function LineupGlowingSection() {
+interface LineupGlowingSectionProps {
+  featuredArtists: { artist: Artist; sanityArtist: SanityArtist }[];
+}
+
+export function LineupGlowingSection({ featuredArtists }: LineupGlowingSectionProps) {
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    if (!carouselRef.current) return;
+    const scrollAmount = 320;
+    const newScrollLeft = carouselRef.current.scrollLeft + (direction === 'right' ? scrollAmount : -scrollAmount);
+    carouselRef.current.scrollTo({ left: newScrollLeft, behavior: 'smooth' });
+  };
+
   return (
     <div className="max-w-[1600px] mx-auto px-4">
-      {/* Featuring Title */}
+      {/* Featured Artists Title */}
       <h2 className="text-3xl md:text-4xl font-bold text-center gradient-text mb-8">
-        Featuring
+        Featured Artists
       </h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-        {/* All cards same size - Day 1 */}
-        <GridItem
-          image="/images/lineup/line-up-day-1.jpeg"
-          title="Day 1: ALTÉ"
-          description=""
-          cardHeight="h-[350px]"
-        />
+      <div className="relative group">
+        <button
+          onClick={() => scrollCarousel('left')}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black/60 hover:bg-black/80 text-white rounded-full p-3 transition-all opacity-0 group-hover:opacity-100 md:opacity-100 -translate-x-1/2 shadow-lg border border-white/10 backdrop-blur-sm"
+          aria-label="Scroll left"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          onClick={() => scrollCarousel('right')}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/60 hover:bg-black/80 text-white rounded-full p-3 transition-all opacity-0 group-hover:opacity-100 md:opacity-100 translate-x-1/2 shadow-lg border border-white/10 backdrop-blur-sm"
+          aria-label="Scroll right"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
 
-        {/* Day 2 */}
-        <GridItem
-          image="/images/lineup/line-up-day-2.jpeg"
-          title="Day 2: LEADING LADIES"
-          description=""
-          cardHeight="h-[350px]"
-        />
+        <div 
+          ref={carouselRef}
+          className="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {featuredArtists.map(({ artist, sanityArtist }) => (
+            <div key={artist.id} className="snap-start flex-shrink-0 w-[280px] md:w-[320px]">
+              <Link 
+                href={`/lineup#${
+                  artist.performanceWindow === 'afterDark' ? 'afterDark' :
+                  artist.roles?.includes('dj') ? 'dj' :
+                  artist.roles?.includes('speaker') ? 'speaker' :
+                  'livePerformance'
+                }`}
+              >
+                <GridItem
+                  image={sanityArtist.image ? urlFor(sanityArtist.image).width(600).height(800).url() : ''}
+                  title={artist.name}
+                  description={artist.genre || ''}
+                  cardHeight="h-[400px]"
+                />
+              </Link>
+            </div>
+          ))}
 
-        {/* Day 3 */}
-        <GridItem
-          image="/images/lineup/line-up-day-3.jpeg"
-          title="Day 3: AFROBEATS"
-          description=""
-          cardHeight="h-[350px]"
-        />
+          {featuredArtists.length === 0 && (
+            <div className="w-full text-center text-white/60 py-12">
+              Lineup announcements coming soon!
+            </div>
+          )}
+        </div>
+      </div>
 
-        {/* Day 4 */}
-        <GridItem
-          image="/images/lineup/line-up-day-4.jpeg"
-          title="Day 4: GOSPEL NIGHT"
-          description=""
-          cardHeight="h-[350px]"
-        />
-
-        {/* Shakara Junction */}
-        <GridItem
-          image="/images/shakara-junction.jpeg"
-          title="SHAKARA JUNCTION"
-          description=""
-          cardHeight="h-[350px]"
-        />
+      <div className="text-center mt-12">
+        <Link
+          href="/lineup"
+          className="inline-flex items-center justify-center px-8 py-3 rounded-lg border border-white/20 text-white font-semibold hover:bg-white/10 transition-all"
+        >
+          View Full Lineup
+          <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </Link>
       </div>
     </div>
   );
@@ -68,8 +109,8 @@ const GridItem = ({
   cardHeight?: string;
 }) => {
   return (
-    <div className={`${cardHeight}`}>
-      <div className="relative h-full rounded-2xl border border-gray-800 p-2 md:rounded-3xl md:p-3">
+    <div className={`${cardHeight} w-full`}>
+      <div className="relative h-full rounded-2xl border border-gray-800 p-2 md:rounded-3xl md:p-3 group">
         <GlowingEffect
           spread={40}
           glow={true}
@@ -78,38 +119,35 @@ const GridItem = ({
           inactiveZone={0.01}
           variant="default"
         />
-        <div
-          className="relative flex h-full flex-col justify-end gap-6 overflow-hidden rounded-xl p-6 md:p-8"
-          style={{
-            backgroundImage: `url(${image})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundRepeat: 'no-repeat'
-          }}
-        >
-          {/* Enhanced overlay for better text readability */}
-          {title && (
-            <>
-              {/* Dark overlay for overall contrast */}
-              <div className="absolute inset-0 bg-black/40"></div>
-              {/* Gradient overlay for text area */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent"></div>
-            </>
-          )}
-          
-          {/* Content */}
-          {title && (
-            <div className="relative z-20">
-              <h3 className="font-sans text-xl md:text-2xl lg:text-3xl font-semibold text-white drop-shadow-lg mb-3">
-                {title}
-              </h3>
-              {description && (
-                <p className="font-sans text-sm md:text-base text-white/90 drop-shadow-md leading-relaxed">
-                  {description}
-                </p>
-              )}
+        <div className="relative h-full overflow-hidden rounded-xl">
+          {image ? (
+            <Image
+              src={image}
+              alt={title}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-110"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-neutral-900 flex items-center justify-center">
+              <span className="text-6xl font-bold text-white/10">{title.charAt(0)}</span>
             </div>
           )}
+          
+          {/* Enhanced overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
+          
+          {/* Content */}
+          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 z-20 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+            <h3 className="font-sans text-xl md:text-2xl lg:text-3xl font-bold text-white drop-shadow-lg mb-2">
+              {title}
+            </h3>
+            {description && (
+              <p className="font-sans text-sm md:text-base text-orange-400 font-medium tracking-wide uppercase">
+                {description}
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>

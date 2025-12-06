@@ -3,9 +3,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { LineupGlowingSection } from "./LineupGlowingSection";
 
-export function LineupLampSection() {
+export function LineupLampSection({ children }: { children?: React.ReactNode }) {
   return (
     <OrangeLampContainer>
       {/* Feature section nested under the lamp */}
@@ -18,7 +17,7 @@ export function LineupLampSection() {
           ease: "easeInOut",
         }}
         className="w-full mx-auto mt-0">
-        <LineupGlowingSection />
+        {children || <div className="text-center text-white/50">Loading...</div>}
       </motion.div>
     </OrangeLampContainer>
   );
@@ -38,7 +37,7 @@ const OrangeLampContainer = ({
         className
       )}
     >
-      <div className="relative flex w-full h-96 scale-y-125 items-center justify-center isolate z-0 ">
+      <div className="relative flex w-full h-56 scale-y-125 items-center justify-center isolate z-0 ">
         <motion.div
           initial={{ opacity: 0.5, width: "15rem" }}
           whileInView={{ opacity: 1, width: "30rem" }}
