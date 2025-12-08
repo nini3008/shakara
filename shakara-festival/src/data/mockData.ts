@@ -90,7 +90,7 @@ export const scheduleEvents: ScheduleEvent[] = [
     description: 'Traditional music and cultural showcase',
     time: '12:00 PM',
     day: 1,
-    type: 'music',
+    type: 'livePerformance',
     stage: 'Main Stage'
   },
   {
@@ -106,7 +106,7 @@ export const scheduleEvents: ScheduleEvent[] = [
     description: 'Alternative Nigerian music showcase',
     time: '6:00 PM',
     day: 1,
-    type: 'music',
+    type: 'livePerformance',
     stage: 'Main Stage'
   },
   {
@@ -114,7 +114,7 @@ export const scheduleEvents: ScheduleEvent[] = [
     title: 'Shakara After Dark',
     time: '10:00 PM',
     day: 1,
-    type: 'afterparty',
+    type: 'afterDark',
     stage: 'Club Stage'
   },
   {
@@ -122,7 +122,7 @@ export const scheduleEvents: ScheduleEvent[] = [
     title: 'Women in Music & Entertainment Panel',
     time: '12:00 PM',
     day: 2,
-    type: 'panel',
+    type: 'speaker',
     stage: 'Conference Hall'
   },
   {
@@ -130,7 +130,7 @@ export const scheduleEvents: ScheduleEvent[] = [
     title: 'Women in Music Showcase',
     time: '6:00 PM',
     day: 2,
-    type: 'music',
+    type: 'livePerformance',
     stage: 'Main Stage'
   },
   {
@@ -138,7 +138,7 @@ export const scheduleEvents: ScheduleEvent[] = [
     title: 'Music, Art, Fashion & Tourism Conference',
     time: '12:00 PM',
     day: 3,
-    type: 'panel',
+    type: 'speaker',
     stage: 'Conference Hall'
   },
   {
@@ -146,7 +146,7 @@ export const scheduleEvents: ScheduleEvent[] = [
     title: 'Afrobeats Night',
     time: '6:00 PM',
     day: 3,
-    type: 'music',
+    type: 'livePerformance',
     stage: 'Main Stage'
   },
   {
@@ -154,7 +154,7 @@ export const scheduleEvents: ScheduleEvent[] = [
     title: 'Gospel Night Live',
     time: '6:00 PM',
     day: 4,
-    type: 'music',
+    type: 'livePerformance',
     stage: 'Main Stage'
   }
 ]

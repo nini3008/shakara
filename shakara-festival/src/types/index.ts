@@ -28,7 +28,10 @@ export interface Artist {
   };
   day?: number;
   time?: string;
+  performanceDate?: string;
   stage?: string;
+  roles?: ('livePerformance' | 'dj' | 'speaker' | 'host')[];
+  performanceWindow?: 'main' | 'afterDark';
 }
 
 export interface TicketType {
@@ -69,7 +72,7 @@ export interface ScheduleEvent {
   description?: string;
   time: string;
   day: number;
-  type: 'music' | 'panel' | 'vendors' | 'afterparty';
+  type: 'livePerformance' | 'dj' | 'speaker' | 'afterDark' | 'vendors' | 'workshop' | 'food' | 'art' | 'meetgreet';
   artist?: Artist;
   panelists?: Artist[];
   stage?: string;

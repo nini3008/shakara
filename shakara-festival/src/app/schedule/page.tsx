@@ -5,7 +5,7 @@ import ThemedContent from '@/components/ThemedContent'
 import { client, SCHEDULE_QUERY } from '@/lib/sanity'
 import { ScheduleEvent } from '@/types'
 import { SanityScheduleEvent, adaptSanityScheduleEvent } from '@/types/sanity-adapters'
-import ScheduleContent from '@/components/schedule/scheduleContext'
+import ScheduleGroupedContent from '@/components/schedule/ScheduleGroupedContent'
 import styles from '@/components/schedule/schedule.module.scss'
 import Reveal from '@/components/v2/Reveal'
 import { createPageMetadata } from '@/lib/metadata-utils'
@@ -36,7 +36,7 @@ export default async function SchedulePage() {
         <main className={styles.scheduleWrapper}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <Reveal>
-              <ScheduleContent
+              <ScheduleGroupedContent
                 initialEvents={initialEvents}
                 initialSanityEvents={initialSanityEvents}
               />

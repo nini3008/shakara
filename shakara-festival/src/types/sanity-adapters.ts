@@ -27,8 +27,11 @@ export interface SanityArtist {
   };
   performanceDay?: number;
   performanceTime?: string;
+  performanceDate?: string;
   stage?: string;
   featured: boolean;
+  roles?: ('livePerformance' | 'dj' | 'speaker' | 'host')[];
+  performanceWindow?: 'main' | 'afterDark';
 }
 
 export interface SanityTicket {
@@ -143,7 +146,10 @@ export function adaptSanityArtist(sanityArtist: SanityArtist): Artist {
     },
     day: sanityArtist.performanceDay, // Map performanceDay to day
     time: sanityArtist.performanceTime, // Map performanceTime to time
+    performanceDate: sanityArtist.performanceDate,
     stage: sanityArtist.stage,
+    roles: sanityArtist.roles,
+    performanceWindow: sanityArtist.performanceWindow,
   };
 }
 
@@ -224,11 +230,22 @@ export function adaptSanityTicket(sanityTicket: SanityTicket): TicketType {
 export function adaptSanityScheduleEvent(sanityEvent: SanityScheduleEvent): ScheduleEvent {
   // Map type string to your type
   const typeMap: Record<string, ScheduleEvent['type']> = {
-    music: 'music',
-    panel: 'panel',
+    livePerformance: 'livePerformance',
+    liveperformance: 'livePerformance',
+    dj: 'dj',
+    speaker: 'speaker',
+    afterDark: 'afterDark',
+    afterdark: 'afterDark',
     vendors: 'vendors',
-    afterparty: 'afterparty',
-    conference: 'panel', // Map conference to panel
+    workshop: 'workshop',
+    food: 'food',
+    art: 'art',
+    meetgreet: 'meetgreet',
+    // Legacy mappings
+    music: 'livePerformance',
+    panel: 'speaker',
+    afterparty: 'afterDark',
+    conference: 'speaker',
   };
 
   return {
@@ -237,7 +254,7 @@ export function adaptSanityScheduleEvent(sanityEvent: SanityScheduleEvent): Sche
     description: sanityEvent.description,
     time: sanityEvent.time,
     day: sanityEvent.day,
-    type: typeMap[sanityEvent.type?.toLowerCase() || ''] || 'music',
+    type: typeMap[sanityEvent.type?.toLowerCase() || ''] || 'livePerformance',
     artist: sanityEvent.artist ? adaptSanityArtist(sanityEvent.artist) : undefined,
     panelists: sanityEvent.panelists?.map(adaptSanityArtist),
     stage: sanityEvent.stage,

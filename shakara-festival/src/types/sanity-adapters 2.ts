@@ -223,11 +223,21 @@ export function adaptSanityTicket(sanityTicket: SanityTicket): TicketType {
 export function adaptSanityScheduleEvent(sanityEvent: SanityScheduleEvent): ScheduleEvent {
   // Map type string to your type
   const typeMap: Record<string, ScheduleEvent['type']> = {
-    music: 'music',
-    panel: 'panel',
+    music: 'livePerformance',
+    panel: 'speaker',
     vendors: 'vendors',
-    afterparty: 'afterparty',
-    conference: 'panel', // Map conference to panel
+    afterparty: 'afterDark',
+    conference: 'speaker',
+    livePerformance: 'livePerformance',
+    liveperformance: 'livePerformance',
+    dj: 'dj',
+    speaker: 'speaker',
+    afterDark: 'afterDark',
+    afterdark: 'afterDark',
+    workshop: 'workshop',
+    food: 'food',
+    art: 'art',
+    meetgreet: 'meetgreet'
   };
 
   return {
