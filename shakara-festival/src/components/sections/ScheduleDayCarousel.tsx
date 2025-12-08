@@ -91,10 +91,9 @@ export default function ScheduleDayCarousel({ eventsByDay }: ScheduleDayCarousel
                   <div className="flex-1 flex flex-col gap-3">
                   {featuredDayEvents.length > 0 ? (
                     featuredDayEvents.slice(0, 3).map(({ event, sanityEvent }) => (
-                      <Link 
+                      <div 
                         key={event.id}
-                        href={`/lineup#${event.type === 'afterDark' ? 'afterDark' : 'livePerformance'}`}
-                        className="flex flex-col gap-2 p-3 rounded-lg hover:bg-white/5 transition-colors group/item border border-transparent hover:border-white/10"
+                        className="flex flex-col gap-2 p-3 rounded-lg hover:bg-white/5 transition-colors group/item border border-transparent hover:border-white/10 cursor-default"
                       >
                         <div className="flex items-start gap-3">
                           <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0 bg-white/10">
@@ -115,7 +114,7 @@ export default function ScheduleDayCarousel({ eventsByDay }: ScheduleDayCarousel
                             ) : null}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h4 className="text-sm font-semibold text-white group-hover/item:text-orange-400 transition-colors leading-tight line-clamp-2">
+                            <h4 className="text-sm font-semibold text-white transition-colors leading-tight line-clamp-2">
                               {event.title}
                             </h4>
                             <time className="text-xs text-orange-400 font-medium mt-1 block">{event.time}</time>
@@ -133,7 +132,7 @@ export default function ScheduleDayCarousel({ eventsByDay }: ScheduleDayCarousel
                             </span>
                           )}
                         </div>
-                      </Link>
+                      </div>
                     ))
                   ) : (
                       <div className="flex-1 flex items-center justify-center text-white/40 text-sm italic">
