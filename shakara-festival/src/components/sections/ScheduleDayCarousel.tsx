@@ -7,16 +7,17 @@ import { urlFor } from '@/lib/sanity'
 import { ScheduleEvent } from '@/types'
 import { SanityScheduleEvent } from '@/types/sanity-adapters'
 import { GlowingEffect } from '@/components/ui/glowing-effect'
+import { convertTo24Hour } from '@/lib/utils'
 
 interface ScheduleDayCarouselProps {
   eventsByDay: Record<number, { event: ScheduleEvent; sanityEvent: SanityScheduleEvent }[]>
 }
 
 const dayDates: Record<number, string> = {
-  1: 'Dec 18',
-  2: 'Dec 19',
-  3: 'Dec 20',
-  4: 'Dec 21',
+  1: 'Thursday, Dec 18',
+  2: 'Friday, Dec 19',
+  3: 'Saturday, Dec 20',
+  4: 'Sunday, Dec 21',
 }
 
 export default function ScheduleDayCarousel({ eventsByDay }: ScheduleDayCarouselProps) {
@@ -60,8 +61,14 @@ export default function ScheduleDayCarousel({ eventsByDay }: ScheduleDayCarousel
       >
         {days.map((day) => {
           const dayEvents = eventsByDay[day] || []
-          // Only show featured events for this day
-          const featuredDayEvents = dayEvents.filter(({ sanityEvent }) => sanityEvent?.featured)
+          // Only show featured events for this day, sorted chronologically
+          const featuredDayEvents = dayEvents
+            .filter(({ sanityEvent }) => sanityEvent?.featured)
+            .sort((a, b) => {
+              const timeA = convertTo24Hour(a.event.time)
+              const timeB = convertTo24Hour(b.event.time)
+              return timeA.localeCompare(timeB)
+            })
           
           return (
             <div key={day} className="snap-start flex-shrink-0 w-[300px] md:w-[340px]">
