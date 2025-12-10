@@ -85,11 +85,11 @@ export function LineupGlowingSection({ featuredArtists }: LineupGlowingSectionPr
       <div className="text-center mt-12">
         <Link
           href="/lineup"
-          className="inline-flex items-center justify-center px-8 py-3 rounded-lg border border-white/20 text-white font-semibold hover:bg-white/10 transition-all"
+          className="inline-flex items-center justify-center px-8 py-4 rounded-xl bg-gradient-to-r from-orange-600 to-orange-700 text-white font-bold text-base uppercase tracking-wide hover:from-orange-700 hover:to-orange-800 transition-all shadow-lg hover:shadow-xl"
         >
           View Full Lineup
           <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </Link>
       </div>

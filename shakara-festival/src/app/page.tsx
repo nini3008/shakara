@@ -7,6 +7,7 @@ import { createPageMetadata, getSiteUrl } from '@/lib/metadata-utils'
 import { LineupLampSection } from '@/components/sections/LineupLampSection'
 import { LineupGlowingSection } from '@/components/sections/LineupGlowingSection'
 import ScheduleSection from '@/components/sections/ScheduleSection'
+import HomepageCTA from '@/components/sections/HomepageCTA'
 import { client, FEATURED_ARTISTS_QUERY } from '@/lib/sanity'
 import { SanityArtist, adaptSanityArtist } from '@/types/sanity-adapters'
 import { Artist } from '@/types'
@@ -85,6 +86,11 @@ export default async function Home() {
             <ScheduleSection />
           </div>
         </LineupLampSection>
+      </div>
+
+      {/* Get Tickets CTA */}
+      <div className="relative z-10">
+        <HomepageCTA />
       </div>
     </LayoutWrapper>
   )

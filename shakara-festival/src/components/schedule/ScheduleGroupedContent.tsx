@@ -41,10 +41,10 @@ const eventTypeIcons: Record<EventType, string> = {
 }
 
 const dayDates: Record<number, string> = {
-  1: 'Wednesday, Dec 18',
-  2: 'Thursday, Dec 19',
-  3: 'Friday, Dec 20',
-  4: 'Saturday, Dec 21',
+  1: 'Thursday, Dec 18',
+  2: 'Friday, Dec 19',
+  3: 'Saturday, Dec 20',
+  4: 'Sunday, Dec 21',
 }
 
 export default function ScheduleGroupedContent({
