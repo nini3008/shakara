@@ -43,15 +43,15 @@ export default async function ScheduleSection() {
             {/* Grouped Day Carousel */}
             <ScheduleDayCarousel eventsByDay={eventsByDay} />
             
-            <div className={styles.buttonContainer}>
+            <div className="text-center mt-12">
               <Link 
                 href="/schedule" 
-                className={styles.viewScheduleButton}
+                className="inline-flex items-center justify-center px-8 py-4 rounded-xl bg-gradient-to-r from-orange-600 to-orange-700 text-white font-bold text-base uppercase tracking-wide hover:from-orange-700 hover:to-orange-800 transition-all shadow-lg hover:shadow-xl"
                 aria-label="View complete festival schedule"
               >
                 View Full Schedule
                 <svg 
-                  className={styles.buttonIcon} 
+                  className="w-5 h-5 ml-2" 
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24"
