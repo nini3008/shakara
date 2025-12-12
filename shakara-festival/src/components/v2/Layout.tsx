@@ -29,6 +29,7 @@ const navigationItems = [
   { title: 'Lineup', url: '/lineup' },
   { title: 'Schedule', url: '/schedule' },
   { title: 'Tickets', url: '/tickets' },
+  { title: 'Venue', url: '/venue' },
   { title: 'Vendors', url: '/vendors' },
   { title: 'Stay Updated', url: '/newsletter' },
   { title: 'Partnership', url: '/partnership' },
@@ -84,7 +85,14 @@ function InnerLayout({ children, footerData: initialFooterData }: InnerLayoutPro
     return href === '/blog' || label === 'blog'
   })
 
-  const quickLinks = hasBlogQuickLink ? baseQuickLinks : [...baseQuickLinks, { label: 'Blog', href: '/blog' }]
+  const hasVenueQuickLink = baseQuickLinks.some((item) => {
+    const href = item.href ?? item.url
+    const label = (item.label ?? item.title ?? '').toLowerCase().trim()
+    return href === '/venue' || label === 'venue'
+  })
+
+  let quickLinks = hasBlogQuickLink ? baseQuickLinks : [...baseQuickLinks, { label: 'Blog', href: '/blog' }]
+  quickLinks = hasVenueQuickLink ? quickLinks : [...quickLinks, { label: 'Venue', href: '/venue' }]
 
   return (
     <div className="relative min-h-screen texture-bg">

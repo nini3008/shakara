@@ -55,6 +55,7 @@ export default async function Footer() {
       { label: 'Lineup', href: '#lineup' },
       { label: 'Tickets', href: '#tickets' },
       { label: 'Schedule', href: '#schedule' },
+      { label: 'Venue', href: '/venue' },
       { label: 'Blog', href: '/blog' },
       { label: 'Partners', href: '#partners' }
     ],

@@ -7,6 +7,7 @@ import { Inter, Space_Grotesk } from 'next/font/google'
 import React from 'react'
 import { BackgroundWrapper } from '@/components/BackgroundWrapper'
 import FloatingHelpButton from '@/components/FloatingHelpButton'
+import FloatingMapButton from '@/components/FloatingMapButton'
 import {
   createPageMetadata,
   toAbsoluteUrl,
@@ -163,6 +164,7 @@ export default function RootLayout({
         <BackgroundWrapper>
           {children}
         </BackgroundWrapper>
+        <FloatingMapButton />
         <FloatingHelpButton />
 
         {/* All analytics are managed via GTM. Remove direct GA/other snippets. */}

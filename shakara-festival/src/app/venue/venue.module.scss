@@ -1,0 +1,26 @@
+// venue.module.scss - Consistent with other sections
+
+.title {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  
+  // Same gold gradient as other pages
+  background: linear-gradient(
+    135deg, 
+    rgb(217, 119, 6) 0%, 
+    rgb(255, 215, 0) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  @media (min-width: 768px) {
+    margin-bottom: 1.5rem;
+  }
+}
+
