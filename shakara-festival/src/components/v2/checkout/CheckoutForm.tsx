@@ -58,6 +58,7 @@ export default function CheckoutForm() {
 
   const [loading, setLoading] = useState(false)
   const [paymentError, setPaymentError] = useState<string | null>(null)
+  const [paymentHelpOpen, setPaymentHelpOpen] = useState(false)
   const [scriptLoaded, setScriptLoaded] = useState(false)
   const [discountCode, setDiscountCode] = useState('')
   const [discountLoading, setDiscountLoading] = useState(false)
@@ -84,6 +85,11 @@ export default function CheckoutForm() {
         setPaymentError('Failed to load payment provider. Please refresh and try again.')
       })
   }, [])
+
+  // Close the help tooltip whenever the error changes (avoids stale popovers)
+  useEffect(() => {
+    setPaymentHelpOpen(false)
+  }, [paymentError])
 
   // Clear discount code input when discount is removed from cart
   useEffect(() => {
@@ -575,7 +581,57 @@ export default function CheckoutForm() {
                 </div>
 
                 {paymentError && (
-                  <div className="text-red-500 text-sm">{paymentError}</div>
+                  <div className="text-red-500 text-sm flex items-start gap-2">
+                    <span className="flex-1">{paymentError}</span>
+
+                    {/* Contextual help tooltip (shown only for provider-load failures) */}
+                    {paymentError.toLowerCase().startsWith('failed to load payment provider') && (
+                      <span className="relative inline-flex items-center group">
+                        <button
+                          type="button"
+                          aria-label="Why am I seeing this error?"
+                          aria-expanded={paymentHelpOpen}
+                          onClick={() => setPaymentHelpOpen((v) => !v)}
+                          className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full border border-red-500/40 text-red-200/90 hover:text-red-100 hover:border-red-400/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400/40"
+                        >
+                          <span className="text-xs font-semibold leading-none">?</span>
+                        </button>
+
+                        <div
+                          role="tooltip"
+                          className={cn(
+                            'absolute right-0 top-7 z-50 w-[min(22rem,calc(100vw-3rem))] rounded-xl border border-red-500/20 bg-black/90 p-3 text-xs text-slate-100 shadow-2xl backdrop-blur',
+                            'hidden group-hover:block',
+                            paymentHelpOpen ? 'block' : ''
+                          )}
+                        >
+                          <div className="font-semibold text-sm mb-1">Quick fix</div>
+                          <p className="text-slate-200/90">
+                            This usually happens when a browser extension or privacy tool blocks our payment provider from loading.
+                          </p>
+
+                          <div className="mt-2 rounded-lg bg-white/5 p-2">
+                            <div className="font-semibold mb-1">Try Incognito / Private browsing</div>
+                            <ul className="space-y-1 text-slate-200/90">
+                              <li>
+                                <span className="font-semibold text-slate-100">Chrome / Edge:</span> Menu (⋮) → <span className="font-semibold">New Incognito window</span>
+                              </li>
+                              <li>
+                                <span className="font-semibold text-slate-100">Safari:</span> Tabs → <span className="font-semibold">Private</span>
+                              </li>
+                              <li>
+                                <span className="font-semibold text-slate-100">Firefox:</span> Menu (⋮) → <span className="font-semibold">New Private Tab</span>
+                              </li>
+                            </ul>
+                          </div>
+
+                          <p className="mt-2 text-slate-200/90">
+                            If it still fails, try switching network (Wi‑Fi ↔ mobile data) or disabling ad blockers/privacy shields.
+                          </p>
+                        </div>
+                      </span>
+                    )}
+                  </div>
                 )}
 
                 <Button
