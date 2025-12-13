@@ -30,7 +30,7 @@ export default function VenuePage() {
     <V2Layout currentPageName="Venue">
       <ThemedContent transparent>
         <PaperSection>
-        <main className="py-12 sm:py-20">
+        <main className="pt-24 pb-12 sm:pt-20 sm:pb-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         {/* Header Section */}
         <div className="text-center mb-8 sm:mb-12">
